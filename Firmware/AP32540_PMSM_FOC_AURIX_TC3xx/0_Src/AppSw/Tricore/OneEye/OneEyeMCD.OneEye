@@ -1,0 +1,549 @@
+<root version="2.30.0">
+    <signals>
+        <var name="protocolBB" type="group" offset="0" access="read-write">
+            <var name="in" type="char" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[protocolBB.in]]></title>
+                </item-configuration>
+            </var>
+            <var name="out" type="char" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[protocolBB.out]]></title>
+                </item-configuration>
+            </var>
+        </var>
+        <var name="bb" type="group" offset="0" access="read-write">
+            <var name="osciOut" type="char" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[Osci IN]]></title>
+                </item-configuration>
+            </var>
+            <var name="osciIn" type="char" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[Osci OUT]]></title>
+                </item-configuration>
+            </var>
+            <var name="shellOut" type="char" offset="0" access="read-write"/>
+            <var name="shellIn" type="char" offset="0" access="read-write"/>
+            <var name="streamOut" type="char" offset="0" access="read-write"/>
+            <var name="streamIn" type="char" offset="0" access="read-write"/>
+        </var>
+        <var name="g_motorControl" type="group" offset="0" access="read-write">
+            <item-configuration>
+                <title><![CDATA[g_motorControl]]></title>
+            </item-configuration>
+            <var name="pmsmFoc" type="group" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[g_motorControl.pmsmFoc]]></title>
+                </item-configuration>
+                <var name="speedControl" type="group" offset="0" access="read-write">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.pmsmFoc.speedControl]]></title>
+                    </item-configuration>
+                    <var name="refSpeed" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.speedControl.refSpeed]]></title>
+                        </item-configuration>
+                    </var>
+                    <var name="measSpeed" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.speedControl.measSpeed]]></title>
+                        </item-configuration>
+                    </var>
+                </var>
+                <var name="idqMeas" type="group" offset="0" access="read-write">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.pmsmFoc.idqMeas]]></title>
+                    </item-configuration>
+                    <var name="imag" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.idqMeas.imag]]></title>
+                        </item-configuration>
+                    </var>
+                    <var name="real" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.idqMeas.real]]></title>
+                        </item-configuration>
+                    </var>
+                </var>
+                <var name="iPhaseMeas" type="group" offset="0" access="read-write">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.pmsmFoc.iPhaseMeas]]></title>
+                    </item-configuration>
+                    <var name="w" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.iPhaseMeas.w]]></title>
+                        </item-configuration>
+                    </var>
+                    <var name="v" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.iPhaseMeas.v]]></title>
+                        </item-configuration>
+                    </var>
+                    <var name="u" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.iPhaseMeas.u]]></title>
+                        </item-configuration>
+                    </var>
+                </var>
+                <var name="idqRefExternal" type="group" offset="0" access="read-write">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.pmsmFoc.idqRefExternal]]></title>
+                    </item-configuration>
+                    <var name="real" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.idqRefExternal.real]]></title>
+                        </item-configuration>
+                    </var>
+                    <var name="imag" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.idqRefExternal.imag]]></title>
+                        </item-configuration>
+                    </var>
+                </var>
+                <var name="torqueRef" type="float" offset="0" access="read-write" default="0">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.pmsmFoc.torqueRef]]></title>
+                    </item-configuration>
+                </var>
+                <var name="torqueEst" type="float" offset="0" access="read-write" default="0">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.pmsmFoc.torqueEst]]></title>
+                    </item-configuration>
+                </var>
+                <var name="vdqRef" type="group" offset="0" access="read-write">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.pmsmFoc.vdqRef]]></title>
+                    </item-configuration>
+                    <var name="real" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.vdqRef.real]]></title>
+                        </item-configuration>
+                    </var>
+                    <var name="imag" type="float" offset="0" access="read-write" default="0">
+                        <item-configuration>
+                            <title><![CDATA[g_motorControl.pmsmFoc.vdqRef.imag]]></title>
+                        </item-configuration>
+                    </var>
+                </var>
+                <var name="electricalAngle" type="sint16" offset="0" access="read-write" default="0">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.pmsmFoc.electricalAngle]]></title>
+                    </item-configuration>
+                </var>
+            </var>
+            <var name="controlParameters" type="group" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[g_motorControl.controlParameters]]></title>
+                </item-configuration>
+                <var name="controlScheme" type="bit" data-size="8" offset="0" access="read-write" default="0" enum="true">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.controlParameters.controlScheme]]></title>
+                    </item-configuration>
+                    <option data="0" value="ControlScheme_speed" title="ControlScheme_speed"/>
+                    <option data="1" value="ControlScheme_current" title="ControlScheme_current"/>
+                    <option data="2" value="ControlScheme_torque" title="ControlScheme_torque"/>
+                    <option data="3" value="ControlScheme_voltage" title="ControlScheme_voltage"/>
+                </var>
+            </var>
+            <var name="interface" type="group" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[g_motorControl.interface]]></title>
+                </item-configuration>
+                <var name="motorTargetSpeed" type="sint32" offset="0" access="read-write" default="0">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.interface.motorTargetSpeed]]></title>
+                    </item-configuration>
+                </var>
+            </var>
+            <var name="openLoop" type="group" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[g_motorControl.openLoop]]></title>
+                </item-configuration>
+                <var name="amplitude" type="float" offset="0" access="read-write" default="0">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.openLoop.amplitude]]></title>
+                    </item-configuration>
+                </var>
+                <var name="electricalAngleDelta" type="uint32" offset="0" access="read-write" default="0">
+                    <item-configuration>
+                        <title><![CDATA[g_motorControl.openLoop.electricalAngleDelta]]></title>
+                    </item-configuration>
+                </var>
+            </var>
+        </var>
+        <var name="Console" type="group" offset="0" access="read-write">
+            <var name="rx" type="char" offset="0" access="read-write"/>
+            <var name="tx" type="char" offset="0" access="read-write"/>
+        </var>
+        <var name="ecu" type="group" offset="0" access="read-write">
+            <var name="swName" type="char" offset="0" access="read-only">
+                <item-configuration>
+                    <title><![CDATA[Name]]></title>
+                </item-configuration>
+            </var>
+            <var name="swVersion" type="char" offset="0" access="read-only">
+                <item-configuration>
+                    <title><![CDATA[Version]]></title>
+                </item-configuration>
+            </var>
+            <var name="refSpeed" type="float" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Ref speed]]></title>
+                </item-configuration>
+            </var>
+            <var name="Speed" type="float" offset="0" access="read-only" default="0">
+                <item-configuration>
+                    <title><![CDATA[Speed]]></title>
+                </item-configuration>
+            </var>
+            <var name="run" type="bit" data-size="1" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Run]]></title>
+                </item-configuration>
+            </var>
+            <var name="cal" type="bit" data-size="1" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Calibration]]></title>
+                </item-configuration>
+            </var>
+            <var name="kpSpeedReg" type="float" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Kp speed]]></title>
+                </item-configuration>
+            </var>
+            <var name="kiSpeedReg" type="float" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Ki speed]]></title>
+                </item-configuration>
+            </var>
+            <var name="kpIdReg" type="float" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Kp Id]]></title>
+                </item-configuration>
+            </var>
+            <var name="kiIdReg" type="float" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Ki Id]]></title>
+                </item-configuration>
+            </var>
+            <var name="kpIqReg" type="float" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Kp Iq]]></title>
+                </item-configuration>
+            </var>
+            <var name="kiIqReg" type="float" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Ki Iq]]></title>
+                </item-configuration>
+            </var>
+        </var>
+        <var name="dataStream" type="group" offset="0" access="read-write">
+            <var name="measSpeed" type="float" unit="rpm" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Speed Meas.]]></title>
+                </item-configuration>
+            </var>
+            <var name="refSpeed" type="float" unit="rpm" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Speed Ref.]]></title>
+                </item-configuration>
+            </var>
+            <var name="iqRef" type="float" unit="A" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Iq Ref.]]></title>
+                </item-configuration>
+            </var>
+            <var name="iqMeas" type="float" unit="A" offset="0" access="read-write" default="0">
+                <item-configuration>
+                    <title><![CDATA[Iq Meas.]]></title>
+                </item-configuration>
+            </var>
+        </var>
+        <var name="g_debugPipe" type="group" offset="0" access="read-write">
+            <var name="tx" type="char" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[tx]]></title>
+                </item-configuration>
+            </var>
+            <var name="rx" type="char" offset="0" access="read-write">
+                <item-configuration>
+                    <title><![CDATA[rx]]></title>
+                </item-configuration>
+            </var>
+        </var>
+        <var name="Ifx_OSTask_10ms_Count" type="uint32" offset="0" access="read-write" default="0"/>
+    </signals>
+    <layout>
+        <group layout="horizontal" layout-item="false">
+            <item-configuration>
+                <style-sheet><![CDATA[
+#oneeye #__title{
+color:#4E4496;
+font-family: "Century Gothic","Times New Roman", Times, serif;
+font-style: italic;
+font-size: 30pt;
+font-weight: normal;
+}
+#oneeye{
+max-height:60;
+}
+
+PGuiItem_Label_Widget,PGuiItem_Slider_Widget,PGuiItem_LineEdit_Widget{
+max-height:20;
+}
+PGuiItem_PushButton_Widget{
+max-height:40;
+}
+PGuiItem_Image_Widget{
+max-height:60;
+}
+#LogoGroup{
+max-height:200;
+}
+#right{
+max-width:300;
+}]]></style-sheet>
+            </item-configuration>
+            <tab>
+                <tabPage layout="horizontal">
+                    <item-configuration>
+                        <title><![CDATA[Oscilloscope]]></title>
+                    </item-configuration>
+                    <oscilloscope data-in="bb.osciIn" data-out="bb.osciOut" division-x="10" division-y="10" offset-x="0" offset-y="5" time-per-division-x="0.009999999776482582" unit-x="ms">
+                        <item-configuration>
+                            <title><![CDATA[Oscilloscope]]></title>
+                        </item-configuration>
+                        <oscilloscopeChannel enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.05" pen-width="2" color="blue"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.05" pen-width="2" color="green"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.05" pen-width="2" color="black"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" visible="no" offset-x="0" offset-y="0" unit-per-division-y="200" pen-width="2" color="red"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.1" pen-width="2" color="dark red"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.1" pen-width="2" color="gray"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.1" pen-width="2" color="dark blue"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.1" pen-width="2" color="dark magenta"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" visible="no" offset-x="0" offset-y="0" unit-per-division-y="1" pen-width="1" color="blue"/>
+                        <oscilloscopeChannel enabled="defined-by-connection" visible="no" offset-x="0" offset-y="0" unit-per-division-y="1" pen-width="1" color="blue"/>
+                    </oscilloscope>
+                </tabPage>
+                <tabPage>
+                    <item-configuration>
+                        <title><![CDATA[Graphs]]></title>
+                    </item-configuration>
+                    <graph buffer-depth="6000" division-x="60" division-y="40" offset-y="5" time-per-division-x="1" unit-x="s">
+                        <item-configuration>
+                            <title><![CDATA[ECU data]]></title>
+                        </item-configuration>
+                        <channel auto-connect="g_motorControl.pmsmFoc.speedControl.measSpeed" enabled="defined-by-connection" format-precision="2" format-format="f" offset-x="0" offset-y="0" unit-per-division-y="200" pen-width="0" color="blue">
+                            <item-configuration>
+                                <title><![CDATA[Speed meas.]]></title>
+                            </item-configuration>
+                        </channel>
+                        <channel auto-connect="g_motorControl.pmsmFoc.speedControl.refSpeed" enabled="defined-by-connection" format-precision="2" format-format="f" offset-x="0" offset-y="0" unit-per-division-y="200" pen-width="0" color="red">
+                            <item-configuration>
+                                <title><![CDATA[Speed ref.]]></title>
+                            </item-configuration>
+                        </channel>
+                    </graph>
+                    <graph buffer-depth="6000" division-x="60" division-y="20" offset-y="5" time-per-division-x="1" unit-x="s">
+                        <item-configuration>
+                            <title><![CDATA[Current]]></title>
+                        </item-configuration>
+                        <channel auto-connect="g_motorControl.pmsmFoc.idqMeas.imag" enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.2" pen-width="1" color="blue">
+                            <item-configuration>
+                                <title><![CDATA[iq meas.]]></title>
+                            </item-configuration>
+                        </channel>
+                        <channel auto-connect="g_motorControl.pmsmFoc.idqRef.imag" enabled="defined-by-connection" offset-x="0" offset-y="0" unit-per-division-y="0.2" pen-width="1" color="red">
+                            <item-configuration>
+                                <title><![CDATA[iq ref.]]></title>
+                            </item-configuration>
+                        </channel>
+                    </graph>
+                </tabPage>
+                <tabPage>
+                    <item-configuration>
+                        <title><![CDATA[Communication with ECU]]></title>
+                    </item-configuration>
+                    <group layout-item="false">
+                        <item-configuration>
+                            <title><![CDATA[console]]></title>
+                        </item-configuration>
+                        <pushButton>
+                            <item-configuration>
+                                <title><![CDATA[Setup Communication]]></title>
+                                <on-click><![CDATA[{show.connection.ui}]]></on-click>
+                            </item-configuration>
+                        </pushButton>
+                        <pushButton data-out="Console.tx">
+                            <item-configuration>
+                                <title><![CDATA[Read from device]]></title>
+                                <on-click><![CDATA[var=\r! get all\r]]></on-click>
+                            </item-configuration>
+                        </pushButton>
+                        <plainTextEdit data-in="Console.rx" enabled="enabled"/>
+                        <lineEdit data-out="Console.tx" capture-key="true">
+                            <item-configuration>
+                                <title><![CDATA[console>]]></title>
+                            </item-configuration>
+                        </lineEdit>
+                    </group>
+                    <group layout-item="false">
+                        <item-configuration>
+                            <title><![CDATA[protocol]]></title>
+                        </item-configuration>
+                        <plainTextEdit data-in="bb.shellOut" enabled="enabled"/>
+                        <muxDemux data-in="bb.streamOut">
+                            <item-configuration>
+                                <title><![CDATA[Streamed data demultiplexer]]></title>
+                            </item-configuration>
+                            <message id="0x4000" length="16">
+                                <field name="dataStream.refSpeed" bit-pos="0"/>
+                                <field name="dataStream.measSpeed" bit-pos="32"/>
+                                <field name="dataStream.iqRef" bit-pos="64"/>
+                                <field name="dataStream.iqMeas" bit-pos="96"/>
+                            </message>
+                        </muxDemux>
+                    </group>
+                </tabPage>
+            </tab>
+            <group layout-item="false">
+                <item-configuration>
+                    <id><![CDATA[right]]></id>
+                </item-configuration>
+                <group layout="horizontal" layout-item="false">
+                    <item-configuration>
+                        <id><![CDATA[LogoGroup]]></id>
+                    </item-configuration>
+                    <image>
+                        <item-configuration>
+                            <image><![CDATA[logo-desktop-en.png]]></image>
+                        </item-configuration>
+                    </image>
+                    <spacer/>
+                    <label>
+                        <item-configuration>
+                            <id><![CDATA[oneeye]]></id>
+                            <title><![CDATA[OneEye]]></title>
+                        </item-configuration>
+                    </label>
+                </group>
+                <label auto-connect="ecu.swName" update-method="all-on-new-data"/>
+                <label auto-connect="ecu.swVersion" update-method="all-on-new-data"/>
+                <pushButton auto-connect="ecu.run" checkable="true">
+                    <item-configuration>
+                        <title><![CDATA[Stop]]></title>
+                        <title-off><![CDATA[Start]]></title-off>
+                    </item-configuration>
+                </pushButton>
+                <pushButton auto-connect="ecu.cal" checkable="true">
+                    <item-configuration>
+                        <title><![CDATA[Calibration OFF]]></title>
+                        <title-off><![CDATA[Calibration ON]]></title-off>
+                    </item-configuration>
+                </pushButton>
+                <lineEdit auto-connect="g_motorControl.pmsmFoc.iPhaseMeas.u" format="custom" format-field-width="2" format-precision="2" format-format="f" update-method="on-request">
+                    <item-configuration>
+                        <title><![CDATA[Current U]]></title>
+                    </item-configuration>
+                </lineEdit>
+                <lineEdit auto-connect="g_motorControl.pmsmFoc.iPhaseMeas.v" format="custom" format-fill-char="2" format-precision="2" format-format="f" update-method="on-request">
+                    <item-configuration>
+                        <title><![CDATA[Current V]]></title>
+                    </item-configuration>
+                </lineEdit>
+                <lineEdit auto-connect="g_motorControl.pmsmFoc.iPhaseMeas.w" format="custom" format-fill-char="2" format-precision="2" format-format="f" update-method="on-request">
+                    <item-configuration>
+                        <title><![CDATA[Current W]]></title>
+                    </item-configuration>
+                </lineEdit>
+                <group update-method="on-request" layout-item="true">
+                    <spacer/>
+                    <group update-method="on-request" layout-item="false">
+                        <item-configuration>
+                            <title><![CDATA[Speed control]]></title>
+                        </item-configuration>
+                        <slider auto-connect="g_motorControl.interface.motorTargetSpeed" max="6000">
+                            <item-configuration>
+                                <title><![CDATA[Target Speed]]></title>
+                            </item-configuration>
+                        </slider>
+                        <lineEdit auto-connect="g_motorControl.interface.motorTargetSpeed" max="6000">
+                            <item-configuration>
+                                <title><![CDATA[Speed ref.]]></title>
+                                <format-string></format-string>
+                            </item-configuration>
+                        </lineEdit>
+                        <lineEdit auto-connect="g_motorControl.pmsmFoc.speedControl.measSpeed" format="custom" format-precision="0" format-format="f" update-method="on-request">
+                            <item-configuration>
+                                <title><![CDATA[Speed meas.]]></title>
+                            </item-configuration>
+                        </lineEdit>
+                    </group>
+                    <comboBox auto-connect="g_motorControl.controlParameters.controlScheme" enabled="enabled" update-method="on-request">
+                        <item-configuration>
+                            <title><![CDATA[Control Scheme]]></title>
+                        </item-configuration>
+                    </comboBox>
+                </group>
+                <group update-method="on-request" layout-item="false">
+                    <item-configuration>
+                        <title><![CDATA[Current control]]></title>
+                    </item-configuration>
+                    <lineEdit auto-connect="g_motorControl.pmsmFoc.idqRefExternal.imag" format="custom" format-field-width="2" format-precision="2" format-format="f" update-method="on-request">
+                        <item-configuration>
+                            <title><![CDATA[Iq ref.]]></title>
+                        </item-configuration>
+                    </lineEdit>
+                    <lineEdit auto-connect="g_motorControl.pmsmFoc.idqRefExternal.real" format="custom" format-field-width="2" format-precision="2" format-format="f" update-method="on-request">
+                        <item-configuration>
+                            <title><![CDATA[Id ref.]]></title>
+                        </item-configuration>
+                    </lineEdit>
+                    <lineEdit auto-connect="g_motorControl.pmsmFoc.idqMeas.imag" enabled="disabled" format="custom" format-field-width="2" format-precision="2" format-format="f" update-method="on-request">
+                        <item-configuration>
+                            <title><![CDATA[Iq meas.]]></title>
+                        </item-configuration>
+                    </lineEdit>
+                    <lineEdit auto-connect="g_motorControl.pmsmFoc.idqMeas.real" enabled="disabled" format="custom" format-field-width="2" format-precision="2" format-format="f" update-method="on-request">
+                        <item-configuration>
+                            <title><![CDATA[Id meas.]]></title>
+                        </item-configuration>
+                    </lineEdit>
+                </group>
+            </group>
+        </group>
+    </layout>
+    <interface>
+        <port plugin="PCom_MCD::MCD" connect="true"/>
+        <dataProbeHandler ElfPath="C:/Users/Gecic/Aurix2GWorkspace/AP32540_PMSM_FOC_AURIX_TC3xx/2_Out/Tricore_Gnuc/AP32540_PMSM_FOC_AURIX_TC3xx_Tc.elf" Watches="g_motorControl">
+            <probe name="g_debugPipe" interval="100" address="1879068440" size="44" enabled="true" isPipe="true"/>
+            <probe name="g_motorControl" interval="100" address="1879066888" size="1540" enabled="true" isPipe="false"/>
+        </dataProbeHandler>
+    </interface>
+    <protocolEngine>
+        <protocol name="shell-extended" plugin="PProtocol_Core::generic" eol="\r" start-key="!" default-receive="Console.rx" data-in="bb.shellIn" data-out="bb.shellOut">
+            <target apply-to="{float:ecu\..+}">
+                <set send="! set ecu {float.name} {:value}\r" send-parent-value="false"/>
+                <data receive="! ecu ([a-zA-Z0-9_]+) ([0-9.e+-]+)" var="{float.name},{:value}" signal="{group.name:ecu}\{float.name}" set="{:value}"/>
+            </target>
+            <target apply-to="{bit:ecu\..+}">
+                <set send="! set ecu {bit.name} {:value}\r" send-parent-value="false"/>
+            </target>
+            <target apply-to="{char:ecu\..+}">
+                <data receive="! ecu ([a-zA-Z0-9_]+) ([a-zA-Z0-9 .+-]+)" var="{char.name},{:value}" signal="{group.name:ecu}\{char.name}" set="{:value}"/>
+            </target>
+            <target apply-to="{:Console\.tx}">
+                <set send="{:value}" send-parent-value="false"/>
+            </target>
+        </protocol>
+    </protocolEngine>
+    <protocolEngine>
+        <protocol name="BB-core" plugin="PProtocol_Core::bb" data-in="g_debugPipe.tx" data-out="g_debugPipe.rx" timeout="2000" send-register="true" auto-get="enabled" auto-get-interval="0" get-timeout="0">
+            <target local-port="1" remote-port="1" signal-in="bb.osciOut" signal-out="bb.osciIn" forward="true"/>
+            <target local-port="2" remote-port="2" signal-in="bb.shellOut" signal-out="bb.shellIn" forward="false"/>
+            <target local-port="3" remote-port="3" signal-in="bb.streamIn" signal-out="bb.streamOut" forward="true"/>
+        </protocol>
+    </protocolEngine>
+    <config update-timer-period="33"/>
+</root>

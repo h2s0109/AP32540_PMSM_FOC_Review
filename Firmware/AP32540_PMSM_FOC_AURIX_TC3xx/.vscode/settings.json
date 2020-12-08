@@ -1,0 +1,8 @@
+{
+    "search.exclude": {
+        "**/1_ToolEnv/0_Build/9_Make/**": true,
+        "**/2_Out/Tricore_Gnuc/**": true,
+        "**/2_Out/Tricore_Tasking/Tasking_Files/**": true,
+        "**/Debug/**": true
+    }
+}

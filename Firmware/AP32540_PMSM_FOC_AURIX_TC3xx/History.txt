@@ -1,0 +1,13 @@
+Changes between V1.0.0 and V1.0.2
+
+	Details:
+
+	+Added limits EC_MIN_SPEED and EC_MAX_SPEED. User can adopt those
+	limits if needed. Software tested only with positive speed reference.
+
+
+Changes between V1.0.0 and V1.0.1
+
+	Details:
+
+	+Added macros for encoder calibration
