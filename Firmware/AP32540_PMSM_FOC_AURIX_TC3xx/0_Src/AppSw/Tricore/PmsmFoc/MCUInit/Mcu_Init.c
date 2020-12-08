@@ -64,11 +64,11 @@ void PmsmFoc_initHardware(MotorControl* const motorCtrl)
 {
 
 	IfxCpu_disableInterrupts();
-
+#if(TFT_DISPLAYMODE == ENABLED)
 	IfxPort_setPinModeInput(&MODULE_P20, 3, IfxPort_InputMode_pullUp);     /* chip select touch (SLSO09) */
 	IfxPort_setPinModeInput(&MODULE_P20, 6, IfxPort_InputMode_pullUp);     /* chip select cpld (SLSO08) */
 	IfxPort_setPinModeInput(&MODULE_P20, 9, IfxPort_InputMode_pullUp);     /* TFT Interrupt pin input */
-
+#endif /* End of TFT_DISPLAYMODE */
 	IfxPort_setPinMode(&MODULE_P13, 0, IfxPort_Mode_outputPushPullGeneral);     /* LED107 */
 	IfxPort_setPinHigh(&MODULE_P13, 0);
 	IfxPort_setPinMode(&MODULE_P13, 1, IfxPort_Mode_outputPushPullGeneral);     /* LED108 */

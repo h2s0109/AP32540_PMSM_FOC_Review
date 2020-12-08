@@ -160,6 +160,7 @@
 #define MOTOR_TYPE_PATH                                   "PmsmFoc_CUSTOM_MOTOR.h" 		/* Shall be added by user */
 #endif
 
+#define TFT_DISPLAYMODE                      ENABLED
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/

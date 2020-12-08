@@ -18,3 +18,8 @@ MOTOR_TYPE_PATH
 > * .gitignore
 > * B_GNUC_TRICORE_PATH:=  C:\Tools\HighTec\toolchains\tricore\v4.9.2.0
 > * B_TASKING_TRICORE_PATH= C:\Program Files\TASKING\TriCore v6.3r1
+>## Branch: Patch
+>### V1.0.1: TFT_DISPLAYMODE
+> Add the preprocessor macros
+> * #define TFT_DISPLAYMODE
+> * #if(TFT_DISPLAYMODE == ENABLED)

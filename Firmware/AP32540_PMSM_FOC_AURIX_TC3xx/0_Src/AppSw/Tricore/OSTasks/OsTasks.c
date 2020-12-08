@@ -42,9 +42,10 @@
 #include "IfxStm.h"
 #include "FreeRTOS.h"
 #include "task.h"
-
-#include "conio_tft.h"
-#include "touch.h"
+#if(TFT_DISPLAYMODE == ENABLED)
+	#include "conio_tft.h"
+	#include "touch.h"
+#endif /* End of TFT_DISPLAYMODE */
 #include "PmsmFoc_Functions.h"
 #include "Display.h"
 #include "PmsmFoc_InitTLE9180.h"
@@ -59,8 +60,10 @@
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
+#if(TFT_DISPLAYMODE == ENABLED)
+	extern volatile boolean 		tft_ready;
+#endif /* End of TFT_DISPLAYMODE */
 
-extern volatile boolean 		tft_ready;
 extern MotorControl				g_motorControl;
 
 /******************************************************************************/
@@ -74,21 +77,22 @@ extern MotorControl				g_motorControl;
 
 #define OS_ONE_EYE_BUFFER_COPY_TASK_PERIOD_MS		(10)
 #define OS_ONE_EYE_BUFFER_COPY_TASK_PERIOD_PRIORITY	(7)
-
-#define OS_TOUCH_CONTROL_TASK_PERIOD_MS				(20)
-#define OS_TOUCH_CONTROL_TASK_PRIORITY				(6)
-
+#if(TFT_DISPLAYMODE == ENABLED)
+	#define OS_TOUCH_CONTROL_TASK_PERIOD_MS				(20)
+	#define OS_TOUCH_CONTROL_TASK_PRIORITY				(6)
+#endif /* End of TFT_DISPLAYMODE */
 #define OS_SPEED_REF_RAMP_TASK_PERIOD_MS			((uint32)(USER_MOTOR_SPEED_RAMP_PERIOD*1000))
 #define OS_SPEED_REF_RAMP_TASK_PRIORITY				(5)
-
-#define OS_CONIO_TASK_PERIOD_MS						(100)
-#define OS_CONIO_TASK_PRIORITY						(4)
-
+#if(TFT_DISPLAYMODE == ENABLED)
+	#define OS_CONIO_TASK_PERIOD_MS						(100)
+	#define OS_CONIO_TASK_PRIORITY						(4)
+#endif /* End of TFT_DISPLAYMODE */
 #define OS_DEMO_CONTROL_TASK_PERIOD_MS				(200)
 #define OS_DEMO_CONTROL_TASK_PRIORITY				(3)
-
-#define OS_DISPLAY_TIME_TASK_PERIOD_MS				(1000)
-#define OS_DISPLAY_TIME_TASK_PRIORITY				(2)
+#if(TFT_DISPLAYMODE == ENABLED)
+	#define OS_DISPLAY_TIME_TASK_PERIOD_MS				(1000)
+	#define OS_DISPLAY_TIME_TASK_PRIORITY				(2)
+#endif /* End of TFT_DISPLAYMODE */
 
 
 
@@ -142,6 +146,7 @@ IFX_INTERRUPT(OsTasks_TickProvider, FREERTOS_CORE_ID, configKERNEL_INTERRUPT_PRI
 	vPortSystemTickHandler();
 }
 
+#if(TFT_DISPLAYMODE == ENABLED)
 volatile uint32 touchControlCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicTouchControlTask(void *arg)
@@ -170,6 +175,7 @@ static __attribute__((__noreturn__)) void periodicTouchControlTask(void *arg)
 		}
 	}
 }
+#endif /* End of TFT_DISPLAYMODE */
 
 volatile uint32 speedControlCount= 0UL;
 
@@ -310,6 +316,7 @@ static __attribute__((__noreturn__)) void periodicOneEyeBufferCopyTask(void *arg
 }
 
 
+#if(TFT_DISPLAYMODE == ENABLED)
 volatile uint32 conioCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicConioTask(void *arg)
@@ -358,7 +365,7 @@ static __attribute__((__noreturn__)) void periodicConioTask(void *arg)
 		}
 	}
 }
-
+#endif /* End of TFT_DISPLAYMODE */
 volatile uint32 demoControlCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicDemoControlTask(void *arg)
@@ -385,6 +392,7 @@ static __attribute__((__noreturn__)) void periodicDemoControlTask(void *arg)
 	}
 }
 
+#if(TFT_DISPLAYMODE == ENABLED)
 volatile uint32 displayTimeCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicDisplayTimeTask(void *arg)
@@ -418,6 +426,7 @@ static __attribute__((__noreturn__)) void periodicDisplayTimeTask(void *arg)
 		}
 	}
 }
+#endif /* End of TFT_DISPLAYMODE */
 
 volatile uint32 ulIdleCycleCount = 0UL;
 void vApplicationIdleHook( void )
@@ -438,12 +447,14 @@ void vApplicationIdleHook( void )
 void OS_Tasks_init(void)
 {
 	/* Create tasks. */
+#if(TFT_DISPLAYMODE == ENABLED)	
 	xTaskCreate(periodicTouchControlTask,
 			"Touch Control",
 			configMINIMAL_STACK_SIZE,
 			NULL,
 			OS_TOUCH_CONTROL_TASK_PRIORITY,
 			NULL);
+#endif /* End of TFT_DISPLAYMODE */
 
 	xTaskCreate(periodicSpeedControlTask,
 			"Speed Control",
@@ -466,13 +477,14 @@ void OS_Tasks_init(void)
 			OS_SPEED_REF_RAMP_TASK_PRIORITY,
 			NULL);
 
-
+#if(TFT_DISPLAYMODE == ENABLED)
 	xTaskCreate(periodicConioTask,
 			"ConIO Task",
 			configMINIMAL_STACK_SIZE,
 			NULL,
 			OS_CONIO_TASK_PRIORITY,
 			NULL);
+#endif /* End of TFT_DISPLAYMODE */
 
 	xTaskCreate(periodicDemoControlTask,
 			"Demo Control",
@@ -480,14 +492,14 @@ void OS_Tasks_init(void)
 			NULL,
 			OS_DEMO_CONTROL_TASK_PRIORITY,
 			NULL);
-
+#if(TFT_DISPLAYMODE == ENABLED)
 	xTaskCreate(periodicDisplayTimeTask,
 			"Display Time",
 			configMINIMAL_STACK_SIZE,
 			NULL,
 			OS_DISPLAY_TIME_TASK_PRIORITY,
 			NULL);
-
+#endif /* End of TFT_DISPLAYMODE */
 
 	xTaskCreate(periodicCurrentRampTimeTask,
 			"Current Ramp Time",

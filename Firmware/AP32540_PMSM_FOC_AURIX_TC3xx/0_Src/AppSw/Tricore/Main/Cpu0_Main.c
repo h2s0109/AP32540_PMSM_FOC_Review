@@ -61,7 +61,9 @@
 #include "PmsmFoc_Functions.h"
 #include "Mcu_Init.h"
 #include "OneEye_Init.h"
-#include "Display_Functions.h"
+#if(TFT_DISPLAYMODE == ENABLED)
+	#include "Display_Functions.h"
+#endif /* End of TFT_DISPLAYMODE */
 
 
 
@@ -96,10 +98,10 @@ void core0_main (void)
 
 	/* Initialize motor control */
 	PmsmFoc_initMotorControl(&g_motorControl);
-
+#if(TFT_DISPLAYMODE == ENABLED)
 	/* Initialize display */
 	Dispaly_initDisplay();
-
+#endif /* End of TFT_DISPLAYMODE */
 	/* OneEye: Initialize oscilloscope and serial interface */
 	OneEye_init();
 

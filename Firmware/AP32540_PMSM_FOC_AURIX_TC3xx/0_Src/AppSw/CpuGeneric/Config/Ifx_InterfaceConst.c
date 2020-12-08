@@ -43,8 +43,10 @@
  *
  */
 #include "Platform_Types.h"
-#include "conio_tft.h"
-#include "touch.h"
+#if(TFT_DISPLAYMODE == ENABLED)
+    #include "conio_tft.h"
+    #include "touch.h"
+#endif /* End of TFT_DISPLAYMODE */
 
 #if defined(__HIGHTEC__)
 #pragma section
@@ -57,10 +59,10 @@
 #if defined(__DCC__)
 #pragma section CONST ".interface_const" far-absolute R
 #endif
-
+#if(TFT_DISPLAYMODE == ENABLED)
 extern TCONIO_DRIVER conio_driver;
 extern TTOUCH_DASINFO touch_dasinfo;
-
+#endif /* End of TFT_DISPLAYMODE */
 
 volatile const uint32 Ifx_interfaceConst[] = {
     /*Address:80000020 */ 0x00000000,
@@ -76,19 +78,21 @@ volatile const uint32 Ifx_interfaceConst[] = {
     /*Address:80000040 */ 0x00000000,
     /*Address:80000044 */ 0x00000000,
     /*Address:80000048 */ 0x00000000,
-#ifdef TFT_OVER_DAS
-    /*Pointer TFT display */
-    /*Address:8000004C */ (uint32)&conio_driver,
-    /*Address:80000050 */ (uint32)&conio_driver.dasdisplaymode,
-    /*Address:80000054 */ (uint32)&conio_driver.dasstatus,
-    /*Address:80000058 */ (uint32)&conio_driver.pdasmirror,
-    /*Address:8000005C */ (uint32)&touch_dasinfo,
-#else
-    /*Address:8000004C */ 0x00000000,
-    /*Address:80000050 */ 0x00000000,
-    /*Address:80000054 */ 0x00000000,
-    /*Address:80000058 */ 0x00000000,
-    /*Address:8000005C */ 0x00000000,
+#if(TFT_DISPLAYMODE == ENABLED)
+    #ifdef TFT_OVER_DAS
+        /*Pointer TFT display */
+        /*Address:8000004C */ (uint32)&conio_driver,
+        /*Address:80000050 */ (uint32)&conio_driver.dasdisplaymode,
+        /*Address:80000054 */ (uint32)&conio_driver.dasstatus,
+        /*Address:80000058 */ (uint32)&conio_driver.pdasmirror,
+        /*Address:8000005C */ (uint32)&touch_dasinfo,
+    #else
+        /*Address:8000004C */ 0x00000000,
+        /*Address:80000050 */ 0x00000000,
+        /*Address:80000054 */ 0x00000000,
+        /*Address:80000058 */ 0x00000000,
+        /*Address:8000005C */ 0x00000000,
+    #endif
 #endif
     /*Address:80000060 */ 0x00000000,
     /*Address:80000064 */ 0x00000000,
