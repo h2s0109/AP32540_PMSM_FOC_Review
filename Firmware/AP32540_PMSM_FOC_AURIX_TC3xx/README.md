@@ -23,3 +23,8 @@ MOTOR_TYPE_PATH
 > Add the preprocessor macros
 > * #define TFT_DISPLAYMODE
 > * #if(TFT_DISPLAYMODE == ENABLED)
+>### V1.0.2: ONE_EYEMODE
+> Add the preprocessor macros
+> * #define ONE_EYEMODE
+> * #if(ONE_EYEMODE == ENABLED)
+> * /*STEVE: not ONE_EYEMODE but has a dependency with ONE_EYEMODE */

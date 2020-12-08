@@ -49,7 +49,9 @@
 #include "PmsmFoc_Functions.h"
 #include "Display.h"
 #include "PmsmFoc_InitTLE9180.h"
-#include "OneEye_Init.h"
+#if(ONE_EYEMODE == ENABLED)
+	#include "OneEye_Init.h"
+#endif /* End of ONE_EYEMODE*/
 
 #include "PmsmFoc_Interface.h"
 #include "PmsmFoc_UserConfig.h"
@@ -290,6 +292,7 @@ static __attribute__((__noreturn__)) void periodicCurrentRampTimeTask(void *arg)
 	}
 }
 
+#if(ONE_EYEMODE == ENABLED)
 volatile uint32 OneEyeBufferCopyCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicOneEyeBufferCopyTask(void *arg)
@@ -314,7 +317,7 @@ static __attribute__((__noreturn__)) void periodicOneEyeBufferCopyTask(void *arg
 		}
 	}
 }
-
+#endif /* End of ONE_EYEMODE*/
 
 #if(TFT_DISPLAYMODE == ENABLED)
 volatile uint32 conioCount= 0UL;
@@ -336,8 +339,10 @@ static __attribute__((__noreturn__)) void periodicConioTask(void *arg)
 			if (tft_ready == 1)
 			{
 				conio_periodic(touch_driver.xdisp, touch_driver.ydisp, conio_driver.pmenulist, conio_driver.pstdlist);
-
+				#if(ONE_EYEMODE == ENABLED)
+				/*STEVE: not ONE_EYEMODE but has a dependency with ONE_EYEMODE */ 
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 0, (uint8 *)SW_NAME);
+				#endif /* End of ONE_EYEMODE*/
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 1, (uint8 *)"SW: V1.0.2, HW V3.2");
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 3, (uint8 *)"Speed Ref [rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.refSpeed);
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 4, (uint8 *)"Speed Meas[rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.measSpeed);
@@ -437,7 +442,9 @@ void vApplicationIdleHook( void )
 		/******************************************************************
 		 *                        IDLE Task START                         *
 		 ******************************************************************/
-		OneEye_processDataStream();
+		#if(ONE_EYEMODE == ENABLED)
+			OneEye_processDataStream();
+		#endif /* End of ONE_EYEMODE*/
 		/******************************************************************
 		 *                         IDLE Task END                          *
 		 ******************************************************************/
@@ -463,12 +470,14 @@ void OS_Tasks_init(void)
 			OS_SPEED_CONTROL_TASK_PRIORITY,
 			NULL);
 
+#if(ONE_EYEMODE == ENABLED)
 	xTaskCreate(periodicOneEyeBufferCopyTask,
 			"One Eye Buffer Copy",
 			configMINIMAL_STACK_SIZE,
 			NULL,
 			OS_SPEED_CONTROL_TASK_PRIORITY,
 			NULL);
+#endif /* End of ONE_EYEMODE*/
 
 	xTaskCreate(periodicSpeedRefRampTimeTask,
 			"Speed Ref Ramp Time",

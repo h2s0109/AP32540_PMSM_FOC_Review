@@ -41,7 +41,9 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_Interrupts.h"
-#include "OneEye_Init.h"
+#if(ONE_EYEMODE == ENABLED)
+	#include "OneEye_Init.h"
+#endif /* End of ONE_EYEMODE*/
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -59,8 +61,9 @@
 IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 {
 	PmsmFoc_StateMacine_doControlLoop(&g_motorControl);
-
+#if(ONE_EYEMODE == ENABLED)
 	OneEye_osciStep();
+#endif /* End of ONE_EYEMODE*/
 }
 
 #if(INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1)

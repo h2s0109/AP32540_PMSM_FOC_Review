@@ -60,7 +60,9 @@
 #include "PmsmFoc_UserConfig.h"
 #include "PmsmFoc_Functions.h"
 #include "Mcu_Init.h"
-#include "OneEye_Init.h"
+#if(ONE_EYEMODE == ENABLED)
+	#include "OneEye_Init.h"
+#endif /* End of ONE_EYEMODE*/
 #if(TFT_DISPLAYMODE == ENABLED)
 	#include "Display_Functions.h"
 #endif /* End of TFT_DISPLAYMODE */
@@ -103,7 +105,9 @@ void core0_main (void)
 	Dispaly_initDisplay();
 #endif /* End of TFT_DISPLAYMODE */
 	/* OneEye: Initialize oscilloscope and serial interface */
+#if(ONE_EYEMODE == ENABLED)
 	OneEye_init();
+#endif /* End of ONE_EYEMODE*/
 
 	/* Initialize operating system tasks */
 	extern void OS_Tasks_init(void);
