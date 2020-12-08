@@ -45,7 +45,6 @@
 #include "IfxGtm_Trig.h"
 #include "IfxStdIf_Timer.h"
 #include "PmsmFoc_Inverter.h"
-#include "Ifx_Types.h"
 #if(EMOTOR_LIB == MC_EMOTOR)
 #include "Arith.StdReal.h"
 #endif

@@ -43,10 +43,6 @@
 #include "PmsmFoc_CurrentDcLinkSense.h"
 #include "IfxPort_PinMap.h"
 
-#include "PmsmFoc_UserConfig.h"
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/

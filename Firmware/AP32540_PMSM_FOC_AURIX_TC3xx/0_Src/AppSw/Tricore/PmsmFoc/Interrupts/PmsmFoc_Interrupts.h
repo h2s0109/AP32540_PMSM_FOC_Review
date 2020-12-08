@@ -45,11 +45,12 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
+#include "PmsmFoc_UserConfig.h"
+#include MCUCARD_TYPE_PATH
+#include INVERTERCARD_TYPE_PATH
+#include MOTOR_TYPE_PATH
 #include "PmsmFoc_StateMachine.h"
-#include "Ifx_Types.h"
-#include "IfxCpu.h"
-
-#include "PmsmFoc_Functions.h"
+#include "PmsmFoc_Interface.h"
 #if(TLE9180_DRIVER == ENABLED)
     #include "TLE9180.h"
 #endif /* End of TLE9180_DRIVER */
@@ -57,11 +58,6 @@
 
 #include "IfxQspi_SpiMaster.h"
 #include "IfxDma.h"
-
-#include "PmsmFoc_UserConfig.h"
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
 /******************************************************************************/
 /*--------------------------------Macros--------------------------------------*/
 /******************************************************************************/

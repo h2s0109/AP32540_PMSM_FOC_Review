@@ -45,15 +45,13 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-#include "PmsmFoc_SensorAdc.h"
-#include "Ifx_Types.h"
 #include "PmsmFoc_UserConfig.h"
-#include "Compilers.h"
-#include "Port/Std/IfxPort.h"
-
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
 #include MOTOR_TYPE_PATH
+#include "PmsmFoc_SensorAdc.h"
+#include "Port/Std/IfxPort.h"
+
 /******************************************************************************/
 /*--------------------------------Macros--------------------------------------*/
 /******************************************************************************/

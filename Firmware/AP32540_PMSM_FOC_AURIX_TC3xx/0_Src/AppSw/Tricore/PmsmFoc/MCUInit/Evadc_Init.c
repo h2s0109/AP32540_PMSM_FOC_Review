@@ -38,16 +38,7 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-
 #include "Evadc_Init.h"
-#include "PmsmFoc_UserConfig.h"
-
-#include "PmsmFoc_Inverter.h"
-
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
-
 #if (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITHOUT_HIGHSIDE_MONITORING)
 #include "PmsmFoc_CurrentThreeshuntSense.h"
 #include "Evadc_InitCurSenseLsTriShuntWoHsMon.h"

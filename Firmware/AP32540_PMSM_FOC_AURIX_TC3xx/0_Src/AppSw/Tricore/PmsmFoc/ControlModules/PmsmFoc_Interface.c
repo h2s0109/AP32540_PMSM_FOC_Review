@@ -42,7 +42,6 @@
 /******************************************************************************/
 
 #include "PmsmFoc_Interface.h"
-#include "Ifx_Types.h"
 #include "PmsmFoc_Functions.h"
 #include "PmsmFoc_VariablesScaling.h"
 #include "PmsmFoc_Inverter.h"

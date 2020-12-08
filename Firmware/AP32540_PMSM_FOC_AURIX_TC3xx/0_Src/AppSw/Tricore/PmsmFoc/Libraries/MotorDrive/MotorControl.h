@@ -49,13 +49,12 @@
  *
  */
 
-#if !defined(MOTOR_CONTROL_H)
+#ifndef MOTOR_CONTROL_H
 #define MOTOR_CONTROL_H
 //------------------------------------------------------------------------------
 #include "Cpu/Std/IfxCpu_Intrinsics.h"
 #include "Arith.StdReal.h"
 
-#include "Ifx_Types.h"
 //------------------------------------------------------------------------------
 
 /** @brief 3 phase variable definition.

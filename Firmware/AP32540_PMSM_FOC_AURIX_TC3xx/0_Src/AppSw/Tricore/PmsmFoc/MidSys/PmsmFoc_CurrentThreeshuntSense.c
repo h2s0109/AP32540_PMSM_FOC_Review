@@ -38,18 +38,12 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-#include "Ifx_Types.h"
 #include "PmsmFoc_CurrentThreeshuntSense.h"
-#include "PmsmFoc_UserConfig.h"
-#include "Compilers.h"
 #include "PmsmFoc_Inverter.h"
 #if(TLE9180_DRIVER == ENABLED)
 	#include "TLE9180.h"
 #endif /* End of TLE9180_DRIVER */
 
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/

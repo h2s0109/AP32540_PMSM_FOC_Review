@@ -42,3 +42,24 @@ MOTOR_TYPE_PATH
 > * #if(DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
 > * #if(BEMF_MEASUREMENT == ENABLED)
 > * #if(POSITION_SENSOR_TYPE == ENCODER)
+>### V1.0.6: include-path arrange
+> re-arrange the #include
+> * Removed not necessary #include
+> * #include "Ifx_Types.h"
+> * #include "Compilers.h"
+> * #include "IfxCpu.h"
+> * #include "PmsmFoc_Inverter.h"
+> * 
+> * #include "IfxEdsadc_Edsadc.h"
+> * #include "IfxEdsadc_reg.h"
+> * #include "IfxEdsadc_regdef.h"
+> * #include "IfxEdsadc_bf.h"
+> * 
+> * #include "IfxEvadc_reg.h"
+> * #include "IfxEvadc_regdef.h"
+> * #include "IfxEvadc_bf.h"
+> * #include "IfxEvadc.h"
+> * What is the role of Role of PmsmFoc_Interface.h?
+> * Mixed usage with PmsmFoc_Functions.h,PmsmFoc_StateMachine.h
+> * change #if !defined(MOTOR_CONTROL_H) -> #ifndef MOTOR_CONTROL_H
+> * PmsmFoc_StateMachine.c bug fix, add the comment.

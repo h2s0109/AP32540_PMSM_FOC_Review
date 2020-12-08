@@ -51,18 +51,10 @@
 #include "IfxDma.h"
 
 #include "SysSe/Bsp/Bsp.h"
-#include "IfxEvadc.h"
 #include "IfxEvadc_Adc.h"
-#include "IfxEvadc_reg.h"
-#include "IfxEvadc_regdef.h"
-#include "IfxEvadc_bf.h"
 
 
 #include "IfxEdsadc.h"
-#include "IfxEdsadc_Edsadc.h"
-#include "IfxEdsadc_reg.h"
-#include "IfxEdsadc_regdef.h"
-#include "IfxEdsadc_bf.h"
 #include "Port/Std/IfxPort.h"
 
 

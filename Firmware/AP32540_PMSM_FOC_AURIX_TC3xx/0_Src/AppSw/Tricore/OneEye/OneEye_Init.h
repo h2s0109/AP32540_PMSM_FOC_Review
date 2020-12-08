@@ -34,7 +34,10 @@
  */
 #ifndef ONEEYE_INIT_H_
 #define ONEEYE_INIT_H_
-
+#include "PmsmFoc_UserConfig.h"
+#include MCUCARD_TYPE_PATH
+#include INVERTERCARD_TYPE_PATH
+#include MOTOR_TYPE_PATH
 void OneEye_osciStep(void);
 void OneEye_init(void);
 void OneEye_processDataStream(void);

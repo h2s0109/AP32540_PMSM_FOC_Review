@@ -42,7 +42,7 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-#include "Ifx_Types.h"
+
 #include "IfxStdIf_Pos.h"
 #include "SysSe/Math/IFX_Cf32.h"
 #include "PmsmFoc_Functions.h"
@@ -66,10 +66,6 @@
 	#include "TLE9180.h"
 #endif /* End of TLE9180_DRIVER */
 
-#include "PmsmFoc_UserConfig.h"
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/

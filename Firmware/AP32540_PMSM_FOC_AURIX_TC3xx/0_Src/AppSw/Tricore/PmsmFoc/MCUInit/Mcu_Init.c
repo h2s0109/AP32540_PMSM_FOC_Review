@@ -44,13 +44,10 @@
 #include "PmsmFoc_InitTLF35584.h"
 #endif /* End of TLF35584_DRIVER */
 #include "bsp.h"
-#include "Ifx_Types.h"
-#include "IfxCpu.h"
 #include "Qspi_Init.h"
 #include "PmsmFoc_InitTLE9180.h"
 #include "PmsmFoc_Inverter.h"
 #include "PmsmFoc_PositionAndSpeedAcquisition.h"
-#include "PmsmFoc_UserConfig.h"
 /******************************************************************************/
 /*-------------------------------Global variables-----------------------------*/
 /******************************************************************************/

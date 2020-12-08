@@ -37,7 +37,10 @@
 
 #ifndef _TLE9180_INIT_H_
 #define _TLE9180_INIT_H_
-
+#include "PmsmFoc_UserConfig.h"
+#include MCUCARD_TYPE_PATH
+#include INVERTERCARD_TYPE_PATH
+#include MOTOR_TYPE_PATH
 #include "TLE9180.h"
 /******************************************************************************/
 /*-----------------------------------Macros-----------------------------------*/

@@ -51,8 +51,6 @@
 #include "conio_tft.h"
 #include "touch.h"
 #include "Display.h"
-
-#include "PmsmFoc_Functions.h"
 #include "PmsmFoc_Interface.h"
 /******************************************************************************/
 /*------------------------Inline Function Prototypes--------------------------*/

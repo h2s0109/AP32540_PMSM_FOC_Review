@@ -44,7 +44,10 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-#include "Ifx_Types.h"
+#include "PmsmFoc_UserConfig.h"
+#include MCUCARD_TYPE_PATH
+#include INVERTERCARD_TYPE_PATH
+#include MOTOR_TYPE_PATH
 #include "Ifx_PicF32.h"
 #include "IfxStdIf_Pos.h"
 #include "PmsmFoc_Inverter.h"

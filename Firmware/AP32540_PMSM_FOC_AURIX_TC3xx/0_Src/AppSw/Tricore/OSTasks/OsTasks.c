@@ -37,8 +37,10 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-#include "Ifx_Types.h"
-#include "Compilers.h"
+#include "PmsmFoc_UserConfig.h"
+#include MCUCARD_TYPE_PATH
+#include INVERTERCARD_TYPE_PATH
+#include MOTOR_TYPE_PATH
 #include "IfxStm.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -54,11 +56,6 @@
 #endif /* End of ONE_EYEMODE*/
 
 #include "PmsmFoc_Interface.h"
-#include "PmsmFoc_UserConfig.h"
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
-
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/

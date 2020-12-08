@@ -54,11 +54,11 @@
  * \lastUpdated 2020-10-09
 ******************************************************************************/
 
+#include "PmsmFoc_UserConfig.h"
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
-#include "PmsmFoc_UserConfig.h"
-#include "PmsmFoc_Functions.h"
+#include "PmsmFoc_Interface.h"
 #include "Mcu_Init.h"
 #if(ONE_EYEMODE == ENABLED)
 	#include "OneEye_Init.h"
