@@ -67,13 +67,16 @@ IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 }
 
 #if(INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1)
-/** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
- *
+	#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
+	/** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
+	 *
  */
 IFX_INTERRUPT(PmsmFoc_Evadc_CurrentDCLinkSenseHs_Isr, 0, INTERRUPT_PRIORITY_EVADC_HSCUR)
 {
 	PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(&g_motorControl.inverter.highSideCurrentSense);
 }
+	#endif
+	#if(BEMF_MEASUREMENT == ENABLED)
 /** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
  *
  */
@@ -82,6 +85,8 @@ IFX_INTERRUPT(PmsmFoc_Evadc_BemfVoltageSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_VB
 {
 	PmsmFoc_BemfVoltageSense_getValue(&g_motorControl.inverter.bemfVoltageSense);
 }
+	#endif
+	#if(DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
 /** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
  *
  */
@@ -89,9 +94,9 @@ IFX_INTERRUPT(PmsmFoc_Evadc_DcLinkVoltageSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_
 {
 	PmsmFoc_DcLinkVoltageSense_getValue(&g_motorControl.inverter.dcLinkVoltageSense);
 }
-
+	#endif
 #endif
-
+#if(POSITION_SENSOR_TYPE == ENCODER)
 /** \brief Interrupt service unit for GPT12 Zero position event
  *
  */
@@ -99,7 +104,7 @@ IFX_INTERRUPT(PmsmFoc_Gpt12_Encoder_TzIsr, 0, INTERRUPT_PRIORITY_ENCODER_GPT12)
 {
 	IfxGpt12_IncrEnc_onZeroIrq(&g_motorControl.positionSensor.encoder.incrEncoder);
 }
-
+#endif
 #if(TLF35584_DRIVER == ENABLED)
 #if (INTERRUPT_PRIORITY_QSPI2_TX > 0)
 /** \brief Interrupt service units for QSPI2 Transmit
