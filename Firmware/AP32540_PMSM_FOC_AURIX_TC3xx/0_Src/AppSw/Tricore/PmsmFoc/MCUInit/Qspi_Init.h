@@ -64,6 +64,7 @@
 #define SPI_2_RX_DMA_CH                         TLF35584_SPI_RX_DMA_CH
 #endif /* End of TLF35584_DRIVER */
 
+#if(TLE9180_DRIVER == ENABLED)
 #define SPI_4_MODULE                            TLE9180_SPI_MODULE
 #define SPI_4_CLOCK_PIN                         TLE9180_SPI_CLOCK_PIN
 #define SPI_4_MOSI_PIN                          TLE9180_SPI_MOSI_PIN
@@ -72,6 +73,7 @@
 #define SPI_4_USE_DMA                           TLE9180_SPI_USE_DMA
 #define SPI_4_TX_DMA_CH                         TLE9180_SPI_TX_DMA_CH
 #define SPI_4_RX_DMA_CH                         TLE9180_SPI_RX_DMA_CH
+#endif /* End of TLE9180_DRIVER */
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
@@ -80,7 +82,11 @@
 /*STEVE: define error TLF35584*/
 extern IfxQspi_SpiMaster           spiMasterQspi2;
 // #endif /* End of TLF35584_DRIVER */
+
+// #if(TLE9180_DRIVER == ENABLED)
+/*STEVE: define error TLE9180*/
 extern IfxQspi_SpiMaster           spiMasterQspi4;
+// #endif /* End of TLE9180_DRIVER */
 /******************************************************************************/
 /*--------------------------------Enumerations--------------------------------*/
 /******************************************************************************/

@@ -45,7 +45,7 @@
 /******************************************************************************/
 /*-----------------------------------Macros-----------------------------------*/
 /******************************************************************************/
-// SPI Configurations for TLF35584 Channel receive
+// SPI Configurations for TLF9180 Channel receive
 //#define IFX_TLE9180_SPI_BUFFER_SIZE         (68U)
 #define IFX_TLE9180_BAUDRATE                (1.0e6)
 #define IFX_TLE9180_DATAWIDTH               (24U)

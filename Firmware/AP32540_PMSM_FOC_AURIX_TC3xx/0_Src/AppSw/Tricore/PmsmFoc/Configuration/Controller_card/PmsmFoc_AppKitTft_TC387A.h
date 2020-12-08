@@ -183,6 +183,7 @@
 #define TLE9180_SAFEOFF_PIN				&IfxPort_P33_10
 /* TLE9180 QSPI define */
 /** \brief Define the QSPI slave select pin. */
+/*STEVE: define error TLE9180*/ 
 #define TLE9180_SPI_CS_PIN     			IfxQspi4_SLSO3_P22_2_OUT
 /** \brief Define the QSPI object */
 #define TLE9180_SPI_MODULE              MODULE_QSPI4

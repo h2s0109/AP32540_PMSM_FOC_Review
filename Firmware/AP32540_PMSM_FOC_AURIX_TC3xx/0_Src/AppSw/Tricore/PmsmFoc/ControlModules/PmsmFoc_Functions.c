@@ -62,7 +62,9 @@
 #include "Clarke.h"
 #include "Park.h"
 #include "MotorControl.h"
-#include "TLE9180.h"
+#if(TLE9180_DRIVER == ENABLED)
+	#include "TLE9180.h"
+#endif /* End of TLE9180_DRIVER */
 
 #include "PmsmFoc_UserConfig.h"
 #include MCUCARD_TYPE_PATH
@@ -545,7 +547,9 @@ void PmsmFoc_doVfControl(MotorControl* const motorCtrl)
 	PmsmFoc_reconstructCurrent(motorCtrl);
 	if(motorCtrl->interface.start == TRUE)
 	{
+	#if(TLE9180_DRIVER == ENABLED)
 		IfxTLE9180_activateEnable(&tle9180.driver);
+	#endif /* End of TLE9180_DRIVER */
 		/* Update electrical angle and calculate modulation index */
 #if(EMOTOR_LIB == MC_EMOTOR)
 		sint16 electricAngle;
@@ -563,7 +567,9 @@ void PmsmFoc_doVfControl(MotorControl* const motorCtrl)
 		motorCtrl->openLoop.amplitude = 0.0;
 		motorCtrl->openLoop.modulationIndex.real = 0;
 		motorCtrl->openLoop.modulationIndex.imag = 0;
+	#if(TLE9180_DRIVER == ENABLED)
 		IfxTLE9180_deactivateEnable(&tle9180.driver);
+	#endif /* End of TLE9180_DRIVER */
 	}
 
 	/* Space Vector Modulator */

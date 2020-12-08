@@ -44,7 +44,10 @@
 /*-----------------------------------------------------Includes------------------------------------------------------*/
 /*********************************************************************************************************************/
 #include "Ifx_Types.h"
-#include "PmsmFoc_InitTLE9180.h"
+#include "PmsmFoc_UserConfig.h"
+#if(TLE9180_DRIVER == ENABLED)
+    #include "PmsmFoc_InitTLE9180.h"
+#endif /* End of TLE9180_DRIVER */
 #include "IfxGtm_Tom_PwmHl.h"
 #include "IfxGtm_Trig.h"
 #include "IfxStdIf_Timer.h"
@@ -52,8 +55,9 @@
 #include "PmsmFoc_CurrentDcLinkSense.h"
 #include "PmsmFoc_CurrentThreeshuntSense.h"
 #include "PmsmFoc_VoltageSense.h"
-#include "TLE9180.h"
-
+#if(TLE9180_DRIVER == ENABLED)
+    #include "TLE9180.h"
+#endif /* End of TLE9180_DRIVER */
 #include "PmsmFoc_UserConfig.h"
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
@@ -103,7 +107,10 @@ typedef struct
     LowSideCurrentSense     lowSideCurrentSense;    /**< \brief PWM output object */
     DcLinkVoltageSense      dcLinkVoltageSense;     /**< \brief PWM output object */
     BemfVoltageSense        bemfVoltageSense;       /**< \brief PWM output object */
+// #if(TLE9180_DRIVER == ENABLED)
+    /*STEVE: define error TLE9180*/  
     TLE9180                 tle9180;                /**< \brief Gate Driver object */
+// #endif /* End of TLE9180_DRIVER */
     InverterStatus          status;                 /**< \brief Current fault status from inverter */
 }Inverter;
 /*********************************************************************************************************************/

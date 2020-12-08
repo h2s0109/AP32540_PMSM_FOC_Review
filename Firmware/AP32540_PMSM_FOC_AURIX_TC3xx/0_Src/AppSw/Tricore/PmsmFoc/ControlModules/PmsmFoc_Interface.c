@@ -77,13 +77,17 @@ void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl, boolean command
 			motorCtrl->controlParameters.state = StateMachine_focClosedLoop;
 			motorCtrl->pmsmFoc.speedControl.enabled = TRUE;
 			PmsmFoc_SpeedControl_enable(&motorCtrl->pmsmFoc.speedControl);
-			IfxTLE9180_activateEnable(&tle9180.driver);
+			#if(TLE9180_DRIVER == ENABLED)
+				IfxTLE9180_activateEnable(&tle9180.driver);
+			#endif /* End of TLE9180_DRIVER */
 		}
 		else
 		{
 			motorCtrl->controlParameters.state = StateMachine_calibration;
 			PmsmFoc_SpeedControl_disable(&motorCtrl->pmsmFoc.speedControl);
-			IfxTLE9180_activateEnable(&tle9180.driver);
+			#if(TLE9180_DRIVER == ENABLED)
+				IfxTLE9180_activateEnable(&tle9180.driver);
+			#endif /* End of TLE9180_DRIVER */
 		}
 	}
 }
@@ -104,7 +108,9 @@ void PmsmFoc_Interface_stopMotor(MotorControl* const motorCtrl, boolean command)
 		motorCtrl->pmsmFoc.modulationIndex.real = 0;
 		motorCtrl->pmsmFoc.modulationIndex.imag = 0;
 		PmsmFoc_doSvPwmModulation(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
-		IfxTLE9180_deactivateEnable(&tle9180.driver);
+		#if(TLE9180_DRIVER == ENABLED)
+			IfxTLE9180_deactivateEnable(&tle9180.driver);
+		#endif /* End of TLE9180_DRIVER */
 		motorCtrl->controlParameters.state = StateMachine_motorStop;
 	}
 }

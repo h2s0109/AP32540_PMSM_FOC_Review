@@ -50,7 +50,9 @@
 #include "IfxCpu.h"
 
 #include "PmsmFoc_Functions.h"
-#include "TLE9180.h"
+#if(TLE9180_DRIVER == ENABLED)
+    #include "TLE9180.h"
+#endif /* End of TLE9180_DRIVER */
 #include "IfxGpt12_IncrEnc.h"
 
 #include "IfxQspi_SpiMaster.h"

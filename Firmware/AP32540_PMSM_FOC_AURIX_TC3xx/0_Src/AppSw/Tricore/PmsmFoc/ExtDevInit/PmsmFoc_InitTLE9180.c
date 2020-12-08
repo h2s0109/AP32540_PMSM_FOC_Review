@@ -1,5 +1,5 @@
 /**
- * \file TLE9180_Init.h
+ * \file TLE9180_Init.c
  * \brief Initialization of TLE9180 ASIC.
  *
  * \copyright Copyright (C) Infineon Technologies AG 2019
@@ -47,6 +47,7 @@
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
+/*STEVE: define error TLE9180*/
 TLE9180 tle9180;
 
 /******************************************************************************/
@@ -58,6 +59,7 @@ IFX_INLINE void PmsmFoc_Tle9180_InitSpiChannel(void)
 {   // Configuration for TLE9180 communication
 	/* create channel config */
 	IfxQspi_SpiMaster_ChannelConfig spiChConfig;
+	/*STEVE: define error TLE9180*/
 	IfxQspi_SpiMaster_initChannelConfig(&spiChConfig, &TLE9180_SPI);
 
 	/* set the baudrate for this channel */
@@ -69,7 +71,7 @@ IFX_INLINE void PmsmFoc_Tle9180_InitSpiChannel(void)
 	spiChConfig.base.mode.csTrailDelay = SpiIf_SlsoTiming_1;
 	spiChConfig.base.mode.csInactiveDelay = SpiIf_SlsoTiming_7;
 	spiChConfig.base.mode.shiftClock = SpiIf_ShiftClock_shiftTransmitDataOnTrailingEdge;
-
+	/*STEVE: define error TLE9180*/
 	spiChConfig.sls.output.pin    = &TLE9180_SPI_CS_PIN;
 	spiChConfig.sls.output.mode   = IfxPort_OutputMode_pushPull;
 	spiChConfig.sls.output.driver = IfxPort_PadDriver_cmosAutomotiveSpeed1;

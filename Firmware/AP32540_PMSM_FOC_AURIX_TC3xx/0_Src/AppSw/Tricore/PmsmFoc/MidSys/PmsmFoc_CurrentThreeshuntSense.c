@@ -43,7 +43,9 @@
 #include "PmsmFoc_UserConfig.h"
 #include "Compilers.h"
 #include "PmsmFoc_Inverter.h"
-#include "TLE9180.h"
+#if(TLE9180_DRIVER == ENABLED)
+	#include "TLE9180.h"
+#endif /* End of TLE9180_DRIVER */
 
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH

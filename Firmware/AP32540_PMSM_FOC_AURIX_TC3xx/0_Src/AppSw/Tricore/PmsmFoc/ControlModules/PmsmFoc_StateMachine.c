@@ -51,7 +51,9 @@
 #include "PmsmFoc_PositionAndSpeedAcquisition.h"
 #include "PmsmFoc_PwmSvm.h"
 #include "PmsmFoc_Interface.h"
+#if(TLE9180_DRIVER == ENABLED)
 #include "TLE9180.h"
+#endif /* End of TLE9180_DRIVER */
 #include "Cpu/Std/IfxCpu.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
@@ -75,7 +77,9 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone) &
 				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_notDone))
 		{
+		#if(TLE9180_DRIVER == ENABLED)
 			IfxTLE9180_activateEnable(&tle9180.driver);
+		#endif /* End of TLE9180_DRIVER */
 		}
 		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
 		{
@@ -89,13 +93,17 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &
 				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done))
 		{
+		#if(TLE9180_DRIVER == ENABLED)
 			IfxTLE9180_deactivateEnable(&tle9180.driver);
+		#endif /* End of TLE9180_DRIVER */
 			motorCtrl->controlParameters.state = StateMachine_motorStop;
 		}
 #else
 		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
 		{
+		#if(TLE9180_DRIVER == ENABLED)
 			IfxTLE9180_activateEnable(&tle9180.driver);
+		#endif /* End of TLE9180_DRIVER */
 		}
 		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
 		{
@@ -104,7 +112,9 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		}
 		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done)
 		{
+		#if(TLE9180_DRIVER == ENABLED)
 			IfxTLE9180_deactivateEnable(&tle9180.driver);
+		#endif /* End of TLE9180_DRIVER */
 			motorCtrl->controlParameters.state = StateMachine_motorStop;
 		}
 #endif

@@ -32,3 +32,7 @@ MOTOR_TYPE_PATH
 > Add the preprocessor macros
 > * /*STEVE: define error TLF35584*/
 > * #if(TLF35584_DRIVER == ENABLED)
+>### V1.0.4: TLE9180_DRIVER
+> Add the preprocessor macros
+> * /*STEVE: define error TLE9180*/
+> * #if(TLE9180_DRIVER == ENABLED)

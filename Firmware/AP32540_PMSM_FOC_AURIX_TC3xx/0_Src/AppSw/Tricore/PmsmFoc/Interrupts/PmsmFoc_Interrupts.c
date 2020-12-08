@@ -142,6 +142,7 @@ IFX_INTERRUPT(PmsmFoc_Qspi_Tlf35584_ErrIsr, 0, INTERRUPT_PRIORITY_QSPI2_ERR)
 }
 #endif //(INTERRUPT_QSPI2_ERR > 0)
 #endif /* End of TLF35584_DRIVER */
+#if(TLE9180_DRIVER == ENABLED)
 #if (INTERRUPT_PRIORITY_QSPI4_TX > 0)
 /** \brief Interrupt service units for QSPI4 Transmit
  *
@@ -182,3 +183,4 @@ IFX_INTERRUPT(PmsmFoc_Qspi_Tle9180_ErrIsr, 0, INTERRUPT_PRIORITY_QSPI4_ERR)
 	IfxQspi_SpiMaster_isrError(&spiMasterQspi4);
 }
 #endif //(INTERRUPT_PRIORITY_QSPI4_ERR > 0)
+#endif /* End of TLE9180_DRIVER */

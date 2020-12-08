@@ -102,10 +102,10 @@ void PmsmFoc_initHardware(MotorControl* const motorCtrl)
 
 	/* Initialize time constants for Time functions, see bsp.c */
 	initTime();
-
+#if(TLE9180_DRIVER == ENABLED)
 	/* Initialize TLE9180, this requires connected SPI module initialized before */
 	PmsmFoc_Tle9180_Init();
-
+#endif /* End of TLE9180_DRIVER */
     /* Initialize GTM Driver */
 	PmsmFoc_Gtm_initGtm(&motorCtrl->inverter);
 
@@ -114,12 +114,12 @@ void PmsmFoc_initHardware(MotorControl* const motorCtrl)
 
 	/* Initialize position sensor driver */
 	PmsmFoc_PositionAcquisition_init(&motorCtrl->positionSensor, PositionAcquisition_SensorType_Encoder);
-
+#if(TLE9180_DRIVER == ENABLED)
 	/* Send startup configuration to TLE9180D */
     IfxCpu_enableInterrupts();
     PmsmFoc_Tle9180_loadConfiguration();
     IfxCpu_disableInterrupts();
-
+#endif /* End of TLE9180_DRIVER */
 }
 
 

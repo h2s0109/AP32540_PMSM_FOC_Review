@@ -54,8 +54,10 @@
 /*STEVE: define error TLF35584*/
 IfxQspi_SpiMaster           spiMasterQspi2;
 // #endif /* End of TLF35584_DRIVER */
+#if(TLE9180_DRIVER == ENABLED)
+/*STEVE: define error TLE9180*/
 IfxQspi_SpiMaster           spiMasterQspi4;
-
+#endif /* End of TLE9180_DRIVER */
 /******************************************************************************/
 /*-----------------------------Private Variables/Constants--------------------*/
 /******************************************************************************/
@@ -109,6 +111,7 @@ IFX_INLINE void PmsmFoc_Qspi_initQspi2(void)
 }
 #endif /* End of TLF35584_DRIVER */
 
+#if(TLE9180_DRIVER == ENABLED)
 /** \brief Initialize QSPI4 Module
  *
  */
@@ -153,7 +156,7 @@ IFX_INLINE void PmsmFoc_Qspi_initQspi4(void)
 //		IfxSrc_enable(src);
 //	}
 }
-
+#endif /* End of TLE9180_DRIVER */
 
 
 /** \brief Initialize Used SPI Modules
@@ -164,7 +167,9 @@ void PmsmFoc_Qspi_initQspi(void)
 #if(TLF35584_DRIVER == ENABLED)
 	PmsmFoc_Qspi_initQspi2();
 #endif /* End of TLF35584_DRIVER */
+#if(TLE9180_DRIVER == ENABLED)
 	PmsmFoc_Qspi_initQspi4();
+#endif /* End of TLE9180_DRIVER */
 }
 
 
