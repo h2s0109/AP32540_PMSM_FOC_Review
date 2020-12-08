@@ -100,6 +100,7 @@ IFX_INTERRUPT(PmsmFoc_Gpt12_Encoder_TzIsr, 0, INTERRUPT_PRIORITY_ENCODER_GPT12)
 	IfxGpt12_IncrEnc_onZeroIrq(&g_motorControl.positionSensor.encoder.incrEncoder);
 }
 
+#if(TLF35584_DRIVER == ENABLED)
 #if (INTERRUPT_PRIORITY_QSPI2_TX > 0)
 /** \brief Interrupt service units for QSPI2 Transmit
  *
@@ -140,7 +141,7 @@ IFX_INTERRUPT(PmsmFoc_Qspi_Tlf35584_ErrIsr, 0, INTERRUPT_PRIORITY_QSPI2_ERR)
 	IfxQspi_SpiMaster_isrError(&spiMasterQspi2);
 }
 #endif //(INTERRUPT_QSPI2_ERR > 0)
-
+#endif /* End of TLF35584_DRIVER */
 #if (INTERRUPT_PRIORITY_QSPI4_TX > 0)
 /** \brief Interrupt service units for QSPI4 Transmit
  *

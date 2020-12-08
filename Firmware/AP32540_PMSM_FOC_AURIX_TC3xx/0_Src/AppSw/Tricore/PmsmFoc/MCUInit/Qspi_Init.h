@@ -53,7 +53,7 @@
 /*-----------------------------------Macros-----------------------------------*/
 /******************************************************************************/
 
-
+#if(TLF35584_DRIVER == ENABLED)
 #define SPI_2_MODULE                            TLF35584_SPI_MODULE
 #define SPI_2_CLOCK_PIN                         TLF35584_SPI_CLOCK_PIN
 #define SPI_2_MOSI_PIN                          TLF35584_SPI_MOSI_PIN
@@ -62,7 +62,7 @@
 #define SPI_2_USE_DMA                           TLF35584_SPI_USE_DMA
 #define SPI_2_TX_DMA_CH                         TLF35584_SPI_TX_DMA_CH
 #define SPI_2_RX_DMA_CH                         TLF35584_SPI_RX_DMA_CH
-
+#endif /* End of TLF35584_DRIVER */
 
 #define SPI_4_MODULE                            TLE9180_SPI_MODULE
 #define SPI_4_CLOCK_PIN                         TLE9180_SPI_CLOCK_PIN
@@ -76,9 +76,11 @@
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
+// #if(TLF35584_DRIVER == ENABLED)
+/*STEVE: define error TLF35584*/
 extern IfxQspi_SpiMaster           spiMasterQspi2;
+// #endif /* End of TLF35584_DRIVER */
 extern IfxQspi_SpiMaster           spiMasterQspi4;
-
 /******************************************************************************/
 /*--------------------------------Enumerations--------------------------------*/
 /******************************************************************************/

@@ -50,7 +50,10 @@
 /******************************************************************************/
 /*-------------------------------Global variables-----------------------------*/
 /******************************************************************************/
+// #if(TLF35584_DRIVER == ENABLED)
+/*STEVE: define error TLF35584*/
 IfxQspi_SpiMaster           spiMasterQspi2;
+// #endif /* End of TLF35584_DRIVER */
 IfxQspi_SpiMaster           spiMasterQspi4;
 
 /******************************************************************************/
@@ -65,6 +68,7 @@ IfxQspi_SpiMaster           spiMasterQspi4;
 /** \brief Initialize QSPI2 Module
  *
  */
+#if(TLF35584_DRIVER == ENABLED)
 IFX_INLINE void PmsmFoc_Qspi_initQspi2(void)
 {
 	/* create SPI2 module configuration */
@@ -103,6 +107,7 @@ IFX_INLINE void PmsmFoc_Qspi_initQspi2(void)
 		IfxSrc_enable(src);
 	}
 }
+#endif /* End of TLF35584_DRIVER */
 
 /** \brief Initialize QSPI4 Module
  *
@@ -156,7 +161,9 @@ IFX_INLINE void PmsmFoc_Qspi_initQspi4(void)
  */
 void PmsmFoc_Qspi_initQspi(void)
 {
+#if(TLF35584_DRIVER == ENABLED)
 	PmsmFoc_Qspi_initQspi2();
+#endif /* End of TLF35584_DRIVER */
 	PmsmFoc_Qspi_initQspi4();
 }
 

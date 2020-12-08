@@ -203,6 +203,7 @@
 #endif
 /* TLF35584 GPIO and QSPI define */
 /** \brief Define the QSPI slave select pin */
+/*STEVE: define error TLF35584*/
 #define TLF35584_SPI_CS_PIN             IfxQspi2_SLSO1_P14_2_OUT
 /** \brief Define the QSPI object*/
 #define TLF35584_SPI_MODULE           	MODULE_QSPI2

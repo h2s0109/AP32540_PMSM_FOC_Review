@@ -40,7 +40,9 @@
 /******************************************************************************/
 #include "Mcu_Init.h"
 #include "Qspi_Init.h"
+#if(TLF35584_DRIVER == ENABLED)
 #include "PmsmFoc_InitTLF35584.h"
+#endif /* End of TLF35584_DRIVER */
 #include "bsp.h"
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
@@ -81,6 +83,7 @@ void PmsmFoc_initHardware(MotorControl* const motorCtrl)
 	/* Initialize SPI interfaces */
 	PmsmFoc_Qspi_initQspi();
 
+#if(TLF35584_DRIVER == ENABLED)
 	{   /* Load power and WDT configurations  */
 		IfxCpu_enableInterrupts();            /* Interrupts are required to be enabled for SPI communication */
 
@@ -95,6 +98,7 @@ void PmsmFoc_initHardware(MotorControl* const motorCtrl)
 
 		IfxCpu_disableInterrupts();
 	}
+#endif /* End of TLF35584_DRIVER */
 
 	/* Initialize time constants for Time functions, see bsp.c */
 	initTime();

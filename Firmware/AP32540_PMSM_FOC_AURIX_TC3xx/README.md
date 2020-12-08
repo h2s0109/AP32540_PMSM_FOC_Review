@@ -28,3 +28,7 @@ MOTOR_TYPE_PATH
 > * #define ONE_EYEMODE
 > * #if(ONE_EYEMODE == ENABLED)
 > * /*STEVE: not ONE_EYEMODE but has a dependency with ONE_EYEMODE */
+>### V1.0.3: TLF35584_DRIVER
+> Add the preprocessor macros
+> * /*STEVE: define error TLF35584*/
+> * #if(TLF35584_DRIVER == ENABLED)

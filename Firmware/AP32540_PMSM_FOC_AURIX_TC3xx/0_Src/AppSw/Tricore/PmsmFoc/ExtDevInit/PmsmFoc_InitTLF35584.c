@@ -51,6 +51,7 @@ IFX_INLINE void PmsmFoc_Tlf35584_InitSpiChannel(void)
 {
 	IfxQspi_SpiMaster_ChannelConfig spiChConfig;
     boolean interruptState = IfxCpu_disableInterrupts();
+    /*STEVE: define error TLF35584*/
 	IfxQspi_SpiMaster_initChannelConfig(&spiChConfig, &TLF35584_SPI);
 
     /* set the baudrate for this channel */
@@ -62,7 +63,7 @@ IFX_INLINE void PmsmFoc_Tlf35584_InitSpiChannel(void)
     spiChConfig.base.mode.csTrailDelay = 2;
     spiChConfig.base.mode.csInactiveDelay = 2;
     spiChConfig.base.mode.shiftClock = SpiIf_ShiftClock_shiftTransmitDataOnTrailingEdge;
-
+    /*STEVE: define error TLF35584*/
     spiChConfig.sls.output.pin    = &TLF35584_SPI_CS_PIN;
     spiChConfig.sls.output.mode   = IfxPort_OutputMode_pushPull;
     spiChConfig.sls.output.driver = IfxPort_PadDriver_cmosAutomotiveSpeed1;
