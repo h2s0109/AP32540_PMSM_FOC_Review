@@ -1,7 +1,7 @@
 /**
- * \file TLF35584_Init.c
+ * \file PmsmFoc_Power.h
  * \brief Initialization of TLF35584 ASIC.
- *
+
  * \copyright Copyright (C) Infineon Technologies AG 2019
  *
  * Use of this file is subject to the terms of use agreed between(i) you or the
@@ -34,27 +34,28 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-#include "PmsmFoc_InitTLF35584.h"
+
+#ifndef PMSMFOC_TLF35584_INIT_H_
+#define PMSMFOC_TLF35584_INIT_H_
+
+#include "TLF3XX8X.h"
+/******************************************************************************/
+/*-----------------------------------Macros-----------------------------------*/
+/******************************************************************************/
+
+/******************************************************************************/
+/*-------------------------------Data Structures------------------------------*/
+/******************************************************************************/
+
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 
 /******************************************************************************/
-/*-------------------------Function Implementations---------------------------*/
+/*-----------------------------Function Prototypes----------------------------*/
 /******************************************************************************/
 
-#if(TLF35584_DRIVER == ENABLED)
-/** \brief Initialization for TLF35584
- *
- */
+extern void PmsmFoc_Power_Init(void);
+extern void PmsmFoc_Power_InitSpi(void);
 
-void PmsmFoc_Tlf35584_Init(void)
-{
-    /* Disable Window Watchdog and ERR pin */
-    IfxTLF3XX8X_unprotect_register();
-    IfxTLF3XX8X_disable_window_watchdog();
-    IfxTLF3XX8X_disable_err_pin_monitor();
-    IfxTLF3XX8X_protect_register();
-	IfxTLF3XX8X_goto_normal_state();
-}
-#endif /* End of TLF35584_DRIVER */
+#endif /* PMSMFOC_TLF35584_INIT_H_ */

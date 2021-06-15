@@ -46,8 +46,8 @@
 /*-------------------------------Global variables-----------------------------*/
 /******************************************************************************/
 #include "Qspi_Init.h"
-#include "TLF3XX8X.h"
-#include "PmsmFoc_InitTLE9180.h"
+#include "PmsmFoc_Gatedriver.h"
+#include "PmsmFoc_Power.h"
 /******************************************************************************/
 /*-----------------------------Private Variables/Constants--------------------*/
 /******************************************************************************/
@@ -59,15 +59,13 @@
 /** \brief Initialize Used SPI Modules
  *
  */
-void PmsmFoc_Qspi_initQspi(void)
+void PmsmFoc_Qspi_init(void)
 {
 #if(TLF35584_DRIVER == ENABLED)
-	IfxTLF3XX8X_init();
+	PmsmFoc_Power_InitSpi();
 #endif /* End of TLF35584_DRIVER */
 
-#if(TLE9180_DRIVER == ENABLED)
-	PmsmFoc_TLE9180_InitQspiModule();
-#endif /* End of TLE9180_DRIVER */
+	PmsmFoc_Gatedriver_InitSpi();
 }
 
 

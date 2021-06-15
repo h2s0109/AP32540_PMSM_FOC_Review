@@ -57,7 +57,6 @@ Ifx_LowPassPt1F32      lowPassFilter;
 
 void PmsmFoc_PositionAcquisition_init(PositionAcquisition* positionAcquisition, PositionAcquisition_SensorType sensorType)
 {
-
 	positionAcquisition->statusOk = TRUE;
     switch(sensorType)
     {
@@ -73,7 +72,7 @@ void PmsmFoc_PositionAcquisition_init(PositionAcquisition* positionAcquisition, 
         }
         case PositionAcquisition_SensorType_Resolver:
         {
-        	/* Not implemented*/
+			/* Not implemented*/
             break;
         }
         case PositionAcquisition_SensorType_Sensorless:
@@ -83,26 +82,14 @@ void PmsmFoc_PositionAcquisition_init(PositionAcquisition* positionAcquisition, 
         }
         case PositionAcquisition_SensorType_Encoder_and_Resolver:
         {
-        	/* Not implemented*/
+			/* Not implemented*/
             break;
         }
         default:
         {
-        	positionAcquisition->statusOk= FALSE;
+			positionAcquisition->statusOk= FALSE;
             break;
         }
-    }
-
-    {
-    	//positionAcquisition->speedLpf.a = 0.10;
-    	//positionAcquisition->speedLpf.b = 0;
-    	//positionAcquisition->speedLpf.out = 0;
-
-       // Ifx_LowPassPt1F32_Config lpfConfig;
-       // lpfConfig.gain            = 10.0;
-       // lpfConfig.cutOffFrequency = 25;
-       // lpfConfig.samplingTime    = 50.0e-6;
-       // Ifx_LowPassPt1F32_init(&positionAcquisition->speedLpf, &lpfConfig);
     }
 }
 
@@ -110,73 +97,73 @@ sint32 PmsmFoc_PositionAcquisition_updatePosition(PositionAcquisition* positionA
 {
 	sint32 position = 0;
 	switch(positionAcquisition->sensorType)
-	    {
-	        case PositionAcquisition_SensorType_Hall:
-	        {
-	            /* Not implemented*/
-	            break;
-	        }
-	        case PositionAcquisition_SensorType_Encoder:
-	        {
-	            sint32 rawPosition;
-	            IfxGpt12_IncrEnc *encoder= &positionAcquisition->encoder.incrEncoder;
-
-	            IfxGpt12_IncrEnc_update(encoder);
-	            rawPosition= IfxGpt12_IncrEnc_getRawPosition(encoder);
-	            position= ((rawPosition * (uint32)USER_MOTOR_POLE_PAIR * 0x400U) / encoder->resolution) & 0x3FFU;
-	            break;
-	        }
-	        case PositionAcquisition_SensorType_Resolver:
-	        {
-	        	/* Not implemented*/
-	        	break;
-	        }
-	        case PositionAcquisition_SensorType_Encoder_and_Resolver:
-	        {
-	        	/* Not implemented*/
-	        	break;
-	        }
-	        case PositionAcquisition_SensorType_Sensorless:
-	        {
-	            /* Not implemented*/
-	            break;
-	        }
-	        default: break;
-	    }
-	    return(position);
+	{
+		case PositionAcquisition_SensorType_Hall:
+		{
+			/* Not implemented*/
+			break;
+		}
+		
+		case PositionAcquisition_SensorType_Encoder:
+		{
+			sint32 rawPosition;
+			IfxGpt12_IncrEnc *encoder= &positionAcquisition->encoder.incrEncoder;
+			/* Call IfxGpt12_IncrEnc_updateFromT3 */
+			/* calculate the position and speed */
+			IfxGpt12_IncrEnc_update(encoder);
+			rawPosition= IfxGpt12_IncrEnc_getRawPosition(encoder);
+			position= ((rawPosition * (uint32)USER_MOTOR_POLE_PAIR * 0x400U) / encoder->resolution) & 0x3FFU;
+			break;
+		}
+		case PositionAcquisition_SensorType_Resolver:
+		{
+			/* Not implemented*/
+			break;
+		}
+		case PositionAcquisition_SensorType_Encoder_and_Resolver:
+		{
+			/* Not implemented*/
+			break;
+		}
+		case PositionAcquisition_SensorType_Sensorless:
+		{
+			/* Not implemented*/
+			break;
+		}
+		default: break;
+	}
+	return(position);
 }
 
 float32 PmsmFoc_PositionAcquisition_updateSpeed(PositionAcquisition* positionAcquisition)
 {
 	float32 speed = 0.0f;
-	    switch(positionAcquisition->sensorType)
-	    {
-	        case PositionAcquisition_SensorType_Hall:
-	        {
-	            /* Not implemented*/
-	            break;
-	        }
-	        case PositionAcquisition_SensorType_Encoder:
-	        {
-	            speed= IfxGpt12_IncrEnc_getSpeed(&positionAcquisition->encoder.incrEncoder);
-	            break;
-	        }
-	        case PositionAcquisition_SensorType_Resolver:
-	        	/* Not implemented*/
-	        	break;
-	        case PositionAcquisition_SensorType_Encoder_and_Resolver:
-	        {
-	        	/* Not implemented*/
-	        	break;
-	        }
-	        case PositionAcquisition_SensorType_Sensorless:
-	        {
-	            /* Not implemented*/
-	            break;
-	        }
-	        default: break;
-	    }
-
-	    //speed= Ifx_LowPassPt1F32_do(&positionAcquisition->speedLpf, speed);
-	    return(speed);
+	switch(positionAcquisition->sensorType)
+	{
+		case PositionAcquisition_SensorType_Hall:
+		{
+			/* Not implemented*/
+			break;
+		}
+		case PositionAcquisition_SensorType_Encoder:
+		{
+			speed= IfxGpt12_IncrEnc_getSpeed(&positionAcquisition->encoder.incrEncoder);
+			break;
+		}
+		case PositionAcquisition_SensorType_Resolver:
+			/* Not implemented*/
+			break;
+		case PositionAcquisition_SensorType_Encoder_and_Resolver:
+		{
+			/* Not implemented*/
+			break;
+		}
+		case PositionAcquisition_SensorType_Sensorless:
+		{
+			/* Not implemented*/
+			break;
+		}
+		default: break;
+	}
+	return(speed);
 }

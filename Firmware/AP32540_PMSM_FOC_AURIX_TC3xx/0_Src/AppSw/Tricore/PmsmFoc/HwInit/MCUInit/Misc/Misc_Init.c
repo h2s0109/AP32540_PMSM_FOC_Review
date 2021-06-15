@@ -70,6 +70,14 @@ void Misc_LED_init(void)
 	IfxPort_setPinHigh(&MODULE_P13, 3);											/* LED110_OFF */
 }
 
+void Misc_LED_SwithOff(void)
+{
+	IfxPort_setPinHigh(&MODULE_P13, 0);											/* LED110_OFF */
+	IfxPort_setPinHigh(&MODULE_P13, 1);											/* LED110_OFF */
+	IfxPort_setPinHigh(&MODULE_P13, 2);											/* LED110_OFF */
+	IfxPort_setPinHigh(&MODULE_P13, 3);											/* LED110_OFF */
+}
+
 void Misc_LED_toggle(void)
 {
 	/* Test Pins */

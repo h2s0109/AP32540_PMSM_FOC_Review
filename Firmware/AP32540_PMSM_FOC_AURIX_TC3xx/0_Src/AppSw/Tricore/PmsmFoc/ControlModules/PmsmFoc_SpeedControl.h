@@ -220,11 +220,24 @@ IFX_INLINE boolean PmsmFoc_SpeedControl_setRefSpeed(SpeedControl *speedControl, 
     return result;
 }
 
-IFX_INLINE boolean PmsmFoc_SpeedControl_StopRefSpeed(SpeedControl *speedControl)
+IFX_INLINE boolean PmsmFoc_SpeedControl_setStopRefSpeed(SpeedControl *speedControl, float32 speed)
 {
     boolean result;
-    speedControl->refSpeed = 0;
-    result = TRUE;
+    if ((__absf(speed)) > (speedControl->maxSpeed))
+    {
+        speedControl->refSpeed = speedControl->maxSpeed;
+        result = FALSE;
+    }
+    else if ((__absf(speed)) < 0)
+    {
+        speedControl->refSpeed = 0;
+        result = FALSE;
+    }
+    else
+    {
+        speedControl->refSpeed = speed;
+        result = TRUE;
+    }
     return result;
 }
 
@@ -292,18 +305,10 @@ IFX_INLINE void PmsmFoc_SpeedControl_setKpKi(SpeedControl *speedControl, float32
 {
 	Ifx_PicF32_setKpKi(&speedControl->piSpeed, kp, ki, period);
 }
+
 IFX_INLINE float32 PmsmFoc_SpeedControl_getSpeed(SpeedControl *speedControl)
 {
     return speedControl->measSpeed;
 }
-
-#if 0
-float32 PmsmFoc_SpeedControl_getSpeed(MotorControl* const motorCtrl)
-{
-    &motorCtrl->pmsmFoc.speedControl.measSpeed = IfxStdIf_Pos_radsToRpm(
-            PmsmFoc_PositionAcquisition_updateSpeed(&motorCtrl->positionSensor));
-    return &motorCtrl->pmsmFoc.speedControl.measSpeed;
-}
-#endif
 
 #endif /* PMSMFOC_SPEEDCONTROL_H_ */

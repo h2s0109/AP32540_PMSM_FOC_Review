@@ -41,10 +41,10 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_StateMachine.h"
-#if(TLE9180_DRIVER == ENABLED)
-#include "TLE9180.h"
-#endif /* End of TLE9180_DRIVER */
+#include "PmsmFoc_Gatedriver.h"
 #include "Cpu/Std/IfxCpu.h"
+#include "Misc_Init.h"
+#include "PmsmFoc_Interface.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -57,68 +57,39 @@
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
 
+float32 downspeed;
+float32 upspeed;
 void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 {
 	switch (motorCtrl->controlParameters.state)
 	{
-	case StateMachine_calibration:
-		/* From reset: 	PmsmFoc_initControlVariables */
-		/* From TFT:	Menue_CalibrateSel */
-		/* From OneEye:	Ifx_Shell_matchToken(&args, "cal") */	
-#if(POSITION_SENSOR_TYPE == ENCODER)
-		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone) &
-				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_notDone))
-		{
-		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
-		#endif /* End of TLE9180_DRIVER */
-		}
+	case StateMachine_PhaseCalibration:
 		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
 		{
 			PmsmFoc_PhaseCurrentSense_getRawPhaseCurrentValues(&motorCtrl->inverter.phaseCurrentSense);
 			PmsmFoc_PhaseCurrentSense_doCalibration(&motorCtrl->inverter.phaseCurrentSense);
 		}
-		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done)
+		else
 		{
-			PmsmFoc_doEncoderCalibration(motorCtrl);
-		}
-		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &
-				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done))
-		{
-		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_deactivateEnable(&Tle9180Ctrl.driver);
-		#endif /* End of TLE9180_DRIVER */
+#if(POSITION_SENSOR_TYPE == ENCODER)
+			motorCtrl->controlParameters.state = StateMachine_PositionCalibration;
+#else
 			motorCtrl->controlParameters.state = StateMachine_motorStop;
+			PmsmFoc_Gatedriver_Disable();
+#endif
 		}
-#else /* Middle of POSITION_SENSOR_TYPE */
-		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
+		break;
+	case StateMachine_PositionCalibration:
+		PmsmFoc_doEncoderCalibration(motorCtrl);
+		if(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done)
 		{
-		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
-		#endif /* End of TLE9180_DRIVER */
-		}
-		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
-		{
-			PmsmFoc_PhaseCurSense_getRawPhaseCurrentValues(&motorCtrl->inverter.phaseCurrentSense);
-			PmsmFoc_PhaseCurrentSense_doCalibration(&motorCtrl->inverter.phaseCurrentSense);
-		}
-		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done)
-		{
-		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_deactivateEnable(&Tle9180Ctrl.driver);
-		#endif /* End of TLE9180_DRIVER */
 			motorCtrl->controlParameters.state = StateMachine_motorStop;
+			PmsmFoc_Gatedriver_Disable();
 		}
-#endif /* End of POSITION_SENSOR_TYPE */
 		break;
 	case StateMachine_focClosedLoop:
-		/* From TFT: 	PmsmFoc_Interface_setDemo */
-		/* From TFT:	Menue_StartSel */
-		/* From OneEye:	Ifx_Shell_matchToken(&args, "run") */
-		/* FOC controller. */
 		PmsmFoc_doFieldOrientedControl(motorCtrl);
 		break;
-
 	case StateMachine_tuneCurrentRegulators:
 		/* Not used*/
 		PmsmFoc_tuneCurrentRegulator(motorCtrl);
@@ -127,17 +98,13 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		/* Not used*/
 		break;
 	case StateMachine_motorStop:
-		/* From state machine: 	StateMachine_calibration */
-		/* From the end of demo: PmsmFoc_Interface_doDemo */
-        #if 0
-		/* Update electrical position */
-		motorCtrl->pmsmFoc.electricalAngle =
-				(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
-        #endif
+	/* To avoid the backward roatation measSpeed value*/
+	/* Update electrical position and measSpeed*/
+	motorCtrl->pmsmFoc.electricalAngle =
+			(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
 		break;
 	case StateMachine_motorIdle:
 		/* Not used*/
-		/* Current measurement calibration */
 		break;
 	case StateMachine_vfOpenLoop:
 		/* Not used*/
@@ -146,12 +113,39 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 	case StateMachine_enableInverter:
 		/* Not used*/
 		break;
+	case StateMachine_demo:
+		if(motorCtrl->interface.CurrnetIfMode == DEMO_MODE)
+		{
+			upspeed = g_motorControl.interface.motorTargetSpeed+50;
+			downspeed = g_motorControl.interface.motorTargetSpeed-50;
+			if(g_motorControl.pmsmFoc.speedControl.measSpeed<upspeed && g_motorControl.pmsmFoc.speedControl.measSpeed>downspeed)
+			{
+				if (scenarioCnt<7)
+				{
+					scenarioCnt++;
+					Ifx_RampF32_setSlewRate(&motorCtrl->pmsmFoc.speedRamp,demospeed[scenarioCnt][1],USER_MOTOR_SPEED_RAMP_PERIOD);
+					PmsmFoc_Interface_setMotorTargetSpeed(&g_motorControl,demospeed[scenarioCnt][0]);
+				}
+				else
+				{
+					scenarioCnt = 0;
+					PmsmFoc_Interface_stopMotor(&g_motorControl);
+				}
+			}
+			PmsmFoc_doFieldOrientedControl(motorCtrl);
+		}
+		else
+		{	
+			scenarioCnt = 0;
+			PmsmFoc_doFieldOrientedControl(motorCtrl);
+			PmsmFoc_Interface_stopMotor(&g_motorControl);
+		}
+		break;
 	default:
 		break;
 	}
+
 }
-
-
 
 
 

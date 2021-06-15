@@ -44,6 +44,11 @@
 #if(TLF35584_DRIVER == ENABLED)
 	#include "TLF3xx8x.h"
 #endif /* End of TLF35584_DRIVER*/
+
+#if(TLE9180_DRIVER == ENABLED)
+#include "TLE9180.h"
+#endif /* End of TLE9180_DRIVER*/
+
 #if(ONE_EYEMODE == ENABLED)
 	#include "OneEye_Init.h"
 #endif /* End of ONE_EYEMODE*/
@@ -167,9 +172,9 @@ IFX_INTERRUPT(ISR_tlf_qspi_Er, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_ER)
 	{
 		IfxCpu_enableInterrupts();
 	#if (SPI_4_USE_DMA == TRUE)
-		IfxQspi_SpiMaster_isrDmaTransmit(&spiMasterQspi4);
+		IfxQspi_SpiMaster_isrDmaTransmit(&g_Qspi_TLE9180_Cpu.drivers.spiMaster);
 	#else
-		IfxQspi_SpiMaster_isrTransmit(&spiMasterQspi4);
+		IfxQspi_SpiMaster_isrTransmit(&g_Qspi_TLE9180_Cpu.drivers.spiMaster);
 	#endif
 	}
 	#endif //(INTERRUPT_PRIORITY_QSPI4_TX > 0)
@@ -182,9 +187,9 @@ IFX_INTERRUPT(ISR_tlf_qspi_Er, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_ER)
 	{
 		IfxCpu_enableInterrupts();
 	#if (SPI_4_USE_DMA == TRUE)
-		IfxQspi_SpiMaster_isrDmaReceive(&spiMasterQspi4);
+		IfxQspi_SpiMaster_isrDmaReceive(&g_Qspi_TLE9180_Cpu.drivers.spiMaster);
 	#else
-		IfxQspi_SpiMaster_isrReceive(&spiMasterQspi4);
+		IfxQspi_SpiMaster_isrReceive(&g_Qspi_TLE9180_Cpu.drivers.spiMaster);
 	#endif
 	}
 	#endif //(INTERRUPT_PRIORITY_QSPI4_RX > 0)
@@ -196,7 +201,7 @@ IFX_INTERRUPT(ISR_tlf_qspi_Er, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_ER)
 	IFX_INTERRUPT(PmsmFoc_Qspi_Tle9180_ErrIsr, 0, INTERRUPT_PRIORITY_QSPI4_ERR)
 	{
 		IfxCpu_enableInterrupts();
-		IfxQspi_SpiMaster_isrError(&spiMasterQspi4);
+		IfxQspi_SpiMaster_isrError(&g_Qspi_TLE9180_Cpu.drivers.spiMaster);
 	}
 	#endif //(INTERRUPT_PRIORITY_QSPI4_ERR > 0)
 #endif /* End of TLE9180_DRIVER */

@@ -74,54 +74,46 @@
 /******************************************************************************/
 /*-------------------------Function Prototypes--------------------------------*/
 /******************************************************************************/
-void Menue_display(sint32 ind, TDISPLAYENTRY * pDispEntry);
-sint32 Menue_input (sint32 ind, TDISPLAYENTRY * pDispEntry);
+void Menue_display(sint32 ind, TDISPLAYENTRY * pdisplayentry);
+sint32 Menue_input (sint32 ind, TDISPLAYENTRY * pdisplayentry);
 
-void Menue_displayTime(sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_ResetTimeSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_ResetTime(sint32 ind, TDISPLAYENTRY *pDispEntry);
-void Menue_noAction (sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_displaySpeed (sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_displayRSpeed (sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_displayOffset (sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pDispEntry);
+void Menue_displayTime(sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_ResetTimeSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_ResetTime(sint32 ind, TDISPLAYENTRY *pdisplayentry);
+void Menue_noAction (sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_displaySpeed (sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_displayRSpeed (sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_displayPosition (sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pdisplayentry);
 
-void Menue_CalibrateSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_DemoSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_SpeedPlsSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_SpeedMnsSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_StartSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
-void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
+void Menue_CalibrateSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_DemoSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_SpeedPlsSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_SpeedMnsSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_StartSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
+void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
 
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/
 
-#define DISP_CYAN_BLK   (COLOR_CYAN << 4) | COLOR_BLACK        //Display background color cyan, text color black
-#define DISP_BRN_WHT   (COLOR_BROWN << 4) | COLOR_WHITE        //Display background color brown, text color black
-#define SLCT_BLK_YELW   (COLOR_BLACK << 4) | COLOR_YELLOW      //Selection background color black, text color yellow
-#define SLCT_RED_BLUE   (COLOR_RED << 4) | COLOR_BLUE      //Selection background color red, text color yellow
-#define DISP_BLUE_YELW   (COLOR_BLUE << 4) | COLOR_YELLOW        //Display background color blue, text color yellow
 // *INDENT-OFF*
 const TDISPLAYENTRY menulist[] = {
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22, 0, Menue_display, Menue_display, Menue_input,"PMSM_FOC_AURIX_TC3xx"},        //TFT Main Menue
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22, 1, Menue_display, Menue_display, Menue_input,"SW V1.0.2, HW V3.2"},        //TFT Main Menue
 
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22, 3, Menue_noAction, Menue_displayTime, Menue_input,"Time Elapsed 00:00:00"},
-		//{DISP_BRN_WHT,  SLCT_RED_BLUE, 30,39, 2, Menue_ResetTimeSel, Menue_ResetTime, Menue_input,{0xDA,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
-		//{DISP_BRN_WHT,  SLCT_RED_BLUE, 30,39, 3, Menue_ResetTimeSel, Menue_ResetTime, Menue_input,{0xB3,0xFF, 'R', 'E', 'S', 'E', 'T',0xFF,0xB3}},
-		//{DISP_BRN_WHT,  SLCT_RED_BLUE, 30,39, 4, Menue_ResetTimeSel, Menue_ResetTime, Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE, 29,39, 3, Menue_ResetTimeSel, Menue_ResetTime, Menue_input,"Reset Time"},
 
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,38, 5, Menue_noAction, Menue_display,       Menue_input,{0xDA,0xC4, 'S', 't', 'a', 't', 'u', 's',0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 6, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 2,17, 6, Menue_noAction, Menue_displaySpeed,  Menue_input,"Speed: 0 rpm"},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,21,36, 6, Menue_noAction, Menue_displayOffset, Menue_input,"Offset: 0 deg"},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,21,36, 6, Menue_noAction, Menue_displayPosition, Menue_input,"Position: 0 deg"},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 6, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 7, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 7, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 2,17, 8, Menue_noAction, Menue_displayRSpeed, Menue_input,"Ref  : 0 rpm"},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,21,38, 8, Menue_noAction, Menue_displayMode,   Menue_input,"Mode  : Halted !"},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,21,38, 8, Menue_noAction, Menue_displayMode,   Menue_input,"State:"},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 8, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 8, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,38, 9, Menue_noAction, Menue_display,       Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
@@ -190,167 +182,158 @@ const TDISPLAYENTRY menulist[] = {
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 Display_Time displayTime;
-extern MotorControl			g_motorControl;
 
 /******************************************************************************/
 /*-------------------------Function Implementations---------------------------*/
 /******************************************************************************/
 
-void Menue_display(sint32 ind, TDISPLAYENTRY *pDispEntry)
+void Menue_display(sint32 ind, TDISPLAYENTRY *pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 }
 
-sint32 Menue_input (sint32 ind, TDISPLAYENTRY * pDispEntry)
+sint32 Menue_input (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
 	//    __debug ();
 	return (0);
 }
 
-void Menue_noAction(sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_noAction(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
 }
 
 void Display_update_timeElapsed(void)
 {
-	displayTime.sec++;
-	if((displayTime.sec % 60)==0)
+	displayTime.msec++;
+	if((displayTime.msec % 10)==0)
 	{
-		displayTime.sec= 0;
-		displayTime.min++;
-		if((displayTime.min % 60)==0)
+		displayTime.msec = 0;
+		displayTime.sec++;
+		if((displayTime.sec % 60)==0)
 		{
-			displayTime.min= 0;
-			displayTime.hour++;
+			displayTime.sec= 0;
+			displayTime.min++;
+			if((displayTime.min % 60)==0)
+			{
+				displayTime.min= 0;
+				displayTime.hour++;
+			}
 		}
 	}
 }
 
-void Menue_displayTime (sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_displayTime (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Time Elapsed %02d:%02d:%02d", displayTime.hour, displayTime.min, displayTime.sec);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
+	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Time Elapsed %02d:%02d:%02d", displayTime.hour, displayTime.min, displayTime.sec);
 }
 
-void Menue_ResetTime(sint32 ind, TDISPLAYENTRY *pDispEntry)
+void Menue_ResetTime(sint32 ind, TDISPLAYENTRY *pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 }
 
-void Menue_ResetTimeSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_ResetTimeSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
+		displayTime.msec= 0;
 		displayTime.sec= 0;
 		displayTime.min= 0;
 		displayTime.hour= 0;
 	}
 }
 
-void Menue_displaySpeed (sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_displaySpeed (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Speed: %4.0f rpm", PmsmFoc_SpeedControl_getSpeed(&g_motorControl.pmsmFoc.speedControl));
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
+	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Speed: %4.0f rpm", PmsmFoc_SpeedControl_getSpeed(&g_motorControl.pmsmFoc.speedControl));
 }
 
-void Menue_displayRSpeed (sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_displayRSpeed (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Ref  : %4.0f rpm", PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl));
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
+	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Ref  : %4.0f rpm", PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl));
 }
 
-void Menue_displayOffset (sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_displayPosition (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	uint32 angle= IfxGpt12_IncrEnc_getRawPosition(&g_motorControl.positionSensor.encoder.incrEncoder)* 360/g_motorControl.positionSensor.encoder.incrEncoder.resolution;
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Position: %3d deg", angle);
+	uint32 angle= (IfxGpt12_IncrEnc_getRawPosition(&g_motorControl.positionSensor.encoder.incrEncoder)*4*360/g_motorControl.positionSensor.encoder.incrEncoder.resolution)%360;
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
+	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Position: %3d deg", angle);
 }
-
-#if 0
-void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pDispEntry)
+uint8 currenttime,beforetime;
+void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	uint8 status = 0; //= Motor_getRunningStatus();
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-	if(status == 0)
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Stopped !");
-	else if(status == 1)
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Running !");
-	else if(status == 2)
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Demo !");
-}
-#endif
-
-void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pDispEntry)
-{
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
+	currenttime = displayTime.msec;
 	switch (g_motorControl.controlParameters.state)
 	{
-	case StateMachine_calibration:
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"State: %s", "Calibration!");
+	case StateMachine_PhaseCalibration:
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "PhaseCal!");
+		break;
+	case StateMachine_PositionCalibration:
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "PosCal");
 		break;
 	case StateMachine_focClosedLoop:
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"State: %s", "FOC!");
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "FOC!");
 		break;
 	case StateMachine_tuneCurrentRegulators:
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"State: %s", "Tune PI!");
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Tune PI!");
 		break;
 	case StateMachine_prePositioning:
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"State: %s", "Pre Positioning!");
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Pre Positioning!");
 		break;
 	case StateMachine_motorStop:
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"State: %s", "Stop!");
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Stop!");
 		break;
 	case StateMachine_motorIdle:
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"State: %s", "Idle!");
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Idle!");
 		break;
 	case StateMachine_vfOpenLoop:
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"State: %s", "VF Control!");
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "VF Control!");
 		break;
 	case StateMachine_enableInverter:
-		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"State: %s", "Enable Inverter!");
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Enable Inverter!");
+		break;
+	case StateMachine_demo:
+		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Demo");
 		break;
 	default:
 		break;
 	}
 }
 
-void Menue_CalibrateSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_CalibrateSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		if(g_motorControl.controlParameters.state == StateMachine_motorStop)
-		{
-			PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&g_motorControl.inverter.phaseCurrentSense);
-			PmsmFoc_resetEncoderCalibrationStatus(&g_motorControl);
-			PmsmFoc_PositionAcquisition_init(&g_motorControl.positionSensor, PositionAcquisition_SensorType_Encoder);
-			PmsmFoc_Interface_startMotor(&g_motorControl);
-		}
+		/* Go to StateMachine_PhaseCalibration */
+		PmsmFoc_Interface_calMotor(&g_motorControl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
 
-void Menue_DemoSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_DemoSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
 		PmsmFoc_Interface_setDemo(&g_motorControl);
@@ -358,74 +341,64 @@ void Menue_DemoSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
 	}
 }
 
-void Menue_SpeedPlsSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_SpeedPlsSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	float32 refSpeed;
-	float32 maxSpeed;
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		maxSpeed = PmsmFoc_SpeedControl_getMaxSpeed(&g_motorControl.pmsmFoc.speedControl);
-		refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
-
-		if(refSpeed < maxSpeed)
-			refSpeed = refSpeed + 100.0f;
-		else
-			refSpeed = maxSpeed;
-
-		PmsmFoc_Interface_setMotorTargetSpeed(&g_motorControl, refSpeed);
-
-
+		PmsmFoc_Interface_PlsMotorTargetSpeed(&g_motorControl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
 
-void Menue_SpeedMnsSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_SpeedMnsSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	float32 refSpeed;
-	float32 minSpeed;
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
-		minSpeed = PmsmFoc_SpeedControl_getMinSpeed(&g_motorControl.pmsmFoc.speedControl);
-
-		if(refSpeed > minSpeed)
-			refSpeed = refSpeed - 100.0f;
-		else
-			refSpeed = minSpeed;
-
-		PmsmFoc_Interface_setMotorTargetSpeed(&g_motorControl, refSpeed);
-
+		PmsmFoc_Interface_MnsMotorTargetSpeed(&g_motorControl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
 
-void Menue_StartSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_StartSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
+		/* Go to StateMachine_focClosedLoop or StateMachine_PhaseCalibration */
 		PmsmFoc_Interface_startMotor(&g_motorControl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
 
-void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
+void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
-	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
+	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
+	conio_ascii_gotoxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y);
+	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
     if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
     {
-    	touch_driver.touchmode &= ~MASK_TOUCH_UP; //clear
+		/* Go to StateMachine_motorStop */
 		PmsmFoc_Interface_stopMotor(&g_motorControl);
+		if(g_motorControl.interface.CurrnetIfMode == STOPPING_MODE)
+		{
+			/* ignore the command from touch_periodic */
+			/* Command stop selection by force */
+			touch_event.userctrl = TRUE;
+		}
+		else
+		{
+    		touch_driver.touchmode &= ~MASK_TOUCH_UP; //clear
+			touch_event.userctrl = FALSE;
+		}
+
 	}
 }
 
@@ -461,3 +434,28 @@ void showmenu (sint16 x, sint16 y, TDISPLAYENTRY * pmenulist)
         }
     }
 }
+
+void showsdtou0 (void)
+{
+  	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 0, (uint8 *)SW_NAME);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 1, (uint8 *)"SW: V1.0.2, HW V3.2");
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 3, (uint8 *)"Speed Ref [rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.refSpeed);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 4, (uint8 *)"Speed Meas[rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.measSpeed);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 6, (uint8 *)"Iu[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO1.value);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 7, (uint8 *)"Iv[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO2.value);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 8, (uint8 *)"Iw[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO3.value);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 10, (uint8 *)"IqRef [A] = %.2f %c\n", g_motorControl.pmsmFoc.idqRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 11, (uint8 *)"IqMeas[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqMeas.imag);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 10, (uint8 *)"IdRef[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqRef.real);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 11, (uint8 *)"IdMeas[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqMeas.real);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 13, (uint8 *)"VqRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vdqRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 14, (uint8 *)"VdRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vdqRef.real);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 16, (uint8 *)"ValphaRef[p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 17, (uint8 *)"VbetaRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.real);
+}
+

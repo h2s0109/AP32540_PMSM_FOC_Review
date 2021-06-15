@@ -49,8 +49,8 @@ typedef enum
 {
     DIALOGOFF=0,                  /*!< \brief No extra dialog open (show menu if display selected) */
     KEYBOARDON,                   /*!< \brief Show keyboard */
-    #if GENERAL_TFTKIT
     SWITCHOFFON,                  /*!< \brief Show switch off dialog */
+    #if GENERAL_TFTKIT
     SHOWALARMON,                  /*!< \brief Show alarm (activ) dialog */
     SETTIMEON,                    /*!< \brief Show set time dialog */
     SETALARMTIME,                 /*!< \brief Show set alarm time dialog */

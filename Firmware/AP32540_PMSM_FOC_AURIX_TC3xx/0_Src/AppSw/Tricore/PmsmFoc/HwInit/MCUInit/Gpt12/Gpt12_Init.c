@@ -66,18 +66,18 @@ void PmsmFoc_Gpt12_initGpt12(IfxGpt12_IncrEnc* gpt12IncrEnc)
 		/* T3 used as position acquisition core */
 
 		/* Configure Sensor */
+		/* Offset will be decided at calibration phase */
 		gpt12Config.base.offset                    = 0;
-		//gpt12Config.base.offset                    = ENCODER_OFFSET;
 		gpt12Config.base.reversed                  = ENCODER_REVERSED;
 		gpt12Config.base.resolution                = ENCODER_RESOLUTION;
-		gpt12Config.base.resolutionFactor          = IfxStdIf_Pos_ResolutionFactor_twoFold;
+		gpt12Config.base.resolutionFactor          = IfxStdIf_Pos_ResolutionFactor_fourFold;
 
 		/* Configure Speed */
 		gpt12Config.base.speedModeThreshold        = ENCODER_SPEED_MODE_THRESHOLD;
 		gpt12Config.base.minSpeed                  = ENCODER_BASE_MIN_SPEED;
 		gpt12Config.base.maxSpeed                  = ENCODER_BASE_MAX_SPEED;
 		gpt12Config.base.speedFilterEnabled 	   = TRUE;
-		gpt12Config.base.speedFilerCutOffFrequency = 1000;
+		//gpt12Config.base.speedFilerCutOffFrequency = 1000;
 
 		/* Configure Handler */
 		gpt12Config.base.updatePeriod              = ENCODER_UPDATE_PERIOD;
@@ -89,10 +89,8 @@ void PmsmFoc_Gpt12_initGpt12(IfxGpt12_IncrEnc* gpt12IncrEnc)
 		gpt12Config.pinB                           = ENCODER_GPT12_PIN_B;
 		gpt12Config.pinZ                           = ENCODER_GPT12_PIN_Z;
 		gpt12Config.pinDriver                      = IfxPort_PadDriver_cmosAutomotiveSpeed3;
-
+		
 		IfxGpt12_IncrEnc_init(gpt12IncrEnc, &gpt12Config);
-		IfxGpt12_T3_setIncrementalInterfaceInputMode(&MODULE_GPT120, IfxGpt12_IncrementalInterfaceInputMode_bothEdgesTxEUD);
-		IfxGpt12_T4_setRemoteControl(&MODULE_GPT120, IfxGpt12_TimerRemoteControl_on);
 	}
 }
 

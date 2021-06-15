@@ -60,7 +60,6 @@
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-extern MotorControl				g_motorControl;
 
 /******************************************************************************/
 /*-------------------------Private Variables/Constants------------------------*/
@@ -168,11 +167,13 @@ static __attribute__((__noreturn__)) void periodicExternalControlTask(void *arg)
 			 *                      TOUCH CONTROL Task START                  *
 			 ******************************************************************/
 			/* Call user tasks here */
-			if (tft_ready == 1)
-			{
-				touch_periodic ();
-			}
-			DbgCtrl_periodic (&g_motorControl.sDbgCtrl);
+			#if(TFT_DISPLAYMODE == ENABLED)
+			touch_periodic ();
+			#endif /* End of TFT_DISPLAYMODE */
+			#if(DBGCTRLMODE == ENABLED)
+			//DbgCtrl_periodic (&g_DbgCtrl);
+			DbgCtrl_periodic(&g_DbgCtrl, &g_motorControl);
+			#endif
 
 			/******************************************************************
 			 *                       TOUCH CONTROL Task END                   *
@@ -200,23 +201,8 @@ static __attribute__((__noreturn__)) void periodicSpeedControlTask(void *arg)
 			 *                      SPEED CONTROL Task START                  *
 			 ******************************************************************/
 			/* Call user tasks here */
-			PmsmFoc_doSpeedControl(&g_motorControl);
-			
-			/*it is checked at PmsmFoc_Interface_setMotorTargetSpeed */
-			/* 
-				if(g_motorControl.interface.motorTargetSpeed > EC_MAX_SPEED)
-				g_motorControl.interface.motorTargetSpeed = EC_MAX_SPEED;
-			if(g_motorControl.interface.motorTargetSpeed < EC_MIN_SPEED)
-				g_motorControl.interface.motorTargetSpeed = EC_MIN_SPEED;
- 			*/
-			/* it is checked at PmsmFoc_SpeedControl_setRefSpeed */
-			/* 
-			if(g_motorControl.pmsmFoc.speedControl.refSpeed > EC_MAX_SPEED)
-				g_motorControl.pmsmFoc.speedControl.refSpeed = EC_MAX_SPEED;
-			if(g_motorControl.pmsmFoc.speedControl.refSpeed < EC_MIN_SPEED)
-				g_motorControl.pmsmFoc.speedControl.refSpeed = EC_MIN_SPEED;
-			*/			
- 			/******************************************************************
+			PmsmFoc_SpeedControl_do(&g_motorControl.pmsmFoc.speedControl);
+			/******************************************************************
 			 *                       SPEED CONTROL Task END                   *
 			 ******************************************************************/
 
@@ -243,24 +229,30 @@ static __attribute__((__noreturn__)) void periodicSpeedRefRampTimeTask(void *arg
 			 *                   SPEED REFERENCE RAMP Task START              *
 			 ******************************************************************/
 			/* Call user tasks here */
-			#if 0
-			if(g_motorControl.interface.demo == FALSE)
-			#endif
-			if(g_motorControl.CurrnetIfMode != DEMO_MODE)
+			if (g_motorControl.pmsmFoc.speedControl.enabled == TRUE)
 			{
-				if (g_motorControl.pmsmFoc.speedControl.enabled != FALSE)
-				{
-					PmsmFoc_setSpeedRefLinearRamp(&g_motorControl.pmsmFoc,
-							g_motorControl.interface.motorTargetSpeed);
-				}
-				else
-				{
-					PmsmFoc_setSpeedRefLinearRamp(&g_motorControl.pmsmFoc, 0);
-				}
-
+				/* set ik - target*/
+				PmsmFoc_setSpeedRefLinearRamp(&g_motorControl.pmsmFoc,
+						g_motorControl.interface.motorTargetSpeed);
+			}
+			else
+			{
+				PmsmFoc_setSpeedRefLinearRamp(&g_motorControl.pmsmFoc, 0);
+			}
+				/* calc uk - ref*/
 				PmsmFoc_doSpeedRefLinearRamp(&g_motorControl.pmsmFoc);
+				/* get uk */
 				refSpeed = PmsmFoc_getSpeedRefLinearRamp(&g_motorControl.pmsmFoc);
+			
+			if(g_motorControl.interface.CurrnetIfMode == RUNNING_MODE)
+			{
+				/* set Ref */
 				PmsmFoc_SpeedControl_setRefSpeed(&g_motorControl.pmsmFoc.speedControl, refSpeed);
+			}
+			else
+			{
+				/* set Ref */
+				PmsmFoc_SpeedControl_setStopRefSpeed(&g_motorControl.pmsmFoc.speedControl, refSpeed);
 			}
 			/******************************************************************
 			 *                SPEED REFERENCE RAMP Task END                   *
@@ -269,14 +261,7 @@ static __attribute__((__noreturn__)) void periodicSpeedRefRampTimeTask(void *arg
 	}
 }
 #endif /* End of SPEED_CONTROL*/
-/* set ik - target*/
-/* PmsmFoc_setSpeedRefLinearRamp */
-/* calc uk - ref*/
-/* PmsmFoc_doSpeedRefLinearRamp */
-/* get uk */
-/* PmsmFoc_getSpeedRefLinearRamp */
-/* set Ref */
-/* PmsmFoc_SpeedControl_setRefSpeed */
+
 #if(FOC_CONTROL_SCHEME == CURRENT_CONTROL)
 volatile uint32 currentRampCount= 0UL;
 
@@ -299,7 +284,7 @@ static __attribute__((__noreturn__)) void periodicCurrentRampTimeTask(void *arg)
 			{
 				CplxStdReal tempIdq ={0.0, 0.0};
 
-				if(g_motorControl.interface.running != FALSE)
+				if(g_motorControl.interface.CurrnetIfMode == RUNNING_MODE)
 				{
 					tempIdq.real = g_motorControl.pmsmFoc.idqRefExternal.real;
 					tempIdq.imag = g_motorControl.pmsmFoc.idqRefExternal.imag;
@@ -356,30 +341,30 @@ static __attribute__((__noreturn__)) void periodicMiscTask(void *arg)
 		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_MISC_TASK_PERIOD_MS));
 		miscCount++;
 		{
+			Display_update_timeElapsed();
 			/******************************************************************
 			 *                         MISC Task START                       *
 			 ******************************************************************/
 			#if(TFT_DISPLAYMODE == ENABLED)
-			if (tft_ready == 1)
+			if((g_motorControl.interface.CurrnetIfMode == STOPPING_MODE) && (touch_event.userctrl == TRUE))
 			{
-				Dispaly_stdout0();
+				Display_stopping();
+			}
+			else
+			{
+				Display_show();
 			}
 			#endif /* End of TFT_DISPLAYMODE */
-
-			#if 0
-			if(g_motorControl.interface.demo == TRUE)
-			#endif
-			if(g_motorControl.CurrnetIfMode == DEMO_MODE)
-			{
-				PmsmFoc_Interface_doDemo(&g_motorControl);
-			}
+			#if(PMSM_FOC_HARDWARE_KIT == KIT_A2G_TC387_MOTORCTRL)
 			Misc_LED_toggle();
+			#endif
 			/******************************************************************
 			 *                          MISC Task END                        *
 			 ******************************************************************/
 		}
 	}
 }
+
 volatile uint32 demoControlCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicDemoControlTask(void *arg)
@@ -422,7 +407,7 @@ static __attribute__((__noreturn__)) void periodicDisplayTimeTask(void *arg)
 			 *                      DISPLAY TIME Task START                   *
 			 ******************************************************************/
 
-			Display_update_timeElapsed();
+//			Display_update_timeElapsed();
 
 			/******************************************************************
 			 *                      DISPLAY TIME Task END                     *

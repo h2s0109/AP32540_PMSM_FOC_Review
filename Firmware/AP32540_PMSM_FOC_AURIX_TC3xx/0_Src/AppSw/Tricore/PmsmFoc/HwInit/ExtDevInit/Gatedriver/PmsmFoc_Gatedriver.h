@@ -1,5 +1,5 @@
 /**
- * \file PmsmFoc_InitTLE9180.h
+ * \file PmsmFoc_Gatedriver.h
  * \brief Initialization of TLE9180 ASIC.
  *
  * \copyright Copyright (C) Infineon Technologies AG 2019
@@ -38,9 +38,7 @@
 #ifndef _TLE9180_INIT_H_
 #define _TLE9180_INIT_H_
 #include "PmsmFoc_UserConfig.h"
-#include "TLE9180.h"
-#include "IfxQspi_SpiMaster.h"
-#include MCUCARD_TYPE_PATH
+#include "Ifx_Types.h"
 /******************************************************************************/
 /*-----------------------------------Macros-----------------------------------*/
 /******************************************************************************/
@@ -48,34 +46,21 @@
 /******************************************************************************/
 /*-------------------------------Data Structures------------------------------*/
 /******************************************************************************/
-typedef struct
-{
-	IfxTLE9180                  driver;
-	IfxQspi_SpiMaster_Channel   spiChannel;
-} TLE9180_CONTROL_ST;
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 
-extern TLE9180_CONTROL_ST Tle9180Ctrl;
-
 /******************************************************************************/
 /*-----------------------------Function Prototypes----------------------------*/
 /******************************************************************************/
-void PmsmFoc_TLE9180_InitQspiModule(void);
-extern void PmsmFoc_Tle9180_Init(void);
-/** /brief
- *
- * /param
- * /return
- * /note
- * /see
- * /ingroup
- */
-// IFX_INLINE void PmsmFoc_Tle9180_loadConfiguration(void)
-// {
-//     IfxTLE9180_loadStartupConfiguration(&Tle9180Ctrl.driver);
-// }
-
+IFX_EXTERN void PmsmFoc_Gatedriver_Init(void);
+IFX_EXTERN void PmsmFoc_Gatedriver_InitSpi(void);
+IFX_EXTERN void PmsmFoc_Gatedriver_Enable(void);
+IFX_EXTERN void PmsmFoc_Gatedriver_Disable(void);
+IFX_EXTERN void PmsmFoc_Gatedriver_ActInhibit(void);
+IFX_EXTERN void PmsmFoc_Gatedriver_DeactInhibit(void);
+IFX_EXTERN void PmsmFoc_Gatedriver_ActSafeOff(void);
+IFX_EXTERN void PmsmFoc_Gatedriver_DeactSafeOff(void);
+IFX_EXTERN void PmsmFoc_Gatedriver_GetError(void);
 #endif /* _TLE9180_INIT_H_ */

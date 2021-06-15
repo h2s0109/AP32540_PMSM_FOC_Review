@@ -49,7 +49,6 @@
 #include MOTOR_TYPE_PATH
 #include "PmsmFoc.h"
 
-
 /******************************************************************************/
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
@@ -267,15 +266,6 @@ IFX_EXTERN void PmsmFoc_doDqDecoupling(PmsmFoc* const foc);
  * /ingroup pmsm_foc_controlmodules
  */
 IFX_EXTERN void PmsmFoc_doMiscWorks (MotorControl* const motorCtrl);
-/** /brief
- *
- * /param motorCtrl Reference to structure that contains instance data members
- * /return
- * /note
- * /see
- * /ingroup
- */
-IFX_EXTERN void PmsmFoc_doSpeedControl(MotorControl* const motorCtrl);
 
 /** /brief
  *

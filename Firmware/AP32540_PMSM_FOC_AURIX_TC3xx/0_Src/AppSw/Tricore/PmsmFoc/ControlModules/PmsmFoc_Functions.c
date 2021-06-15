@@ -47,9 +47,7 @@
 #include "PmsmFoc_Functions.h"
 #include "HW_Init.h"
 #include "PmsmFoc_CurrentDcLinkSense.h"
-#if(TLE9180_DRIVER == ENABLED)
-	#include "TLE9180.h"
-#endif /* End of TLE9180_DRIVER */
+#include "PmsmFoc_Gatedriver.h"
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
@@ -70,12 +68,14 @@ void PmsmFoc_initMotorControl(MotorControl* const motorCtrl)
 
 	/* Initialize the peripheral modules */
 	PmsmFoc_initHardware(motorCtrl);
-
-	/* Reset the current sense calibration status and set initial variable values */
-	PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&motorCtrl->inverter.phaseCurrentSense);
-
+#if(POSITION_SENSOR_TYPE == ENCODER)
 	/* Reset the encoder calibration status */
 	PmsmFoc_resetEncoderCalibrationStatus(motorCtrl);
+#else
+	/* For other position sensor */
+#endif
+	/* Reset the current sense calibration status and set initial variable values */
+	PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&motorCtrl->inverter.phaseCurrentSense);
 
 #if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 	/* Reset the DC-link current sense calibration status and set initial variable values */
@@ -95,14 +95,15 @@ void PmsmFoc_initMotorControl(MotorControl* const motorCtrl)
 	/* Reset the phase voltage sense calibration status and set initial variable values */
 	PmsmFoc_BemfVoltageSense_resetCalibrationStatus(&motorCtrl->inverter.bemfVoltageSense);
 #endif
-
+	PmsmFoc_Gatedriver_Enable();
 }
+
 /* static */
 void PmsmFoc_initControlVariables(MotorControl* const motorCtrl)
 {
 
 	LookUp_Init();
-
+	g_motorControl.interface.CurrnetIfMode = CAL_MODE;
 	/* Initialization of speed and current reference ramps */
 	Ifx_RampF32_init(&motorCtrl->pmsmFoc.speedRamp,
 			USER_MOTOR_SPEED_RAMP_SLEW_RATE,
@@ -114,7 +115,7 @@ void PmsmFoc_initControlVariables(MotorControl* const motorCtrl)
 			USER_MOTOR_CURRENT_D_RAMP_SLEW_RATE,
 			USER_MOTOR_CURRENT_D_RAMP_PERIOD);
 	/* Control parameters object initialization */
-	motorCtrl->controlParameters.state = StateMachine_calibration;
+	motorCtrl->controlParameters.state = StateMachine_PhaseCalibration;
 	motorCtrl->controlParameters.alignmentCounter = 0;
 	motorCtrl->controlParameters.counter = 0;
 	motorCtrl->controlParameters.inverterStatus = 0;
@@ -191,12 +192,13 @@ void PmsmFoc_doFieldOrientedControl(MotorControl* const motorCtrl)
 	/* Current reconstruction */
 	PmsmFoc_reconstructCurrent(motorCtrl);
 
-	/* Clarke Transformation */
-	PmsmFoc_doClarkeTransform(&motorCtrl->pmsmFoc);
-
-	/* Update electrical position */
+	/* Update electrical position and measSpeed*/
 	motorCtrl->pmsmFoc.electricalAngle =
 			(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
+	motorCtrl->pmsmFoc.speedControl.measSpeed = IfxStdIf_Pos_radsToRpm(
+			PmsmFoc_PositionAcquisition_updateSpeed(&motorCtrl->positionSensor));
+	/* Clarke Transformation */
+	PmsmFoc_doClarkeTransform(&motorCtrl->pmsmFoc);
 
 	/* Park Transformation */
 	PmsmFoc_doParkTransform(&motorCtrl->pmsmFoc);
@@ -239,14 +241,15 @@ void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl)
 #if(EMOTOR_LIB == MC_EMOTOR)
 	CplxStdReal cossin;
 #endif
-	(void) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
-#if 0
+	/* Update electrical position*/
+	motorCtrl->pmsmFoc.electricalAngle =
+			(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
 	/* Current reconstruction */
 	PmsmFoc_reconstructCurrent(motorCtrl);
 	
 	/* Clarke Transformation */
 	PmsmFoc_doClarkeTransform(&motorCtrl->pmsmFoc);
-#endif
+
 	if(motorCtrl->positionSensor.encoder.encSyncTopZero == TRUE)
 	{
 		motorCtrl->controlParameters.encTopZeroCounter++;
@@ -284,7 +287,6 @@ void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl)
 
 		if(motorCtrl->controlParameters.encOffsetCalCounter == 1)
 		{
-			motorCtrl->diagnostic.focControlEnabled = FALSE;
 			motorCtrl->openLoop.electricalAngleDelta = 0;
 			motorCtrl->openLoop.electricalAngle = 0;
 			motorCtrl->openLoop.amplitude = 0.0;
@@ -302,11 +304,10 @@ void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl)
 					-motorCtrl->positionSensor.encoder.incrEncoder.rawPosition;
 			motorCtrl->openLoop.amplitude = 0.0;
 			motorCtrl->positionSensor.encoder.encOffsetCal = FALSE;
-			motorCtrl->interface.stop = TRUE;
+			motorCtrl->interface.CurrnetIfMode = STOP_MODE;
 			motorCtrl->controlParameters.encOffsetCalCounter = 0;
 			motorCtrl->positionSensor.encoder.calibrationStatus = Encoder_CalibrationStatus_done;
 		}
-
 	}
 #if(EMOTOR_LIB == MC_EMOTOR)
 	/* Update electrical angle and calculate modulation index */
@@ -321,6 +322,7 @@ void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl)
 
 	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
 }
+
 /* static */
 void PmsmFoc_reconstructCurrent(MotorControl* const motorCtrl)
 {
@@ -440,13 +442,6 @@ void PmsmFoc_doInverseParkTransform(PmsmFoc* const foc)
 #endif
 }
 
-void PmsmFoc_doSpeedControl(MotorControl* const motorCtrl)
-{
-	motorCtrl->pmsmFoc.speedControl.measSpeed = IfxStdIf_Pos_radsToRpm(
-			PmsmFoc_PositionAcquisition_updateSpeed(&motorCtrl->positionSensor));
-	PmsmFoc_SpeedControl_do(&motorCtrl->pmsmFoc.speedControl);
-}
-
 void PmsmFoc_tuneCurrentRegulator(MotorControl* const motorCtrl)
 {
 	/* Current reconstruction */
@@ -509,17 +504,17 @@ void PmsmFoc_doVfControl(MotorControl* const motorCtrl)
 #if(EMOTOR_LIB == MC_EMOTOR)
 	CplxStdReal cossin;
 #endif
-	(void) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
-	(void) IfxStdIf_Pos_radsToRpm(
+	/* Update electrical position and measSpeed*/
+	motorCtrl->pmsmFoc.electricalAngle =
+			(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
+	motorCtrl->pmsmFoc.speedControl.measSpeed = IfxStdIf_Pos_radsToRpm(
 			PmsmFoc_PositionAcquisition_updateSpeed(&motorCtrl->positionSensor));
 
 	/* Current reconstruction */
 	PmsmFoc_reconstructCurrent(motorCtrl);
-	if(motorCtrl->interface.start == TRUE)
+	if(motorCtrl->interface.CurrnetIfMode == RUNNING_MODE)
 	{
-	#if(TLE9180_DRIVER == ENABLED)
-		IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
-	#endif /* End of TLE9180_DRIVER */
+		PmsmFoc_Gatedriver_Enable();
 		/* Update electrical angle and calculate modulation index */
 #if(EMOTOR_LIB == MC_EMOTOR)
 		sint16 electricAngle;
@@ -531,16 +526,14 @@ void PmsmFoc_doVfControl(MotorControl* const motorCtrl)
 		motorCtrl->openLoop.modulationIndex.imag = cossin.imag * motorCtrl->openLoop.amplitude;
 	}
 	
-	if(motorCtrl->interface.start == FALSE)
+	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
 	{
 		motorCtrl->openLoop.electricalAngle = 0;
 		motorCtrl->openLoop.electricalAngleDelta = 0;
 		motorCtrl->openLoop.amplitude = 0.0;
 		motorCtrl->openLoop.modulationIndex.real = 0;
 		motorCtrl->openLoop.modulationIndex.imag = 0;
-	#if(TLE9180_DRIVER == ENABLED)
-		IfxTLE9180_deactivateEnable(&Tle9180Ctrl.driver);
-	#endif /* End of TLE9180_DRIVER */
+		PmsmFoc_Gatedriver_Disable();
 	}
 
 	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
@@ -550,7 +543,3 @@ void PmsmFoc_doMiscWorks(MotorControl* const motorCtrl)
 {
 
 }
-
-
-
-

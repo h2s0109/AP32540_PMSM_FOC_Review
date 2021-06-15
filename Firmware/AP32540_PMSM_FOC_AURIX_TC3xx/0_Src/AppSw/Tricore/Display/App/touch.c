@@ -311,6 +311,7 @@ void touch_init (IfxQspi_SpiMaster *spiMaster)
     IfxCpu_restoreInterrupts(interruptState);
 
     touch_event.status = TOUCH_UNINIT;
+    touch_event.userctrl = FALSE;
 
     touch_driver.status = TOUCH_UP;
     touch_driver.prev_status = TOUCH_UP;

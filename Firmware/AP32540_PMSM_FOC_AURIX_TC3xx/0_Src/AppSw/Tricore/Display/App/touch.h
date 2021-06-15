@@ -96,7 +96,8 @@ typedef enum
     TOUCH_MOVE,                 /*!< \brief Not used */
     TOUCH_UP,                   /*!< \brief Normal Operation */
     TOUCH_DOWN3S,               /*!< \brief Failure Buffer Full */
-    TOUCH_DOWN10S               /*!< \brief Failure Buffer Erased */
+    TOUCH_DOWN10S,               /*!< \brief Failure Buffer Erased */
+    TOUCH_STOPPING               /*!< \brief Failure Buffer Erased */
 } TTOUCH_STATUS;
 
 /******************************************************************************/
@@ -125,6 +126,7 @@ typedef struct TOUCH_EVENT
     sint16 xdisp;
     sint16 ydisp;
     TTOUCH_STATUS status;
+    uint8 userctrl;
 } TTOUCH_EVENT;
 
 typedef struct TOUCH_DASINFO

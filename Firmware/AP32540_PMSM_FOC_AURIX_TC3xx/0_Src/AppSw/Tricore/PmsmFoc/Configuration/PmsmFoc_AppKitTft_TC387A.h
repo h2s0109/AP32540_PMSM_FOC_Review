@@ -160,6 +160,8 @@
 /* TLE9180 GPIO and QSPI define */
 /** \brief Define the DMA channel no for the QSPI receive */
 #if(PMSM_FOC_HARDWARE_KIT == KIT_A2G_TC387_MOTORCTRL)
+/* TLE9180 GPIO and QSPI define */
+#define CPU_WHICH_SERVICE_TLE9180        0     /**< \brief Define the CPU which service the Tlf3xx8x and where functions/variables are located.  */
 /* TLE9180 GPIO define */
 /** \brief Define the TLE9180 Enable Pin GPIO.  */
 #define TLE9180_ENABLE_PIN				&IfxPort_P33_11

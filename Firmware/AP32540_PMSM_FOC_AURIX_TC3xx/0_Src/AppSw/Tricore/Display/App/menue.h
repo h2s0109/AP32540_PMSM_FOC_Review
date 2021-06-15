@@ -49,5 +49,6 @@ typedef struct {
 	uint8 hour;
 	uint8 min;
 	uint8 sec;
+	uint8 msec;
 } Display_Time;
 #endif /* _DISPLAY_H_ */

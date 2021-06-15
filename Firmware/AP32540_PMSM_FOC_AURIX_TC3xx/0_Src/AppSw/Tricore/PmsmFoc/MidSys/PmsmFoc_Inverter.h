@@ -44,11 +44,6 @@
 /*-----------------------------------------------------Includes------------------------------------------------------*/
 /*********************************************************************************************************************/
 #include "PmsmFoc_UserConfig.h"
-
-#if(TLE9180_DRIVER == ENABLED)
-    #include "PmsmFoc_InitTLE9180.h"
-#endif /* End of TLE9180_DRIVER */
-
 #include "IfxGtm_Tom_PwmHl.h"
 
 #include "PmsmFoc_CurrentDcLinkSense.h"
@@ -103,10 +98,6 @@ typedef struct
     /* #include "PmsmFoc_VoltageSense.h" */
     DcLinkVoltageSense      dcLinkVoltageSense;     /**< \brief PWM output object */
     BemfVoltageSense        bemfVoltageSense;       /**< \brief PWM output object */
-// #if(TLE9180_DRIVER == ENABLED)
-    /*STEVE: define error TLE9180*/  
-    TLE9180_CONTROL_ST      tle9180;                /**< \brief Gate Driver object */
-// #endif /* End of TLE9180_DRIVER */
     InverterStatus          status;                 /**< \brief Current fault status from inverter */
 }Inverter;
 /*********************************************************************************************************************/

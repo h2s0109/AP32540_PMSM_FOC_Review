@@ -48,8 +48,6 @@
 #if GENERAL_TFTKIT
 #include "Configuration.h"
 #endif
-#include "Display_Cfg_AppKitTft_TC387A.h"
-
 #include "IfxCpu_cfg.h"
 
 #define TFT_XSIZE 320             //!< x dimension of tft display

@@ -101,6 +101,12 @@
 #define COLOR_LIGHTMAGENTA 14
 #define COLOR_LIGHTCYAN 15
 
+#define DISP_CYAN_BLK   (COLOR_CYAN << 4)   | COLOR_BLACK   //Display background color cyan, text color black
+#define DISP_BRN_WHT    (COLOR_BROWN << 4)  | COLOR_WHITE   //Display background color brown, text color black
+#define SLCT_BLK_YELW   (COLOR_BLACK << 4)  | COLOR_YELLOW  //Selection background color black, text color yellow
+#define SLCT_RED_BLUE   (COLOR_RED << 4)    | COLOR_BLUE    //Selection background color red, text color yellow
+#define DISP_BLUE_YELW  (COLOR_BLUE << 4)   | COLOR_YELLOW  //Display background color blue, text color yellow
+
 #define  MENU_BACKGRND COLOR_BLUE
 #define  BAR_BACKGRND COLOR_BLUE
 

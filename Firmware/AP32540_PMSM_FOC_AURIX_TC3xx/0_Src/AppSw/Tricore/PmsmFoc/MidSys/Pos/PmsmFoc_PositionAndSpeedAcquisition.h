@@ -111,7 +111,6 @@ typedef struct
 	//PositionAcquisition_Hall       	hall;        /**< \brief Pointer to the Hall sensor handler */
 	//PositionAcquisition_Resolver    resolver;    /**< \brief Pointer to the Resolver handler */
 	//PositionAcquisition_Sensorless 	sensorless;  /**< \brief Pointer to the Sensorless handler */
-	Ifx_LowPassPt1F32               speedLpf;    /**< \brief Lowpass filter object*/
 	PositionAcquisition_SensorType  sensorType;   /**< \brief Position sensor used */
 	boolean                         statusOk;     /**< \brief Position sensor status*/
     uint32    	electricalAngle;          		/**< \brief Electrical angle. */

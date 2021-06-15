@@ -47,6 +47,7 @@
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
 #include "Ifx_Types.h"
+#include "PmsmFoc_Interface.h"
 #if(DBGCTRLMODE == ENABLED)
 /******************************************************************************/
 /*--------------------------------Macros--------------------------------------*/
@@ -65,10 +66,9 @@ typedef enum
     DBG_STOP,
     DBG_START,
     DBG_CAL,
-    DBG_SPEEDUP,
-    DBG_SPEEDZERO,
+    DBG_SPEEDAPPLY,
     DBG_DEMO,
-    DBG_NONE
+    DBG_STOPPING
 } DBG_SPEEDSEL;
 typedef enum
 {
@@ -76,21 +76,20 @@ typedef enum
     D1_STOP,
     D2_START,
     D3_CAL,
-    D4_SPEEDUP,
-    D5_SPEEDZERO,
-    D6_DEMO
+    D4_SPEEDAPPLY,
+    D5_DEMO
 } DBG_SPEEDSELG;
+#define DBG_TOTALMODE 5
 /******************************************************************************/
 /*-----------------------------Data Structures--------------------------------*/
 /******************************************************************************/
 typedef struct {
-    DBG_SPEEDSELG   eDbgCtrl_display_case[6];
+    DBG_SPEEDSELG   eDbgCtrl_display_case[DBG_TOTALMODE];
     DBG_SPEEDSEL    eDbgCtrl_mode_usrsel;
     DBG_SPEEDSEL    eDbgCtrl_mode_current;
-    DBG_SPEEDSEL    eDbgCtrl_mode_pending;
     float           DbgCtrl_target_speed;
     float           DbgCtrl_current_speed;
-} st_DbgCtrl;
+} DbgCtrls;
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/
@@ -98,8 +97,7 @@ typedef struct {
 /******************************************************************************/
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
-void DbgCtrl_periodic(st_DbgCtrl *dbgctrl_arg);
-void DbgCtrl_init(st_DbgCtrl *dbgctrl_arg);
+
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

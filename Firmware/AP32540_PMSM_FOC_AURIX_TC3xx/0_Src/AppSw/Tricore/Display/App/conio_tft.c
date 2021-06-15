@@ -219,6 +219,7 @@ extern TCOLORTABLEASCII colortable_ascii;
 void bar_display (sint32 ind, TDISPLAYENTRY * pdisplayentry);
 
 extern void showmenu (sint16 x, sint16 y, TDISPLAYENTRY * pmenulist);
+extern void showsdtou0 (void);
 
 /******************************************************************************/
 /*-------------------------Function Implementations---------------------------*/
@@ -327,6 +328,10 @@ void conio_periodic (sint16 x, sint16 y, TDISPLAYENTRY * pmenulist, TDISPLAYENTR
                  conio_ascii_textchangebackground (DISPLAYMENU, COLOR_RED);
              }
          }
+        else if((conio_driver.displaymode) == DISPLAYSTDOUT0)
+        {
+            showsdtou0();
+        }
          else
         {
             if (y < (TERMINAL_MAXY-1))

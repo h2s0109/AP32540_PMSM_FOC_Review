@@ -113,7 +113,7 @@ extern App_Qspi_TLF_Cpu g_Qspi_TLF_Cpu;
 /******************************************************************************/
 /*-------------------------Function Prototypes--------------------------------*/
 /******************************************************************************/
-IFX_EXTERN void IfxTLF3XX8X_init(void);
+IFX_EXTERN void IfxTLF3XX8X_initSpi(void);
 IFX_EXTERN void IfxTLF3XX8X_unprotect_register(void);
 IFX_EXTERN void IfxTLF3XX8X_protect_register(void);
 IFX_EXTERN void IfxTLF3XX8X_disable_window_watchdog(void);

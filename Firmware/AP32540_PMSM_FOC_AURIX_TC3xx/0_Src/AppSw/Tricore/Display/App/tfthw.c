@@ -50,7 +50,6 @@
 #include "Configuration.h"
 #include "ConfigurationIsr.h"
 #endif
-#include "Display_Cfg_AppKitTft_TC387A.h"
 #include "font_8_12.h"
 #include "tfthw.h"
 #include "touch.h"

@@ -42,13 +42,12 @@
 /******************************************************************************/
 
 #include "DbgCtrl.h"
-#include "PmsmFoc_Interface.h"
 #if(DBGCTRLMODE == ENABLED)
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /*******************************************************************************/
-
+DbgCtrls g_DbgCtrl;
 /******************************************************************************/
 /*-------------------------Private Variables/Constants------------------------*/
 /******************************************************************************/
@@ -58,167 +57,171 @@ static void DbgCtrl_StartSel(void);
 static void DbgCtrl_SpeedSel(float32 targetspeed_arg);
 static void DbgCtrl_DemoSel(void);
 static void DbgCtrl_CalibrateSel(void);
-static DBG_SPEEDSEL DbgCtrl_cmd_chk(DBG_SPEEDSEL eDbgCtrl_mode_sel_arg);
-
 /******************************************************************************/
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
 
 /* this functionis called  at periodicDebuggerTask */
-void DbgCtrl_periodic(st_DbgCtrl *dbgctrl_arg)
+#if 0
+void DbgCtrl_periodic(DbgCtrls *dbgctrl_arg)
 {
-    dbgctrl_arg->DbgCtrl_current_speed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
-    dbgctrl_arg->eDbgCtrl_mode_pending = DbgCtrl_cmd_chk(dbgctrl_arg->eDbgCtrl_mode_usrsel);
-    if (dbgctrl_arg->eDbgCtrl_mode_pending == DBG_NONE)
+    if(g_motorControl.interface.CurrnetIfMode == STOP_MODE)
     {
         switch (dbgctrl_arg->eDbgCtrl_mode_usrsel)
         {
-/* 0 */ case DBG_READY:     
-            break;
-/* 1 */ case DBG_STOP:      
-            DbgCtrl_StopSel();
-            dbgctrl_arg->eDbgCtrl_mode_current = DBG_STOP;
-            dbgctrl_arg->eDbgCtrl_mode_usrsel = DBG_READY;
-            break;
-/* 2 */ case DBG_START:
+/* 2 */ case DBG_START: 
             DbgCtrl_StartSel();
-            dbgctrl_arg->eDbgCtrl_mode_current = DBG_START;
-            dbgctrl_arg->eDbgCtrl_mode_usrsel = DBG_READY;
             break;
-/* 3 */ case DBG_CAL:
+/* 3 */ case DBG_CAL: 
             DbgCtrl_CalibrateSel();
-            dbgctrl_arg->eDbgCtrl_mode_current = DBG_CAL;
-            dbgctrl_arg->eDbgCtrl_mode_usrsel = DBG_READY;  
             break;
-/* 4 */ case DBG_SPEEDUP:
-            DbgCtrl_SpeedSel(dbgctrl_arg->DbgCtrl_target_speed);
-            dbgctrl_arg->eDbgCtrl_mode_current = DBG_SPEEDUP;
-            break;
-/* 5 */ case DBG_SPEEDZERO: 
-            DbgCtrl_SpeedSel(0);
-            dbgctrl_arg->eDbgCtrl_mode_current = DBG_SPEEDZERO;
-            dbgctrl_arg->eDbgCtrl_mode_usrsel = DBG_READY;
-            break;
-/* 6 */ case DBG_DEMO:      
+/* 6 */ case DBG_DEMO: 
             DbgCtrl_DemoSel();
-            dbgctrl_arg->eDbgCtrl_mode_current = DBG_DEMO;
-            dbgctrl_arg->eDbgCtrl_mode_usrsel = DBG_READY;
             break;
-        default:
-            dbgctrl_arg->eDbgCtrl_mode_usrsel = DBG_READY;
+        default: 
             break;
         }
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_STOP;
     }
-    else
+    else if(g_motorControl.interface.CurrnetIfMode == RUNNING_MODE)
     {
-        /* code */
-        dbgctrl_arg->eDbgCtrl_mode_usrsel = dbgctrl_arg->eDbgCtrl_mode_pending;
+        switch (dbgctrl_arg->eDbgCtrl_mode_usrsel)
+        {
+/* 1 */ case DBG_STOP: 
+            DbgCtrl_StopSel();
+            break;
+/* 4 */ case DBG_SPEEDAPPLY: 
+            DbgCtrl_SpeedSel(dbgctrl_arg->DbgCtrl_target_speed);
+            break;
+        default: 
+            break;
+        }
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_START;
+    }
+    else if(g_motorControl.interface.CurrnetIfMode == CAL_MODE)
+    {
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_CAL;
+    }
+    else if(g_motorControl.interface.CurrnetIfMode == DEMO_MODE)
+    {
+        if(dbgctrl_arg->eDbgCtrl_mode_usrsel == DBG_STOP)
+        {
+            DbgCtrl_StopSel();            
+        }
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_DEMO;
+    }
+    else if(g_motorControl.interface.CurrnetIfMode == STOPPING_MODE)
+    {
+        DbgCtrl_StopSel();
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_STOPPING;
     }
 }
-
-void DbgCtrl_init(st_DbgCtrl *dbgctrl_arg)
+#endif
+#if 1
+void DbgCtrl_periodic(DbgCtrls *dbgctrl_arg, MotorControl* const motorCtrl)
+{
+    IFMODE CurrnetIfMode = motorCtrl->interface.CurrnetIfMode;
+    switch (CurrnetIfMode)
+    {
+    case STOP_MODE:
+        switch (dbgctrl_arg->eDbgCtrl_mode_usrsel)
+        {
+/* 2 */ case DBG_START: 
+            DbgCtrl_StartSel();
+            break;
+/* 3 */ case DBG_CAL: 
+            DbgCtrl_CalibrateSel();
+            break;
+/* 6 */ case DBG_DEMO: 
+            DbgCtrl_DemoSel();
+            break;
+        default: 
+            break;
+        }
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_STOP;    
+        break;
+    case RUNNING_MODE:
+        switch (dbgctrl_arg->eDbgCtrl_mode_usrsel)
+        {
+/* 1 */ case DBG_STOP: 
+            DbgCtrl_StopSel();
+            break;
+/* 4 */ case DBG_SPEEDAPPLY: 
+            DbgCtrl_SpeedSel(dbgctrl_arg->DbgCtrl_target_speed);
+            break;
+        default: 
+            break;
+        }
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_START;
+        break;
+    case CAL_MODE:
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_CAL;
+        break;
+    case DEMO_MODE:
+        if(dbgctrl_arg->eDbgCtrl_mode_usrsel == DBG_STOP)
+        {
+            DbgCtrl_StopSel();            
+        }
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_DEMO;
+        break;
+    case STOPPING_MODE:
+        DbgCtrl_StopSel();
+        dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_STOP;
+        dbgctrl_arg->eDbgCtrl_mode_current = DBG_STOPPING;
+        break;
+    default:
+        break;
+    }
+}
+#endif
+void DbgCtrl_init(DbgCtrls *dbgctrl_arg)
 {
     /* Indicate the user select mode */
     dbgctrl_arg->eDbgCtrl_display_case[0] = D1_STOP;
     dbgctrl_arg->eDbgCtrl_display_case[1] = D2_START;
     dbgctrl_arg->eDbgCtrl_display_case[2] = D3_CAL;
-    dbgctrl_arg->eDbgCtrl_display_case[3] = D4_SPEEDUP;
-    dbgctrl_arg->eDbgCtrl_display_case[4] = D5_SPEEDZERO;
-    dbgctrl_arg->eDbgCtrl_display_case[5] = D6_DEMO;
+    dbgctrl_arg->eDbgCtrl_display_case[3] = D4_SPEEDAPPLY;
+    dbgctrl_arg->eDbgCtrl_display_case[4] = D5_DEMO;
 
     dbgctrl_arg->eDbgCtrl_mode_usrsel  = DBG_READY;
     dbgctrl_arg->eDbgCtrl_mode_current = DBG_READY;
-    dbgctrl_arg->eDbgCtrl_mode_pending = DBG_NONE;
     dbgctrl_arg->DbgCtrl_target_speed  = 1000;
 }
 
 static void DbgCtrl_CalibrateSel(void)
 {
-    PmsmFoc_Interface_stopMotor(&g_motorControl);
-    if(g_motorControl.controlParameters.state == StateMachine_motorStop)
-    {
-        PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&g_motorControl.inverter.phaseCurrentSense);
-        PmsmFoc_resetEncoderCalibrationStatus(&g_motorControl);
-        PmsmFoc_PositionAcquisition_init(&g_motorControl.positionSensor, PositionAcquisition_SensorType_Encoder);
-        PmsmFoc_Interface_startMotor(&g_motorControl);
-    }
+    /* Go to StateMachine_PhaseCalibration */
+    PmsmFoc_Interface_calMotor(&g_motorControl);
 }
 
 static void DbgCtrl_StartSel(void)
 {
+    /* Go to StateMachine_focClosedLoop or StateMachine_PhaseCalibration */
     PmsmFoc_Interface_startMotor(&g_motorControl);
 }
 
 static void DbgCtrl_StopSel(void)
 {
-    float32 refSpeed;
-    refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
-    // if(refSpeed > 0.0f)
+    /* Go to StateMachine_motorStop */
     PmsmFoc_Interface_stopMotor(&g_motorControl);
 }
 
 static void DbgCtrl_SpeedSel(float32 targetspeed_arg)
 {
-    if(g_motorControl.controlParameters.state != StateMachine_focClosedLoop)
-    {
-        if((g_motorControl.inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &
-				(g_motorControl.positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done))
-                {
-                    PmsmFoc_Interface_startMotor(&g_motorControl);
-                }
-    }
-
     PmsmFoc_Interface_setMotorTargetSpeed(&g_motorControl, targetspeed_arg);
 }
 
 static void DbgCtrl_DemoSel(void)
 {
     PmsmFoc_Interface_setDemo(&g_motorControl);
-}
-
-static DBG_SPEEDSEL DbgCtrl_cmd_chk(DBG_SPEEDSEL eDbgCtrl_mode_sel_arg)
-{
-    float32 refSpeed;
-    DBG_SPEEDSEL pending_mode;
-    pending_mode = DBG_NONE;
-    refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
-    if(refSpeed > 0.0f)
-    {
-        switch (eDbgCtrl_mode_sel_arg)
-        {
-        case DBG_STOP:
-            g_motorControl.CurrnetIfMode = STOP_MODE;
-            DbgCtrl_SpeedSel(0);
-            pending_mode = eDbgCtrl_mode_sel_arg;
-            break;
-        case DBG_START:
-            g_motorControl.CurrnetIfMode = START_MODE;
-            DbgCtrl_SpeedSel(0);
-            pending_mode = eDbgCtrl_mode_sel_arg;
-            break;
-        case DBG_CAL:
-            g_motorControl.CurrnetIfMode = CAL_MODE;
-            DbgCtrl_SpeedSel(0);
-            pending_mode = eDbgCtrl_mode_sel_arg;
-            break;
-        case DBG_DEMO:
-            g_motorControl.CurrnetIfMode = DEMO_MODE;
-            DbgCtrl_SpeedSel(0);
-            pending_mode = eDbgCtrl_mode_sel_arg;
-            break;
-        case DBG_READY:
-        case DBG_SPEEDUP:
-        case DBG_SPEEDZERO:
-            pending_mode = DBG_NONE;
-            break;
-        default:
-            break;
-        }
-    }
-    else
-    {
-        pending_mode = DBG_NONE;
-    }
-    return pending_mode;
 }
 #endif /* End of DBGCTRL*/

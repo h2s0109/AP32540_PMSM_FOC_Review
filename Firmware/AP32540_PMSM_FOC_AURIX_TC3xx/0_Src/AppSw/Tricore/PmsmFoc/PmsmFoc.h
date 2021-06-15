@@ -52,16 +52,14 @@
 #include "PmsmFoc_Motor.h"
 #include "PmsmMid_pub.h"
 #include "PmsmFoc_SpeedControl.h"
-#if(DBGCTRLMODE == ENABLED)
-	#include "Dbgctrl_pub.h"
-#endif
 
 /******************************************************************************/
 /*--------------------------------Enumerations--------------------------------*/
 /******************************************************************************/
 typedef enum StateMachine
 {
-	StateMachine_calibration = 0,
+	StateMachine_PhaseCalibration = 0,
+	StateMachine_PositionCalibration,
 	StateMachine_focClosedLoop,
 	StateMachine_enableInverter,
 	StateMachine_vfOpenLoop,
@@ -73,6 +71,7 @@ typedef enum StateMachine
 	StateMachine_identifyMotorParameters,
 	StateMachine_ifOpenLoop,
 	StateMachine_dtcClosedLoop,
+	StateMachine_demo
 }StateMachine;
 
 typedef enum ControlScheme
@@ -87,26 +86,22 @@ typedef enum ControlScheme
 /******************************************************************************/
 /** @brief Interfaces information.
  */
-typedef struct
-{
-	uint32 running;								/**< \brief 1 = the motor is running. 0 = the motor is stopped. */
-	uint32 start;								/**< \brief 1 = request to start. 0 = no effect */
-	uint32 stop;								/**< \brief 1 = request to stop. 0 = no effect  */
-	uint32 demo;								/**< \brief 1 = request to start demo. 0 = no effect  */
-	sint32 motorTargetSpeed;					/**< @brief Target speed reference in rpm */
-	uint32 hadEmergency;						/**< \brief 1 = an emergency event occurred. 0 = nothing*/
-} Interfaces;
-
-/** @brief Interfaces information.
- */
 typedef enum
 {
 	RUNNING_MODE = 0,
-	START_MODE,
 	STOP_MODE,
+	STOPPING_MODE,
 	CAL_MODE,
-	DEMO_MODE,
+	DEMO_MODE
 } IFMODE;
+
+/** @brief Interfaces information.
+ */
+typedef struct
+{
+	IFMODE CurrnetIfMode;
+	float32 motorTargetSpeed;					/**< @brief Target speed reference in rpm */
+} Interfaces;
 
 /** @brief Open loop information.
  */
@@ -171,7 +166,7 @@ typedef struct
 
 typedef struct
 {
-	uint32 state; 								/**< \brief Motor state (e.g.: V/f, FOC) */
+	StateMachine state; 						/**< \brief Motor state (e.g.: V/f, FOC) */
 	ControlScheme controlScheme; 				/**< \brief Control scheme (e.g. speed control, current control) */
 	uint16 rotationDir; 						/**< \brief Rotation direction of motor (rotor angle increasing, or decreasing) */
 	uint16 inverterStatus;						/**< \brief 0 -> Inverter disabled, 1 -> Inverter enabled */
@@ -187,7 +182,7 @@ typedef struct
     boolean tuneCurrentRegs;					/**< \brief 1 = current regulator tuning is enabled. 0 = regulator tuning is disabled. */
 
 } ControlParameters;
-
+#if 0 
 typedef struct
 {
     boolean    swapped;                  		/**< \brief if true and in @ref DIAG mode, the phases A and B are swapped (FALSE: ABC; TRUE: ACB)  */
@@ -199,27 +194,27 @@ typedef struct
     sint32     electricalAngleSensor;
     boolean	   encCalStatus;
 }Diagnostic;
-
+#endif
 typedef struct
 {
-	IFMODE CurrnetIfMode;
 	Interfaces			interface;				/**< \brief Interface parameters object */
 	ControlParameters 	controlParameters;		/**< \brief Control parameters object */
+	#if 0
 	Diagnostic			diagnostic;				/**< \brief Diagnostic object */
+	#endif
 	Inverter  			inverter;				/**< \brief Inverter object */
 	PmsmFoc   			pmsmFoc;				/**< \brief FOC object */
 	OpenLoop  			openLoop;     			/**< \brief Open loop object */
 	PositionAcquisition	positionSensor;			/**< \brief Position sensor object */
 	MotorParameters		motor;					/**< \brief Motor parameters object */
-#if(DBGCTRLMODE == ENABLED)
-	st_DbgCtrl 			sDbgCtrl;				/**< \brief Debugger control parameters object */
-#endif
 } MotorControl;
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 extern MotorControl g_motorControl;
+extern float32 demospeed[8][8];
+extern uint8 scenarioCnt;
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/

@@ -84,7 +84,6 @@ typedef struct
 /******************************************************************************/
 OneEye g_oneEye; 				/**< \brief CPU 0 global data */
 Ifx_DebugPipe g_debugPipe;
-extern MotorControl				g_motorControl;
 
 #define CFG_ASC0_RX_BUFFER_SIZE                              (128)      /**< \brief Define the Rx buffer size in byte. */
 #define CFG_ASC0_TX_BUFFER_SIZE                              (10000)     /**< \brief Define the Tx buffer size in byte. */
@@ -363,10 +362,12 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 			{
 				if (run)
 				{
+					/* Go to StateMachine_focClosedLoop or StateMachine_PhaseCalibration */
 					PmsmFoc_Interface_startMotor(&g_motorControl);
 				}
 				else
 				{
+					/* Go to StateMachine_motorStop */
 					PmsmFoc_Interface_stopMotor(&g_motorControl);
 				}
 				//IfxStdIf_DPipe_print(io, "! ecu run %f"KEY_CR, velocityControl.ref);
@@ -381,14 +382,8 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 			{
 				if (cal)
 				{
-
-					if(g_motorControl.controlParameters.state == StateMachine_motorStop)
-					{
-						PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&g_motorControl.inverter.phaseCurrentSense);
-						PmsmFoc_resetEncoderCalibrationStatus(&g_motorControl);
-						PmsmFoc_PositionAcquisition_init(&g_motorControl.positionSensor, PositionAcquisition_SensorType_Encoder);
-						PmsmFoc_Interface_startMotor(&g_motorControl);
-					}
+					/* Go to StateMachine_PhaseCalibration */
+					PmsmFoc_Interface_calMotor(&g_motorControl);
 				}
 				//IfxStdIf_DPipe_print(io, "! ecu run %f"KEY_CR, velocityControl.ref);
 

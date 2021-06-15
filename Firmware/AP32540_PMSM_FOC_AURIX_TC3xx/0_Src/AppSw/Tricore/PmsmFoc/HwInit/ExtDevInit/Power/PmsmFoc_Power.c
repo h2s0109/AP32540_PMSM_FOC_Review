@@ -1,7 +1,7 @@
 /**
- * \file TLF35584_Init.h
+ * \file PmsmFoc_Power.c
  * \brief Initialization of TLF35584 ASIC.
-
+ *
  * \copyright Copyright (C) Infineon Technologies AG 2019
  *
  * Use of this file is subject to the terms of use agreed between(i) you or the
@@ -34,27 +34,33 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-
-#ifndef PMSMFOC_TLF35584_INIT_H_
-#define PMSMFOC_TLF35584_INIT_H_
-
-#include "TLF3XX8X.h"
-/******************************************************************************/
-/*-----------------------------------Macros-----------------------------------*/
-/******************************************************************************/
-
-/******************************************************************************/
-/*-------------------------------Data Structures------------------------------*/
-/******************************************************************************/
-
+#include "PmsmFoc_Power.h"
+#include "PmsmFoc_UserConfig.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 
 /******************************************************************************/
-/*-----------------------------Function Prototypes----------------------------*/
+/*-------------------------Function Implementations---------------------------*/
 /******************************************************************************/
 
-extern void PmsmFoc_Tlf35584_Init(void);
+#if(TLF35584_DRIVER == ENABLED)
+/** \brief Initialization for TLF35584
+ *
+ */
 
-#endif /* PMSMFOC_TLF35584_INIT_H_ */
+void PmsmFoc_Power_Init(void)
+{
+    /* Disable Window Watchdog and ERR pin */
+    IfxTLF3XX8X_unprotect_register();
+    IfxTLF3XX8X_disable_window_watchdog();
+    IfxTLF3XX8X_disable_err_pin_monitor();
+    IfxTLF3XX8X_protect_register();
+	IfxTLF3XX8X_goto_normal_state();
+}
+void PmsmFoc_Power_InitSpi(void)
+{
+    IfxTLF3XX8X_initSpi();
+}
+
+#endif /* End of TLF35584_DRIVER */

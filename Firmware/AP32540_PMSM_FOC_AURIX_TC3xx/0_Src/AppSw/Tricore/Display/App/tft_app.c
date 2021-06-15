@@ -53,7 +53,6 @@
 #include "Configuration.h"
 #include "ConfigurationIsr.h"
 #endif
-#include "Display_Cfg_AppKitTft_TC387A.h"
 #include "conio_tft.h"
 #include "touch.h"
 #if GENERAL_TFTKIT
@@ -411,7 +410,6 @@ uint32 das_buffer[DAS_BUFFER_LEN >> 2];
 const TCONIODLGENTRY conio_dialog_list[CONIO_DLG_ENTRIES] =
 {
     { KEYBOARDON, &keyboard }
-    // { KEYBOARDON, &keyboard },
     // { SWITCHOFFON, &switchoff },
     // { SHOWALARMON, &showalarm },
     // { SETTIMEON, &set_time },
@@ -422,7 +420,7 @@ const TCONIODMENTRY conio_displaymode_list[CONIO_MAXDISPLAYS] =
 {
     { DISPLAYBAR, {(uint8 *) & display_bar, (uint8 *) & displaycolor_bar, TEXTMODE, COLOR_WHITE, TERMINAL_MAXX, 1, 0, 0} },
     { DISPLAYMENU, {(uint8 *) & display_menu, (uint8 *) & displaycolor_menu, TEXTMODE, COLOR_WHITE, TERMINAL_MAXX, TERMINAL_MAXY-1, 0, 0} },
-    { DISPLAYSTDOUT0, {(uint8 *) & display_stdout0, (uint8 *) & displaycolor_stdout0, TEXTMODE, COLOR_WHITE, TERMINAL_MAXX, TERMINAL_MAXY-1, 0, 0} },
+    { DISPLAYSTDOUT0, {(uint8 *) & display_stdout0, (uint8 *) & displaycolor_stdout0, TEXTMODE, COLOR_YELLOW, TERMINAL_MAXX, TERMINAL_MAXY-1, 0, 0} },
     { DISPLAYSTDOUT1, {(uint8 *) & display_stdout1, (uint8 *) & displaycolor_stdout1, TEXTMODE, COLOR_WHITE, TERMINAL_MAXX, TERMINAL_MAXY-1, 0, 0} },
     { DISPLAYGRAPHICS0, {(uint8 *) & display_graphics0, 0, GRAPHICMODE_16COLOR, COLOR_WHITE, TERMINAL_MAXX, TERMINAL_MAXY, 0, 0} }
 };
@@ -484,6 +482,7 @@ void tft_appl_init (void)
     tft_ready = TRUE;
 }
 
+#if GENERAL_TFTKIT
 /** \brief periodic function to get touch values and to change the conio displays
  *
  * This function calls the receive of the actual touch values and change the conio displays.
@@ -494,12 +493,11 @@ IFX_INTERRUPT (cpu_service0Irq, CPU_WHICH_SERVICE_TFT, ISR_PRIORITY_CPUSRV0)
 	__enable();
 	if (tft_ready == 0) return;
     touch_periodic ();
-    #if GENERAL_TFTKIT
     if (conio_driver.dialogmode == SLIDESHOW) slideshow_periodic();
     else conio_periodic (touch_driver.xdisp, touch_driver.ydisp, conio_driver.pmenulist, conio_driver.pstdlist);
     conio_driver.blinky += 1;
-    #endif /* End of GENERAL_TFTKIT */
 }
+#endif /* End of GENERAL_TFTKIT */
 
 #if defined(__GNUC__)
 #pragma section // end text section

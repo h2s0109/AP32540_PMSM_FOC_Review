@@ -73,11 +73,7 @@
  * /see
  * /ingroup
  */
-
-
-void PmsmFoc_TLF35584_InitQspiModule(void);
-void PmsmFoc_TLE9180_InitQspiModule(void);
-void PmsmFoc_Qspi_initQspi(void);
+void PmsmFoc_Qspi_init(void);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

@@ -255,10 +255,8 @@ const IfxQspi_SpiMaster_Output tlf_slsOutput = {&TLF_CS_PIN,
  *
  * This function initializes Qspix in master mode.
  */
-void IfxTLF3XX8X_init(void)
+void IfxTLF3XX8X_initSpi(void)
 {
-    // CS to tlf3xx8x
-	IfxPort_setPinModeInput(TLF_CS_PIN.pin.port, TLF_CS_PIN.pin.pinIndex, IfxPort_InputMode_pullUp);
     /* disable interrupts */
     boolean interruptState = IfxCpu_disableInterrupts();
 

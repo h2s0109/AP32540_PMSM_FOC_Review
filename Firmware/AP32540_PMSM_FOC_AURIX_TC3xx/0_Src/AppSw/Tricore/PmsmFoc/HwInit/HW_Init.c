@@ -41,13 +41,8 @@
 #include "HW_Init.h"
 
 #include MCUCARD_TYPE_PATH
-#if(TLF35584_DRIVER == ENABLED)
-	#include "PmsmFoc_InitTLF35584.h"
-#endif /* End of TLF35584_DRIVER */
-#if(TLE9180_DRIVER == ENABLED)
-    #include "PmsmFoc_InitTLE9180.h"
-#endif /* End of TLE9180_DRIVER */
-//#include "bsp.h"
+#include "PmsmFoc_Power.h"
+#include "PmsmFoc_Gatedriver.h"
 
 /******************************************************************************/
 /*-------------------------------Global variables-----------------------------*/
@@ -63,16 +58,13 @@
 void PmsmFoc_initHardware(MotorControl* const motorCtrl)
 {
 	/* Initialize SPI interfaces */
-	PmsmFoc_Qspi_initQspi();
+	PmsmFoc_Qspi_init();
 #if(TLF35584_DRIVER == ENABLED)
 	/* TLF35584 (Power and WDT ASIC) init */
-	PmsmFoc_Tlf35584_Init();        /* This requires connected SPI module Initialized before */
+	PmsmFoc_Power_Init();        /* This requires connected SPI module Initialized before */
 #endif /* End of TLF35584_DRIVER */
 
-#if(TLE9180_DRIVER == ENABLED)
-	/* Initialize TLE9180, this requires connected SPI module initialized before */
-	PmsmFoc_Tle9180_Init();
-#endif /* End of TLE9180_DRIVER */
+	PmsmFoc_Gatedriver_Init();
 
     /* Initialize GTM Driver */
 	PmsmFoc_Gtm_initGtm(&motorCtrl->inverter);
@@ -80,9 +72,14 @@ void PmsmFoc_initHardware(MotorControl* const motorCtrl)
     /* Initialize EVADC Driver */
 	PmsmFoc_Evadc_initEvadc(&motorCtrl->inverter);
 
-	/* Initialize position sensor driver */
-	PmsmFoc_PositionAcquisition_init(&motorCtrl->positionSensor, PositionAcquisition_SensorType_Encoder);
+	#if(POSITION_SENSOR_TYPE == ENCODER)
+		PmsmFoc_PositionAcquisition_init(&motorCtrl->positionSensor, PositionAcquisition_SensorType_Encoder);
+	#else
+		/* For other position sensor */
+	#endif
+	#if(PMSM_FOC_HARDWARE_KIT == KIT_A2G_TC387_MOTORCTRL)
 	Misc_LED_init();
+	#endif
 	Misc_ModuleDebug_init();
 }
 

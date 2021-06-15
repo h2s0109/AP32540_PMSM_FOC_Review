@@ -78,6 +78,7 @@
 /** \brief Define the initial incremental encoder offset value. */
 #define USER_MOTOR_ENCODER_OFFSET					(-855)
 /** \brief Define the incremental encoder pulses per revolution value.*/
+/* WEDL5541-B14-KIT */
 #define USER_MOTOR_ENCODER_PULSES_PER_REVOLUTION	(1000U)
 
 #define USER_MOTOR_ENCODER_CAL_TOP_ZERO_AMPL_DELTA	(0.0005f)

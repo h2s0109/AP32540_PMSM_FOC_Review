@@ -80,12 +80,9 @@ sint32 bar_input (sint32 ind, TDISPLAYENTRY * pdisplayentry);
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 // *INDENT-OFF*
-const TDISPLAYENTRY stdlist[6] = {
+const TDISPLAYENTRY stdlist[3] = {
   {(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 0, 6, (TERMINAL_MAXY-1), &bar_select_menu, 0, &bar_input, " iMENU "},
   {(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 8, 16, (TERMINAL_MAXY-1), &bar_select_stdout0, 0, &bar_input, " STDOUT0 "},
-//{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 18, 26, (TERMINAL_MAXY-1), &bar_select_stdout1, 0, &bar_input, " STDOUT1 "},
-//{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 28, 35, (TERMINAL_MAXY-1), &bar_select_graph0, 0, &bar_input, " GRAPH0 "},
-//{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 37, 40, (TERMINAL_MAXY-1), &bar_select_off, 0, &bar_input, "OFF"},
   {0, 0, 0, 0, 0, 0, 0, 0, " "}
 };
 // *INDENT-ON*
@@ -99,7 +96,7 @@ void bar_select_menu (sint32 ind, TDISPLAYENTRY * pdisplayentry)
     conio_ascii_cputs (DISPLAYBAR, &pdisplayentry->text[0]);
     if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
     {
-        conio_driver.displaymode = DISPLAYMENU; //Menu
+        conio_driver.displaymode = DISPLAYMENU;     //Menu
         touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
     }
 }
@@ -147,7 +144,7 @@ void bar_select_off (sint32 ind, TDISPLAYENTRY * pdisplayentry)
     conio_ascii_cputs (DISPLAYBAR, &pdisplayentry->text[0]);
     if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
     {
-        //conio_driver.dialogmode = SWITCHOFFON;    //open confirmation window for switchoff
+        conio_driver.dialogmode = SWITCHOFFON;    //open confirmation window for switchoff
         // we switch to display menu if we are in graphics
         if (conio_driver.displaymode == DISPLAYGRAPHICS0)
             conio_driver.displaymode = DISPLAYMENU; //Menu

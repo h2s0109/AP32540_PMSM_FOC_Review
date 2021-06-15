@@ -72,9 +72,10 @@ extern volatile boolean tft_ready;
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
 IFX_EXTERN void Display_update_timeElapsed(void);
-IFX_EXTERN void Dispaly_initDisplay(void);
-IFX_EXTERN void Dispaly_touchpin_ready(void);
-IFX_EXTERN void Dispaly_stdout0(void);
+IFX_EXTERN void Display_initDisplay(void);
+IFX_EXTERN void Display_touchpin_ready(void);
+IFX_EXTERN void Display_show(void);
+IFX_EXTERN void Display_stopping(void);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/
