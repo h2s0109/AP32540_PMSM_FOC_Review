@@ -57,15 +57,13 @@ boolean stopDemo;
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
 
-void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl, boolean command)
+void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl)
 {
-
-	if(command == TRUE)
-	{
 		motorCtrl->interface.start = TRUE;
 		motorCtrl->interface.stop = FALSE;
 		motorCtrl->interface.running = TRUE;
-
+		motorCtrl->CurrnetIfMode = START_MODE;
+		/* Check the Calibration state */
 		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &
 				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done))
 		{
@@ -84,84 +82,113 @@ void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl, boolean command
 				IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
 			#endif /* End of TLE9180_DRIVER */
 		}
-	}
 }
 
-void PmsmFoc_Interface_stopMotor(MotorControl* const motorCtrl, boolean command)
+void PmsmFoc_Interface_stopMotor(MotorControl* motorCtrl)
 {
-	if(command == TRUE)
-	{
 		PmsmFoc_setSpeedRefLinearRamp(&motorCtrl->pmsmFoc,0);
-		PmsmFoc_SpeedControl_setRefSpeed(&motorCtrl->pmsmFoc.speedControl, 0);
-		PmsmFoc_Interface_setMotorTargetSpeed(&g_motorControl, 0);
+		PmsmFoc_SpeedControl_StopRefSpeed(&motorCtrl->pmsmFoc.speedControl);
+		//PmsmFoc_Interface_setMotorTargetSpeed(&motorCtrl, 0);
+		PmsmFoc_Interface_setStopMotorTargetSpeed(&motorCtrl);
+		motorCtrl->CurrnetIfMode = STOP_MODE;
 		motorCtrl->interface.start = FALSE;
 		motorCtrl->interface.demo = FALSE;
 		motorCtrl->interface.stop = TRUE;
 		motorCtrl->interface.running = FALSE;
-		motorCtrl->interface.motorTargetSpeed = 0;
 		PmsmFoc_SpeedControl_disable(&motorCtrl->pmsmFoc.speedControl);
 		motorCtrl->pmsmFoc.modulationIndex.real = 0;
 		motorCtrl->pmsmFoc.modulationIndex.imag = 0;
-		PmsmFoc_doSvPwmModulation(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
+		
+		PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
 		#if(TLE9180_DRIVER == ENABLED)
 			IfxTLE9180_deactivateEnable(&Tle9180Ctrl.driver);
 		#endif /* End of TLE9180_DRIVER */
 		motorCtrl->controlParameters.state = StateMachine_motorStop;
-	}
 }
 
-void PmsmFoc_Interface_setDemo(MotorControl* const motorCtrl, boolean command)
+void PmsmFoc_Interface_setDemo(MotorControl* const motorCtrl)
 {
-	if(command == TRUE  && (motorCtrl->controlParameters.state == StateMachine_motorStop))
+	if(motorCtrl->controlParameters.state == StateMachine_motorStop)
 	{
 		motorCtrl->interface.demo = TRUE;
-		PmsmFoc_Interface_startMotor(motorCtrl, command);
+		PmsmFoc_Interface_startMotor(motorCtrl);
+		motorCtrl->CurrnetIfMode = DEMO_MODE;
 	}
-	if(command == FALSE)
-	{
-		motorCtrl->interface.demo = FALSE;
-		PmsmFoc_Interface_stopMotor(motorCtrl, command);
-	}
-
 }
 
 void PmsmFoc_Interface_doDemo (MotorControl* const motorCtrl)
 {
-	if(motorCtrl->interface.demo == TRUE)
+	refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&motorCtrl->pmsmFoc.speedControl);
+	maxSpeed = PmsmFoc_SpeedControl_getMaxSpeed(&motorCtrl->pmsmFoc.speedControl);
+	if(maxSpeed > EC_MAX_SPEED)
+		maxSpeed =  EC_MAX_SPEED;
+
+	if(refSpeed == 0.0)
+		runDemo = 1;
+
+	if(runDemo)
 	{
-		refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&motorCtrl->pmsmFoc.speedControl);
-		maxSpeed = PmsmFoc_SpeedControl_getMaxSpeed(&motorCtrl->pmsmFoc.speedControl);
-		if(maxSpeed > EC_MAX_SPEED)
-			maxSpeed =  EC_MAX_SPEED;
-
-		if(refSpeed == 0.0)
-			runDemo = 1;
-
-		if(runDemo)
+		refSpeed = refSpeed + 50;
+		PmsmFoc_SpeedControl_setRefSpeed(&motorCtrl->pmsmFoc.speedControl, refSpeed);
+		if(refSpeed >= maxSpeed)
 		{
-			refSpeed = refSpeed + 50;
-			PmsmFoc_SpeedControl_setRefSpeed(&motorCtrl->pmsmFoc.speedControl, refSpeed);
-			if(refSpeed >= maxSpeed)
-			{
-				stopDemo = 1;
-				runDemo = 0;
-			}
+			stopDemo = 1;
+			runDemo = 0;
 		}
-		if(stopDemo)
+	}
+	if(stopDemo)
+	{
+		refSpeed = refSpeed - 50;
+		PmsmFoc_SpeedControl_setRefSpeed(&motorCtrl->pmsmFoc.speedControl, refSpeed);
+		if(refSpeed <= 0)
 		{
-			refSpeed = refSpeed - 50;
-			PmsmFoc_SpeedControl_setRefSpeed(&motorCtrl->pmsmFoc.speedControl, refSpeed);
-			if(refSpeed <= 0)
-			{
-				stopDemo = 0;
-				runDemo = 0;
-				motorCtrl->interface.demo = FALSE;
-				PmsmFoc_Interface_stopMotor(motorCtrl,TRUE);
-			}
+			stopDemo = 0;
+			runDemo = 0;
+			motorCtrl->interface.demo = FALSE;
+			PmsmFoc_Interface_stopMotor(motorCtrl);
 		}
 	}
 }
+#if 0
+static 
+void PmsmFoc_Interface_doDemo (MotorControl* const motorCtrl)
+{ 
+	float32	 measpeed,refSpeed,maxSpeed;
 
+	measpeed = PmsmFoc_SpeedControl_getSpeed(&motorCtrl->pmsmFoc.speedControl);
+	refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&motorCtrl->pmsmFoc.speedControl);
+	maxSpeed = PmsmFoc_SpeedControl_getMaxSpeed(&motorCtrl->pmsmFoc.speedControl);
+	PmsmFoc_setSpeedRefLinearRamp(&g_motorControl.pmsmFoc,g_motorControl.interface.motorTargetSpeed);
+	PmsmFoc_doSpeedRefLinearRamp(&g_motorControl.pmsmFoc);
+	refSpeed = PmsmFoc_getSpeedRefLinearRamp(&g_motorControl.pmsmFoc);
+	PmsmFoc_SpeedControl_setRefSpeed(&g_motorControl.pmsmFoc.speedControl, refSpeed);
+
+	if(refSpeed == 0.0)
+		runDemo = 1;
+
+	if(runDemo)
+	{
+		refSpeed = refSpeed + 50;
+		PmsmFoc_SpeedControl_setRefSpeed(&motorCtrl->pmsmFoc.speedControl, refSpeed);
+		if(refSpeed >= maxSpeed)
+		{
+			stopDemo = 1;
+			runDemo = 0;
+		}
+	}
+	if(stopDemo)
+	{
+		refSpeed = refSpeed - 50;
+		PmsmFoc_SpeedControl_setRefSpeed(&motorCtrl->pmsmFoc.speedControl, refSpeed);
+		if(refSpeed <= 0)
+		{
+			stopDemo = 0;
+			runDemo = 0;
+			PmsmFoc_Interface_stopMotor(motorCtrl);
+		}
+	}
+}
+#endif
 void PmsmFoc_Interface_brakeMotor(MotorControl* const motorCtrl)
 {
 
@@ -188,7 +215,34 @@ void PmsmFoc_Interface_geVdcLink(MotorControl* const motorCtrl)
 
 }
 
-void PmsmFoc_Interface_setMotorTargetSpeed(MotorControl* const motorCtrl, sint32 motorTargetSpeed)
+boolean PmsmFoc_Interface_setMotorTargetSpeed(MotorControl* motorCtrl, sint32 motorTargetSpeed)
+{	
+	float32 maxSpeed = PmsmFoc_SpeedControl_getMaxSpeed(&motorCtrl->pmsmFoc.speedControl);
+	float32 minSpeed = PmsmFoc_SpeedControl_getMinSpeed(&motorCtrl->pmsmFoc.speedControl);
+
+	boolean result;
+    if ((__absf(motorTargetSpeed)) > (maxSpeed))
+    {
+        motorCtrl->interface.motorTargetSpeed = maxSpeed;
+        result = FALSE;
+    }
+    else if ((__absf(motorTargetSpeed)) < (minSpeed))
+    {
+        motorCtrl->interface.motorTargetSpeed = minSpeed;
+        result = FALSE;
+    }
+    else
+    {
+        motorCtrl->interface.motorTargetSpeed = motorTargetSpeed;
+        result = TRUE;
+    }
+    return result;
+}
+
+boolean PmsmFoc_Interface_setStopMotorTargetSpeed(MotorControl* motorCtrl)
 {
-	motorCtrl->interface.motorTargetSpeed = motorTargetSpeed;
+    boolean result;
+	motorCtrl->interface.motorTargetSpeed = 0;
+	result = TRUE;
+    return result;
 }

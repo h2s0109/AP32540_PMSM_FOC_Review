@@ -85,4 +85,8 @@ float32 PmsmFoc_SpeedControl_do(SpeedControl *speedControl)
 void PmsmFoc_SpeedControl_init(SpeedControl *speedControl)
 {
 	Ifx_PicF32_init(&speedControl->piSpeed);
+    speedControl->measSpeed = 0;
+    speedControl->refSpeed  = 0;
+    speedControl->maxSpeed  = 0;
+    speedControl->enabled   = FALSE;
 }

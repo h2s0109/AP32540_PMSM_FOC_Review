@@ -157,14 +157,14 @@ void PmsmFoc_PhaseCurrentSense_doCalibration(PhaseCurrentSense * const phaseCurr
 			}
 
 			if(tempdif0 > 150 || tempdif1 > 100 || tempdif2 > 100) // 120mV at 5V and 12bit  */
-					{
-				phaseCurrentSense->calibration.count = USER_INVERTER_PHASECURSENSE_CALIBRATION_COUNT;
-				phaseCurrentSense->calibration.curVO1 = 0;
-				phaseCurrentSense->calibration.curVO2 = 0;
-				phaseCurrentSense->calibration.curVO3 = 0;
-				phaseCurrentSense->calibration.offset = 0;
-				// setHadEmergency();
-					}
+			{
+			phaseCurrentSense->calibration.count = USER_INVERTER_PHASECURSENSE_CALIBRATION_COUNT;
+			phaseCurrentSense->calibration.curVO1 = 0;
+			phaseCurrentSense->calibration.curVO2 = 0;
+			phaseCurrentSense->calibration.curVO3 = 0;
+			phaseCurrentSense->calibration.offset = 0;
+			// setHadEmergency();
+			}
 			else
 			{
 				phaseCurrentSense->curVO1.offset = -phaseCurrentSense->curVO1.gain * offsetU;

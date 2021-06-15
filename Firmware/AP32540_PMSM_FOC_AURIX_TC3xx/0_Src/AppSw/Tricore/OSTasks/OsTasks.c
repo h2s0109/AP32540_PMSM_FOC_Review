@@ -54,6 +54,7 @@
 #if(DBGCTRLMODE == ENABLED)
 	#include "Dbgctrl_pub.h"
 #endif
+#include "HWinit_pub.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -62,28 +63,31 @@ extern MotorControl				g_motorControl;
 /******************************************************************************/
 /*-------------------------Private Variables/Constants------------------------*/
 /******************************************************************************/
-#define OS_CURRENT_RAMP_TASK_PERIOD_MS				((uint32)(USER_MOTOR_CURRENT_Q_RAMP_PERIOD*1000))
-#define OS_CURRENT_RAMP_TASK_PRIORITY				(10)
+#if(FOC_CONTROL_SCHEME == CURRENT_CONTROL)
+	#define OS_CURRENT_RAMP_TASK_PERIOD_MS			((uint32)(USER_MOTOR_CURRENT_Q_RAMP_PERIOD*1000))
+	#define OS_CURRENT_RAMP_TASK_PRIORITY			(10)
+#endif  /* End of CURRENT_CONTROL*/
 
-#define OS_SPEED_CONTROL_TASK_PERIOD_MS				(5)
-#define OS_SPEED_CONTROL_TASK_PRIORITY				(9)
-
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
+	#define OS_SPEED_CONTROL_TASK_PERIOD_MS			(5)
+	#define OS_SPEED_CONTROL_TASK_PRIORITY			(9)
+#endif /* End of SPEED_CONTROL*/
 #define OS_ONE_EYE_BUFFER_COPY_TASK_PERIOD_MS		(10)
 #define OS_ONE_EYE_BUFFER_COPY_TASK_PERIOD_PRIORITY	(8)
-#if(TFT_DISPLAYMODE == ENABLED)
-	#define OS_TOUCH_CONTROL_TASK_PERIOD_MS			(20)
-	#define OS_TOUCH_CONTROL_TASK_PRIORITY			(7)
-#endif /* End of TFT_DISPLAYMODE */
-#if(DBGCTRLMODE == ENABLED)
-	#define OS_DEBUGGER_CONTROL_TASK_PERIOD_MS		(30)
-	#define OS_DEBUGGER_CONTROL_TASK_PRIORITY		(6)
-#endif /* End of DBGCTRL*/
-#define OS_SPEED_REF_RAMP_TASK_PERIOD_MS			((uint32)(USER_MOTOR_SPEED_RAMP_PERIOD*1000))
-#define OS_SPEED_REF_RAMP_TASK_PRIORITY				(5)
-#if(TFT_DISPLAYMODE == ENABLED)
-	#define OS_CONIO_TASK_PERIOD_MS					(100)
-	#define OS_CONIO_TASK_PRIORITY					(4)
-#endif /* End of TFT_DISPLAYMODE */
+
+#if((TFT_DISPLAYMODE == ENABLED)||(DBGCTRLMODE == ENABLED))
+	#define OS_EXTERNAL_CONTROL_TASK_PERIOD_MS		(20)
+	#define OS_EXTERNAL_CONTROL_TASK_PRIORITY		(7)
+#endif /* End of TFT_DISPLAYMODE||DBGCTRLMODE */
+
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
+	#define OS_SPEED_REF_RAMP_TASK_PERIOD_MS		((uint32)(USER_MOTOR_SPEED_RAMP_PERIOD*1000))
+	#define OS_SPEED_REF_RAMP_TASK_PRIORITY			(5)
+#endif /* End of SPEED_CONTROL*/
+
+#define OS_MISC_TASK_PERIOD_MS						(100)
+#define OS_MISC_TASK_PRIORITY						(4)
+
 #define OS_DEMO_CONTROL_TASK_PERIOD_MS				(200)
 #define OS_DEMO_CONTROL_TASK_PRIORITY				(3)
 #if(TFT_DISPLAYMODE == ENABLED)
@@ -143,10 +147,10 @@ IFX_INTERRUPT(OsTasks_TickProvider, FREERTOS_CORE_ID, configKERNEL_INTERRUPT_PRI
 	vPortSystemTickHandler();
 }
 
-#if(TFT_DISPLAYMODE == ENABLED)
-volatile uint32 touchControlCount= 0UL;
+#if((TFT_DISPLAYMODE == ENABLED)||(DBGCTRLMODE == ENABLED))
+volatile uint32 externalControlCount= 0UL;
 
-static __attribute__((__noreturn__)) void periodicTouchControlTask(void *arg)
+static __attribute__((__noreturn__)) void periodicExternalControlTask(void *arg)
 {
 	TickType_t xLastWakeTime;
 	(void)arg;
@@ -155,8 +159,8 @@ static __attribute__((__noreturn__)) void periodicTouchControlTask(void *arg)
 	while (1)
 	{
 
-		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_TOUCH_CONTROL_TASK_PERIOD_MS));
-		touchControlCount++;
+		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_EXTERNAL_CONTROL_TASK_PERIOD_MS));
+		externalControlCount++;
 		{
 			/******************************************************************
 			 *                      TOUCH CONTROL Task START                  *
@@ -166,36 +170,18 @@ static __attribute__((__noreturn__)) void periodicTouchControlTask(void *arg)
 			{
 				touch_periodic ();
 			}
+			DbgCtrl_periodic (&g_motorControl.sDbgCtrl);
+
 			/******************************************************************
 			 *                       TOUCH CONTROL Task END                   *
 			 ******************************************************************/
 		}
 	}
 }
-#endif /* End of TFT_DISPLAYMODE */
-#if(DBGCTRLMODE == ENABLED)
-volatile uint32 debugControlCount= 0UL;
+#endif /* End of TFT_DISPLAYMODE || DBGCTRLMODE*/
 
-static __attribute__((__noreturn__)) void periodicDebuggerTask(void *arg)
-{
-	TickType_t xLastWakeTime;
-	(void)arg;
-	xLastWakeTime = xTaskGetTickCount();
-
-	while (1)
-	{
-
-		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_DEBUGGER_CONTROL_TASK_PERIOD_MS));
-		debugControlCount++;
-		{
-			/* Call user tasks here */
-			DbgCtrl_periodic (&g_motorControl.sDbgCtrl);
-		}
-	}
-}
-#endif /* End of DBGCTRL */
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 volatile uint32 speedControlCount= 0UL;
-
 
 static __attribute__((__noreturn__)) void periodicSpeedControlTask(void *arg)
 {
@@ -213,23 +199,31 @@ static __attribute__((__noreturn__)) void periodicSpeedControlTask(void *arg)
 			 ******************************************************************/
 			/* Call user tasks here */
 			PmsmFoc_doSpeedControl(&g_motorControl);
-
-			if(g_motorControl.interface.motorTargetSpeed > EC_MAX_SPEED)
+			
+			/*it is checked at PmsmFoc_Interface_setMotorTargetSpeed */
+			/* 
+				if(g_motorControl.interface.motorTargetSpeed > EC_MAX_SPEED)
 				g_motorControl.interface.motorTargetSpeed = EC_MAX_SPEED;
 			if(g_motorControl.interface.motorTargetSpeed < EC_MIN_SPEED)
 				g_motorControl.interface.motorTargetSpeed = EC_MIN_SPEED;
+ 			*/
+			/* it is checked at PmsmFoc_SpeedControl_setRefSpeed */
+			/* 
 			if(g_motorControl.pmsmFoc.speedControl.refSpeed > EC_MAX_SPEED)
 				g_motorControl.pmsmFoc.speedControl.refSpeed = EC_MAX_SPEED;
 			if(g_motorControl.pmsmFoc.speedControl.refSpeed < EC_MIN_SPEED)
 				g_motorControl.pmsmFoc.speedControl.refSpeed = EC_MIN_SPEED;
-			/******************************************************************
+			*/			
+ 			/******************************************************************
 			 *                       SPEED CONTROL Task END                   *
 			 ******************************************************************/
 
 		}
 	}
 }
+#endif /* End of SPEED_CONTROL*/
 
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 volatile uint32 speedRefRampCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicSpeedRefRampTimeTask(void *arg)
@@ -247,7 +241,10 @@ static __attribute__((__noreturn__)) void periodicSpeedRefRampTimeTask(void *arg
 			 *                   SPEED REFERENCE RAMP Task START              *
 			 ******************************************************************/
 			/* Call user tasks here */
-			if(!g_motorControl.interface.demo)
+			#if 0
+			if(g_motorControl.interface.demo == FALSE)
+			#endif
+			if(g_motorControl.CurrnetIfMode != DEMO_MODE)
 			{
 				if (g_motorControl.pmsmFoc.speedControl.enabled != FALSE)
 				{
@@ -269,7 +266,16 @@ static __attribute__((__noreturn__)) void periodicSpeedRefRampTimeTask(void *arg
 		}
 	}
 }
-
+#endif /* End of SPEED_CONTROL*/
+/* set ik - target*/
+/* PmsmFoc_setSpeedRefLinearRamp */
+/* calc uk - ref*/
+/* PmsmFoc_doSpeedRefLinearRamp */
+/* get uk */
+/* PmsmFoc_getSpeedRefLinearRamp */
+/* set Ref */
+/* PmsmFoc_SpeedControl_setRefSpeed */
+#if(FOC_CONTROL_SCHEME == CURRENT_CONTROL)
 volatile uint32 currentRampCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicCurrentRampTimeTask(void *arg)
@@ -306,6 +312,7 @@ static __attribute__((__noreturn__)) void periodicCurrentRampTimeTask(void *arg)
 		}
 	}
 }
+#endif  /* End of CURRENT_CONTROL*/
 
 #if(ONE_EYEMODE == ENABLED)
 volatile uint32 OneEyeBufferCopyCount= 0UL;
@@ -334,10 +341,9 @@ static __attribute__((__noreturn__)) void periodicOneEyeBufferCopyTask(void *arg
 }
 #endif /* End of ONE_EYEMODE*/
 
-#if(TFT_DISPLAYMODE == ENABLED)
-volatile uint32 conioCount= 0UL;
+volatile uint32 miscCount= 0UL;
 
-static __attribute__((__noreturn__)) void periodicConioTask(void *arg)
+static __attribute__((__noreturn__)) void periodicMiscTask(void *arg)
 {
 	TickType_t xLastWakeTime;
 	(void)arg;
@@ -345,43 +351,33 @@ static __attribute__((__noreturn__)) void periodicConioTask(void *arg)
 
 	while (1)
 	{
-		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_CONIO_TASK_PERIOD_MS));
-		conioCount++;
+		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_MISC_TASK_PERIOD_MS));
+		miscCount++;
 		{
 			/******************************************************************
-			 *                         CONIO Task START                       *
+			 *                         MISC Task START                       *
 			 ******************************************************************/
+			#if(TFT_DISPLAYMODE == ENABLED)
 			if (tft_ready == 1)
 			{
-				conio_periodic(touch_driver.xdisp, touch_driver.ydisp, conio_driver.pmenulist, conio_driver.pstdlist);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 0, (uint8 *)SW_NAME);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 1, (uint8 *)"SW: V1.0.2, HW V3.2");
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 3, (uint8 *)"Speed Ref [rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.refSpeed);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 4, (uint8 *)"Speed Meas[rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.measSpeed);
-
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 6, (uint8 *)"Iu[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO1.value);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 7, (uint8 *)"Iv[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO2.value);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 8, (uint8 *)"Iw[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO3.value);
-
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 10, (uint8 *)"IqRef [A] = %.2f %c\n", g_motorControl.pmsmFoc.idqRef.imag);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 11, (uint8 *)"IqMeas[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqMeas.imag);
-
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 10, (uint8 *)"IdRef[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqRef.real);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 11, (uint8 *)"IdMeas[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqMeas.real);
-
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 13, (uint8 *)"VqRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vdqRef.imag);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 14, (uint8 *)"VdRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vdqRef.real);
-
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 16, (uint8 *)"ValphaRef[p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.imag);
-				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 17, (uint8 *)"VbetaRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.real);
+				Dispaly_stdout0();
 			}
+			#endif /* End of TFT_DISPLAYMODE */
+
+			#if 0
+			if(g_motorControl.interface.demo == TRUE)
+			#endif
+			if(g_motorControl.CurrnetIfMode == DEMO_MODE)
+			{
+				PmsmFoc_Interface_doDemo(&g_motorControl);
+			}
+			Misc_LED_toggle();
 			/******************************************************************
-			 *                          CONIO Task END                        *
+			 *                          MISC Task END                        *
 			 ******************************************************************/
 		}
 	}
 }
-#endif /* End of TFT_DISPLAYMODE */
 volatile uint32 demoControlCount= 0UL;
 
 static __attribute__((__noreturn__)) void periodicDemoControlTask(void *arg)
@@ -398,8 +394,6 @@ static __attribute__((__noreturn__)) void periodicDemoControlTask(void *arg)
 			/******************************************************************
 			 *                      DEMO CONTROL Task START                   *
 			 ******************************************************************/
-			PmsmFoc_Interface_doDemo(&g_motorControl);
-
 
 			/******************************************************************
 			 *                       DEMO CONTROL Task END                    *
@@ -425,17 +419,9 @@ static __attribute__((__noreturn__)) void periodicDisplayTimeTask(void *arg)
 			/******************************************************************
 			 *                      DISPLAY TIME Task START                   *
 			 ******************************************************************/
-			displayTime.sec++;
-			if((displayTime.sec % 60)==0)
-			{
-				displayTime.sec= 0;
-				displayTime.min++;
-				if((displayTime.min % 60)==0)
-				{
-					displayTime.min= 0;
-					displayTime.hour++;
-				}
-			}
+
+			Display_update_timeElapsed();
+
 			/******************************************************************
 			 *                      DISPLAY TIME Task END                     *
 			 ******************************************************************/
@@ -465,28 +451,22 @@ void vApplicationIdleHook( void )
 void OS_Tasks_init(void)
 {
 	/* Create tasks. */
-#if(TFT_DISPLAYMODE == ENABLED)	
-	xTaskCreate(periodicTouchControlTask,
-			"Touch Control",
+#if((TFT_DISPLAYMODE == ENABLED)||(DBGCTRLMODE == ENABLED))
+	xTaskCreate(periodicExternalControlTask,
+			"External Control",
 			configMINIMAL_STACK_SIZE,
 			NULL,
-			OS_TOUCH_CONTROL_TASK_PRIORITY,
+			OS_EXTERNAL_CONTROL_TASK_PRIORITY,
 			NULL);
-#endif /* End of TFT_DISPLAYMODE */
-#if(DBGCTRLMODE == ENABLED)
-	xTaskCreate(periodicDebuggerTask,
-			"Debugger Control",
-			configMINIMAL_STACK_SIZE,
-			NULL,
-			OS_DEBUGGER_CONTROL_TASK_PRIORITY,
-			NULL);
-#endif /* End of DBGCTRL*/
+#endif /* End of TFT_DISPLAYMODE || DBGCTRLMODE*/
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 	xTaskCreate(periodicSpeedControlTask,
 			"Speed Control",
 			configMINIMAL_STACK_SIZE,
 			NULL,
 			OS_SPEED_CONTROL_TASK_PRIORITY,
 			NULL);
+#endif /* End of (FOC_CONTROL_SCHEME == SPEED_CONTROL)*/
 
 #if(ONE_EYEMODE == ENABLED)
 	xTaskCreate(periodicOneEyeBufferCopyTask,
@@ -497,21 +477,21 @@ void OS_Tasks_init(void)
 			NULL);
 #endif /* End of ONE_EYEMODE*/
 
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 	xTaskCreate(periodicSpeedRefRampTimeTask,
 			"Speed Ref Ramp Time",
 			configMINIMAL_STACK_SIZE,
 			NULL,
 			OS_SPEED_REF_RAMP_TASK_PRIORITY,
 			NULL);
+#endif /* End of (FOC_CONTROL_SCHEME == SPEED_CONTROL)*/
 
-#if(TFT_DISPLAYMODE == ENABLED)
-	xTaskCreate(periodicConioTask,
-			"ConIO Task",
+	xTaskCreate(periodicMiscTask,
+			"miscellaneous Task",
 			configMINIMAL_STACK_SIZE,
 			NULL,
-			OS_CONIO_TASK_PRIORITY,
+			OS_MISC_TASK_PRIORITY,
 			NULL);
-#endif /* End of TFT_DISPLAYMODE */
 
 	xTaskCreate(periodicDemoControlTask,
 			"Demo Control",
@@ -527,13 +507,14 @@ void OS_Tasks_init(void)
 			OS_DISPLAY_TIME_TASK_PRIORITY,
 			NULL);
 #endif /* End of TFT_DISPLAYMODE */
-
+#if(FOC_CONTROL_SCHEME == CURRENT_CONTROL)
 	xTaskCreate(periodicCurrentRampTimeTask,
 			"Current Ramp Time",
 			configMINIMAL_STACK_SIZE,
 			NULL,
 			OS_CURRENT_RAMP_TASK_PRIORITY,
 			NULL);
+#endif  /* End of (FOC_CONTROL_SCHEME == CURRENT_CONTROL)*/
 
 	/* Set the Kernel interrupt and timer interrupt */
 	OsTasks_setupTimerInterrupt(&MODULE_STM0);

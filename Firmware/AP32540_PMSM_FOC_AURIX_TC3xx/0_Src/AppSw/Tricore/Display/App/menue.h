@@ -50,6 +50,4 @@ typedef struct {
 	uint8 min;
 	uint8 sec;
 } Display_Time;
-
-extern Display_Time displayTime;
 #endif /* _DISPLAY_H_ */

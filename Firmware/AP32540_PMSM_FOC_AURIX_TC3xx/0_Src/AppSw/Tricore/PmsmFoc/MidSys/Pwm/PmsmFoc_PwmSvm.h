@@ -76,25 +76,15 @@
 /******************************************************************************/
 /** /brief
  *
- * /param motorCtrl Reference to structure that contains instance data members
+ * /param inverter Reference to structure that contains instance data members
+ * /param modulationIndex Specifies the modulation index as a vector
  * /return
  * /note
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_doPwmSvmUpdate(Inverter* const inverter);
-#if(EMOTOR_LIB == MC_EMOTOR)
-/** /brief
- *
- * /param inverter Reference to structure that contains instance data members
- * /param modulationIndex Specifies the modulation index as a vector
- * /return
- * /note
- * /see, SpaceVectorModulation
- * /ingroup
- */
-IFX_EXTERN    void PmsmFoc_doSvPwmModulation(Inverter* const inverter, CplxStdReal modulationIndex);
-#endif
+
+IFX_EXTERN void PmsmFoc_SvmStart(Inverter* const inverter, CplxStdReal modulationIndex);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

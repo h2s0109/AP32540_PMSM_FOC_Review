@@ -134,29 +134,27 @@ void DbgCtrl_init(st_DbgCtrl *dbgctrl_arg)
 
 static void DbgCtrl_CalibrateSel(void)
 {
-    PmsmFoc_Interface_stopMotor(&g_motorControl,TRUE);
+    PmsmFoc_Interface_stopMotor(&g_motorControl);
     if(g_motorControl.controlParameters.state == StateMachine_motorStop)
     {
         PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&g_motorControl.inverter.phaseCurrentSense);
         PmsmFoc_resetEncoderCalibrationStatus(&g_motorControl);
         PmsmFoc_PositionAcquisition_init(&g_motorControl.positionSensor, PositionAcquisition_SensorType_Encoder);
-        PmsmFoc_Interface_startMotor(&g_motorControl,TRUE);
+        PmsmFoc_Interface_startMotor(&g_motorControl);
     }
 }
 
 static void DbgCtrl_StartSel(void)
 {
-    PmsmFoc_Interface_startMotor(&g_motorControl,TRUE);
-    //        motor.control.start = 1;
+    PmsmFoc_Interface_startMotor(&g_motorControl);
 }
 
 static void DbgCtrl_StopSel(void)
 {
     float32 refSpeed;
     refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
-    if(refSpeed > 0.0f)
-    PmsmFoc_Interface_stopMotor(&g_motorControl,TRUE);
-    //        motor.control.stop = 1;
+    // if(refSpeed > 0.0f)
+    PmsmFoc_Interface_stopMotor(&g_motorControl);
 }
 
 static void DbgCtrl_SpeedSel(float32 targetspeed_arg)
@@ -166,23 +164,16 @@ static void DbgCtrl_SpeedSel(float32 targetspeed_arg)
         if((g_motorControl.inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &
 				(g_motorControl.positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done))
                 {
-                    PmsmFoc_Interface_startMotor(&g_motorControl,TRUE);
+                    PmsmFoc_Interface_startMotor(&g_motorControl);
                 }
     }
 
-    float32 maxSpeed;
-    maxSpeed = PmsmFoc_SpeedControl_getMaxSpeed(&g_motorControl.pmsmFoc.speedControl);
-
-    if(targetspeed_arg > maxSpeed)
-    {
-        targetspeed_arg = maxSpeed;
-    }
     PmsmFoc_Interface_setMotorTargetSpeed(&g_motorControl, targetspeed_arg);
 }
 
 static void DbgCtrl_DemoSel(void)
 {
-    PmsmFoc_Interface_setDemo(&g_motorControl,TRUE);
+    PmsmFoc_Interface_setDemo(&g_motorControl);
 }
 
 static DBG_SPEEDSEL DbgCtrl_cmd_chk(DBG_SPEEDSEL eDbgCtrl_mode_sel_arg)
@@ -196,9 +187,22 @@ static DBG_SPEEDSEL DbgCtrl_cmd_chk(DBG_SPEEDSEL eDbgCtrl_mode_sel_arg)
         switch (eDbgCtrl_mode_sel_arg)
         {
         case DBG_STOP:
+            g_motorControl.CurrnetIfMode = STOP_MODE;
+            DbgCtrl_SpeedSel(0);
+            pending_mode = eDbgCtrl_mode_sel_arg;
+            break;
         case DBG_START:
+            g_motorControl.CurrnetIfMode = START_MODE;
+            DbgCtrl_SpeedSel(0);
+            pending_mode = eDbgCtrl_mode_sel_arg;
+            break;
         case DBG_CAL:
+            g_motorControl.CurrnetIfMode = CAL_MODE;
+            DbgCtrl_SpeedSel(0);
+            pending_mode = eDbgCtrl_mode_sel_arg;
+            break;
         case DBG_DEMO:
+            g_motorControl.CurrnetIfMode = DEMO_MODE;
             DbgCtrl_SpeedSel(0);
             pending_mode = eDbgCtrl_mode_sel_arg;
             break;

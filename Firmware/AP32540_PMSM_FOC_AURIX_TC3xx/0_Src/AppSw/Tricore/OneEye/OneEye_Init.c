@@ -363,11 +363,11 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 			{
 				if (run)
 				{
-					PmsmFoc_Interface_startMotor(&g_motorControl,TRUE);
+					PmsmFoc_Interface_startMotor(&g_motorControl);
 				}
 				else
 				{
-					PmsmFoc_Interface_stopMotor(&g_motorControl,TRUE);
+					PmsmFoc_Interface_stopMotor(&g_motorControl);
 				}
 				//IfxStdIf_DPipe_print(io, "! ecu run %f"KEY_CR, velocityControl.ref);
 
@@ -387,7 +387,7 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 						PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&g_motorControl.inverter.phaseCurrentSense);
 						PmsmFoc_resetEncoderCalibrationStatus(&g_motorControl);
 						PmsmFoc_PositionAcquisition_init(&g_motorControl.positionSensor, PositionAcquisition_SensorType_Encoder);
-						PmsmFoc_Interface_startMotor(&g_motorControl,TRUE);
+						PmsmFoc_Interface_startMotor(&g_motorControl);
 					}
 				}
 				//IfxStdIf_DPipe_print(io, "! ecu run %f"KEY_CR, velocityControl.ref);

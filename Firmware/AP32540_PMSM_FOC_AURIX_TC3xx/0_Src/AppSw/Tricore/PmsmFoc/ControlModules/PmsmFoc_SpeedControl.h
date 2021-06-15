@@ -70,6 +70,7 @@ typedef struct
     float32 measSpeed;               /**< @brief Speed acquired from position sensor */
     float32 refSpeed;                /**< @brief Speed reference in rpm */
     float32 maxSpeed;                /**< @brief Absolute value of the max allowed speed reference in rpm. Range=[0, +INF] */
+    float32 minSpeed;                /**< @brief Absolute value of the min allowed speed reference in rpm. Range=[0, +INF] */
     boolean enabled;                 /**< @brief Speed control enable flag. TRUE: the speed control is enabled. FALSE the speed control is disabled */
 } SpeedControl;
 /******************************************************************************/
@@ -176,6 +177,19 @@ IFX_INLINE void PmsmFoc_SpeedControl_setMaxSpeed(SpeedControl *speedControl, flo
     speedControl->maxSpeed = max;
 }
 
+/** @brief Set the speed controller max ref speed.
+ *
+ * @param SpeedControl Specifies the speed control object.
+ * @param Max Specifies the speed controller max ref speed value.
+ *
+ * @return none
+ * @ingroup app_speed_control
+ */
+IFX_INLINE void PmsmFoc_SpeedControl_setMinSpeed(SpeedControl *speedControl, float32 min)
+{
+    speedControl->minSpeed = min;
+}
+
 /** @brief Set the speed controller reference speed.
  *
  * @param SpeedControl Specifies the speed control object.
@@ -190,6 +204,12 @@ IFX_INLINE boolean PmsmFoc_SpeedControl_setRefSpeed(SpeedControl *speedControl, 
     boolean result;
     if ((__absf(speed)) > (speedControl->maxSpeed))
     {
+        speedControl->refSpeed = speedControl->maxSpeed;
+        result = FALSE;
+    }
+    else if ((__absf(speed)) < (speedControl->minSpeed))
+    {
+        speedControl->refSpeed = speedControl->minSpeed;
         result = FALSE;
     }
     else
@@ -197,6 +217,14 @@ IFX_INLINE boolean PmsmFoc_SpeedControl_setRefSpeed(SpeedControl *speedControl, 
         speedControl->refSpeed = speed;
         result = TRUE;
     }
+    return result;
+}
+
+IFX_INLINE boolean PmsmFoc_SpeedControl_StopRefSpeed(SpeedControl *speedControl)
+{
+    boolean result;
+    speedControl->refSpeed = 0;
+    result = TRUE;
     return result;
 }
 
@@ -211,6 +239,19 @@ IFX_INLINE float32 PmsmFoc_SpeedControl_getMaxSpeed(SpeedControl *speedControl)
 {
     return speedControl->maxSpeed;
 }
+
+/** @brief Return the speed controller min ref speed.
+ *
+ * @param SpeedControl Specifies the speed control object.
+ *
+ * @return Return the min allowed ref speed
+ * @ingroup app_speed_control
+ */
+IFX_INLINE float32 PmsmFoc_SpeedControl_getMinSpeed(SpeedControl *speedControl)
+{
+    return speedControl->minSpeed;
+}
+
 /** @brief Return the speed controller ref speed.
  *
  *  @param SpeedControl Specifies the speed control object.
@@ -251,19 +292,18 @@ IFX_INLINE void PmsmFoc_SpeedControl_setKpKi(SpeedControl *speedControl, float32
 {
 	Ifx_PicF32_setKpKi(&speedControl->piSpeed, kp, ki, period);
 }
-
 IFX_INLINE float32 PmsmFoc_SpeedControl_getSpeed(SpeedControl *speedControl)
 {
     return speedControl->measSpeed;
 }
-/** @brief Return a copy of the speed controller PI controller.
- *
- *  @param SpeedControl Specifies the speed control object.
- *  @param Pi Specifies the location where the copy must be saved.
- *  
- *  @return Return the max allowed ref speed
- *  @ingroup app_speed_control
- */
 
+#if 0
+float32 PmsmFoc_SpeedControl_getSpeed(MotorControl* const motorCtrl)
+{
+    &motorCtrl->pmsmFoc.speedControl.measSpeed = IfxStdIf_Pos_radsToRpm(
+            PmsmFoc_PositionAcquisition_updateSpeed(&motorCtrl->positionSensor));
+    return &motorCtrl->pmsmFoc.speedControl.measSpeed;
+}
+#endif
 
 #endif /* PMSMFOC_SPEEDCONTROL_H_ */

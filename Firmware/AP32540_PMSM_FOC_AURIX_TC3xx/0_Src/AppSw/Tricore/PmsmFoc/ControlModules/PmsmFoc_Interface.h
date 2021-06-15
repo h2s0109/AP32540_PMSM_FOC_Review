@@ -86,7 +86,7 @@ IFX_EXTERN void PmsmFoc_Interface_vfOpenLoopRampup(MotorControl* const motorCtrl
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl, boolean command);
+IFX_EXTERN void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -95,7 +95,7 @@ IFX_EXTERN void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl, bool
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_stopMotor(MotorControl* const motorCtrl, boolean command);
+IFX_EXTERN void PmsmFoc_Interface_stopMotor(MotorControl* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -104,7 +104,7 @@ IFX_EXTERN void PmsmFoc_Interface_stopMotor(MotorControl* const motorCtrl, boole
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_setDemo(MotorControl* const motorCtrl, boolean command);
+IFX_EXTERN void PmsmFoc_Interface_setDemo(MotorControl* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -160,7 +160,9 @@ IFX_EXTERN void PmsmFoc_Interface_geVdcLink(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_setMotorTargetSpeed(MotorControl* const motorCtrl, sint32 motorTargetSpeed);
+IFX_EXTERN boolean PmsmFoc_Interface_setMotorTargetSpeed(MotorControl* const motorCtrl, sint32 motorTargetSpeed);
+
+boolean PmsmFoc_Interface_setStopMotorTargetSpeed(MotorControl* motorCtrl);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

@@ -117,8 +117,6 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		/* From OneEye:	Ifx_Shell_matchToken(&args, "run") */
 		/* FOC controller. */
 		PmsmFoc_doFieldOrientedControl(motorCtrl);
-		/* Update GTM TOM/ATOM duty cycles. */
-		PmsmFoc_doPwmSvmUpdate(&motorCtrl->inverter);
 		break;
 
 	case StateMachine_tuneCurrentRegulators:
@@ -130,21 +128,11 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		break;
 	case StateMachine_motorStop:
 		/* From state machine: 	StateMachine_calibration */
-		/* From periodic task: 	PmsmFoc_Interface_doDemo */
-		/* Current reconstruction */
-        /* STEVE: functionlity overlapped */
+		/* From the end of demo: PmsmFoc_Interface_doDemo */
         #if 0
-		PmsmFoc_reconstructCurrent(motorCtrl);
-
-		/* Clarke Transformation */
-		PmsmFoc_doClarkeTransform(&motorCtrl->pmsmFoc);
-
 		/* Update electrical position */
 		motorCtrl->pmsmFoc.electricalAngle =
 				(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
-
-		/* Park Transformation */
-		PmsmFoc_doParkTransform(&motorCtrl->pmsmFoc);
         #endif
 		break;
 	case StateMachine_motorIdle:

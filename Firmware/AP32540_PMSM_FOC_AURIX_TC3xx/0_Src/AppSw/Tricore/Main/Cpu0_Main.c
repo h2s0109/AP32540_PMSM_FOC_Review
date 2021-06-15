@@ -69,14 +69,11 @@
 #if(DBGCTRLMODE == ENABLED)
     #include "Dbgctrl_pub.h"
 #endif
-#include "IfxStm_reg.h"
-#include "IfxGtm_reg.h"
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 MotorControl g_motorControl;		/* Motor control structure  			  */
-
 
 IFX_ALIGN(4)
 IfxCpu_syncEvent cpuSyncEvent= 0;
@@ -99,11 +96,7 @@ void core0_main (void)
 
 	/* Initialize motor control */
 	PmsmFoc_initMotorControl(&g_motorControl);
-    GTM_OCS.U = 0x12000000;
-    STM0_OCS.U = 0x12000000;
-    STM1_OCS.U = 0x12000000;
-    STM2_OCS.U = 0x12000000;
-    STM3_OCS.U = 0x12000000;
+    
 #if(TFT_DISPLAYMODE == ENABLED)
 	/* Initialize display */
 	Dispaly_initDisplay();

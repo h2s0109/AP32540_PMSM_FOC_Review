@@ -97,7 +97,7 @@ void PmsmFoc_initMotorControl(MotorControl* const motorCtrl)
 #endif
 
 }
-
+/* static */
 void PmsmFoc_initControlVariables(MotorControl* const motorCtrl)
 {
 
@@ -134,38 +134,6 @@ void PmsmFoc_initControlVariables(MotorControl* const motorCtrl)
 	motorCtrl->motor.ls = USER_MOTOR_INDUCTANCE_PER_PHASE;
 	motorCtrl->motor.polePairs = USER_MOTOR_POLE_PAIR;
 
-	/* Initialization of speed and current regulators */
-	PmsmFoc_SpeedControl_init(&motorCtrl->pmsmFoc.speedControl);
-	Ifx_PicF32_init(&motorCtrl->pmsmFoc.piId);
-	Ifx_PicF32_init(&motorCtrl->pmsmFoc.piIq);
-	PmsmFoc_SpeedControl_setMaxSpeed(&motorCtrl->pmsmFoc.speedControl,
-			USER_MOTOR_SPEED_CONTROL_MAX_RPM);
-
-	/* Set the PI controller kp and ki parameter (for fixed point calculation). */
-	PmsmFoc_SpeedControl_setKpKi(&motorCtrl->pmsmFoc.speedControl,
-			USER_MOTOR_SPEED_CONTROL_KP,
-			USER_MOTOR_SPEED_CONTROL_KI,
-			USER_MOTOR_SPEED_CONTROL_PERIOD);
-	Ifx_PicF32_setKpKi(&motorCtrl->pmsmFoc.piId,
-			USER_MOTOR_PI_ID_KP,
-			USER_MOTOR_PI_ID_KI,
-			USER_MOTOR_PI_ID_CONTROL_PERIOD);
-	Ifx_PicF32_setKpKi(&motorCtrl->pmsmFoc.piIq,
-			USER_MOTOR_PI_IQ_KP,
-			USER_MOTOR_PI_IQ_KP,
-			USER_MOTOR_PI_IQ_CONTROL_PERIOD);
-
-	/* Set the PI controller limits. */
-	PmsmFoc_SpeedControl_setLimit(&motorCtrl->pmsmFoc.speedControl,
-			USER_MOTOR_SPEED_CONTROL_MIN,
-			USER_MOTOR_SPEED_CONTROL_MAX);
-	Ifx_PicF32_setLimit(&motorCtrl->pmsmFoc.piId,
-			-USER_MOTOR_PI_ID_LIMIT_MAX,
-			USER_MOTOR_PI_ID_LIMIT_MAX);
-	Ifx_PicF32_setLimit(&motorCtrl->pmsmFoc.piIq,
-			-USER_MOTOR_PI_IQ_LIMIT_MAX,
-			USER_MOTOR_PI_IQ_LIMIT_MAX);
-
 	/* Open loop object initialization */
 	motorCtrl->openLoop.amplitude = 0.0;
 	motorCtrl->openLoop.electricalAngleDelta = 0.0;
@@ -180,10 +148,42 @@ void PmsmFoc_initControlVariables(MotorControl* const motorCtrl)
 	motorCtrl->positionSensor.encoder.encSyncTopZero = TRUE;
 	motorCtrl->positionSensor.encoder.calibrationStatus = Encoder_CalibrationStatus_notDone;
 #endif
+	/* Initialization of speed regulators */
+	PmsmFoc_SpeedControl_init(&motorCtrl->pmsmFoc.speedControl);
+	PmsmFoc_SpeedControl_setMaxSpeed(&motorCtrl->pmsmFoc.speedControl,
+			USER_MOTOR_SPEED_CONTROL_MAX_RPM);
+	PmsmFoc_SpeedControl_setMinSpeed(&motorCtrl->pmsmFoc.speedControl,
+			USER_MOTOR_SPEED_CONTROL_MIN_RPM);			
+	/* Set the PI controller kp and ki parameter (for fixed point calculation). */
+	PmsmFoc_SpeedControl_setKpKi(&motorCtrl->pmsmFoc.speedControl,
+			USER_MOTOR_SPEED_CONTROL_KP,
+			USER_MOTOR_SPEED_CONTROL_KI,
+			USER_MOTOR_SPEED_CONTROL_PERIOD);
+	/* Set the PI controller limits. */
+	PmsmFoc_SpeedControl_setLimit(&motorCtrl->pmsmFoc.speedControl,
+			USER_MOTOR_SPEED_CONTROL_MIN,
+			USER_MOTOR_SPEED_CONTROL_MAX);
 
-	/* Disable speed controller */
-	PmsmFoc_SpeedControl_disable(&motorCtrl->pmsmFoc.speedControl);
-
+	/* Initialization current regulators */
+	Ifx_PicF32_init(&motorCtrl->pmsmFoc.piId);
+	Ifx_PicF32_init(&motorCtrl->pmsmFoc.piIq);
+	/* Set the PI controller kp and ki parameter (for fixed point calculation). */
+	Ifx_PicF32_setKpKi(&motorCtrl->pmsmFoc.piId,
+			USER_MOTOR_PI_ID_KP,
+			USER_MOTOR_PI_ID_KI,
+			USER_MOTOR_PI_ID_CONTROL_PERIOD);
+	/* Set the PI controller limits. */
+	Ifx_PicF32_setKpKi(&motorCtrl->pmsmFoc.piIq,
+			USER_MOTOR_PI_IQ_KP,
+			USER_MOTOR_PI_IQ_KP,
+			USER_MOTOR_PI_IQ_CONTROL_PERIOD);
+	/* Set the PI controller limits. */
+	Ifx_PicF32_setLimit(&motorCtrl->pmsmFoc.piId,
+			-USER_MOTOR_PI_ID_LIMIT_MAX,
+			USER_MOTOR_PI_ID_LIMIT_MAX);
+	Ifx_PicF32_setLimit(&motorCtrl->pmsmFoc.piIq,
+			-USER_MOTOR_PI_IQ_LIMIT_MAX,
+			USER_MOTOR_PI_IQ_LIMIT_MAX);
 }
 
 void PmsmFoc_doFieldOrientedControl(MotorControl* const motorCtrl)
@@ -225,8 +225,7 @@ void PmsmFoc_doFieldOrientedControl(MotorControl* const motorCtrl)
 	PmsmFoc_doDqDecoupling(&motorCtrl->pmsmFoc);
 #endif
 
-	/* Space Vector Modulator */
-	PmsmFoc_doSvPwmModulation(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
+	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
 }
 
 void PmsmFoc_resetEncoderCalibrationStatus(MotorControl* const motorCtrl)
@@ -242,10 +241,9 @@ void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl)
 #endif
 	(void) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
 
-	/* Read ADC result of the 3 shunt current */
-	PmsmFoc_PhaseCurrentSense_getRawPhaseCurrentValues(&motorCtrl->inverter.phaseCurrentSense);
 	/* Current reconstruction */
 	PmsmFoc_reconstructCurrent(motorCtrl);
+	
 	/* Clarke Transformation */
 	PmsmFoc_doClarkeTransform(&motorCtrl->pmsmFoc);
 
@@ -321,30 +319,24 @@ void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl)
 	motorCtrl->openLoop.modulationIndex.real = cossin.real * motorCtrl->openLoop.amplitude;
 	motorCtrl->openLoop.modulationIndex.imag = cossin.imag * motorCtrl->openLoop.amplitude;
 
-	/* Space Vector Modulator */
-	PmsmFoc_doSvPwmModulation(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
-
-	/* Update PWM duty cycle */
-	PmsmFoc_doPwmSvmUpdate(&motorCtrl->inverter);
+	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
 }
-
+/* static */
 void PmsmFoc_reconstructCurrent(MotorControl* const motorCtrl)
 {
 	/* Read ADC result of the three shunt current */
 	PmsmFoc_PhaseCurrentSense_getRawPhaseCurrentValues(&motorCtrl->inverter.phaseCurrentSense);
 
-#if(EMOTOR_LIB == MC_EMOTOR)
 	motorCtrl->pmsmFoc.iPhaseMeas.u = motorCtrl->inverter.phaseCurrentSense.curVO1.value;
 	motorCtrl->pmsmFoc.iPhaseMeas.v = motorCtrl->inverter.phaseCurrentSense.curVO2.value;
 	motorCtrl->pmsmFoc.iPhaseMeas.w = - motorCtrl->pmsmFoc.iPhaseMeas.u - motorCtrl->pmsmFoc.iPhaseMeas.v;
 	//motorCtrl->pmsmFoc.iPhaseMeas.w = 1.83*(motorCtrl->inverter.phaseCurrentSense.curVO3.value);
-#endif
 #if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 	PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(&motorCtrl->inverter.highSideCurrentSense);
 #endif
 	//motorCtrl->pmsmFoc.iPhaseMeas.w = 1.83*(motorCtrl->inverter.phaseCurrentSense.curVO3.value)+0.08;
 }
-
+/* static */
 void PmsmFoc_doClarkeTransform(PmsmFoc* const foc)
 {
 #if(EMOTOR_LIB == MC_EMOTOR)
@@ -353,7 +345,7 @@ void PmsmFoc_doClarkeTransform(PmsmFoc* const foc)
 	/**< @brief real is Alpha value of current space vector variable */
 	/**< @brief imag is Beta value of current space vector variable */
 }
-
+/* static */
 void PmsmFoc_doParkTransform(PmsmFoc* const foc)
 {
 #if(EMOTOR_LIB == MC_EMOTOR)
@@ -363,22 +355,25 @@ void PmsmFoc_doParkTransform(PmsmFoc* const foc)
 	foc->idqMeas = Park(&foc->iab, &foc->CurrentAngleCosSin);
 #endif
 }
-
+/* static */
 void PmsmFoc_setIdqRef(MotorControl* const motorCtrl)
 {
 	PmsmFoc* foc = &motorCtrl->pmsmFoc;
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 	if(motorCtrl->controlParameters.controlScheme == ControlScheme_speed)
 	{
 		foc->idqRef.imag = foc->speedControl.piSpeed.uk * USER_MOTOR_IQLIMIT;
 		foc->idqRef.real = 0.0;
 	}
-	else if (motorCtrl->controlParameters.controlScheme == ControlScheme_current)
+#elif(FOC_CONTROL_SCHEME == CURRENT_CONTROL)
+	if (motorCtrl->controlParameters.controlScheme == ControlScheme_current)
 	{
 		CplxStdReal temp;
 		temp = PmsmFoc_getCurrentRefLinearRamp(&motorCtrl->pmsmFoc);
 		foc->idqRef.imag = temp.imag;
 		foc->idqRef.real = temp.real;
 	}
+#endif
 	else
 	{
 		foc->idqRef.imag = 0;
@@ -394,28 +389,28 @@ void PmsmFoc_setIdqRef(MotorControl* const motorCtrl)
 #else
 #endif
 }
-
+/* static */
 void PmsmFoc_doIqControl(PmsmFoc* const foc)
 {
 	foc->idqError.imag = foc->idqRef.imag - foc->idqMeas.imag;
 	Ifx_PicF32_step(&foc->piIq, foc->idqError.imag);
 	foc->vdqRef.imag = foc->piIq.uk;
 }
-
+/* static */
 void PmsmFoc_doIdControl(PmsmFoc* const foc)
 {
 	foc->idqError.real = foc->idqRef.real - foc->idqMeas.real;
 	Ifx_PicF32_step(&foc->piId, foc->idqError.real);
 	foc->vdqRef.real = foc->piId.uk;
 }
-
+/* static */
 StdReal PmsmFoc_getVdqMagnitude(PmsmFoc* const foc)
 {
 	StdReal vdqMag;
 	vdqMag = sqrt((foc->vdqRef.imag * foc->vdqRef.imag) + (foc->vdqRef.real *foc->vdqRef.real));
 	return vdqMag;
 }
-
+/* static */
 void PmsmFoc_doVdqLimit(PmsmFoc* const foc)
 {
 	StdReal modulationIndexReduction;
@@ -428,12 +423,12 @@ void PmsmFoc_doVdqLimit(PmsmFoc* const foc)
 		foc->piId.uk = foc->vdqRef.real;
 	}
 }
-
+/* Not used */
 StdReal PmsmFoc_getVdqLimit(PmsmFoc* const foc)
 {
 	return 0;
 }
-
+/* static */
 void PmsmFoc_doInverseParkTransform(PmsmFoc* const foc)
 {
 #if(EMOTOR_LIB == MC_EMOTOR)
@@ -501,13 +496,9 @@ void PmsmFoc_tuneCurrentRegulator(MotorControl* const motorCtrl)
 	PmsmFoc_doDqDecoupling(&motorCtrl->pmsmFoc);
 #endif
 
-	/* Space Vector Modulator */
-	PmsmFoc_doSvPwmModulation(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
-
-	/* Update PWM duty cycle */
-	PmsmFoc_doPwmSvmUpdate(&motorCtrl->inverter);
+	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
 }
-
+/* static */
 void PmsmFoc_doDqDecoupling(PmsmFoc* const foc)
 {
 
@@ -539,6 +530,7 @@ void PmsmFoc_doVfControl(MotorControl* const motorCtrl)
 		motorCtrl->openLoop.modulationIndex.real = cossin.real * motorCtrl->openLoop.amplitude;
 		motorCtrl->openLoop.modulationIndex.imag = cossin.imag * motorCtrl->openLoop.amplitude;
 	}
+	
 	if(motorCtrl->interface.start == FALSE)
 	{
 		motorCtrl->openLoop.electricalAngle = 0;
@@ -551,12 +543,9 @@ void PmsmFoc_doVfControl(MotorControl* const motorCtrl)
 	#endif /* End of TLE9180_DRIVER */
 	}
 
-	/* Space Vector Modulator */
-	PmsmFoc_doSvPwmModulation(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
-
-	/* Update PWM duty cycle */
-	PmsmFoc_doPwmSvmUpdate(&motorCtrl->inverter);
+	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
 }
+/* Not used */
 void PmsmFoc_doMiscWorks(MotorControl* const motorCtrl)
 {
 

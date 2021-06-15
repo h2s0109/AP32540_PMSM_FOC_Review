@@ -97,7 +97,6 @@ void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/
 
-
 #define DISP_CYAN_BLK   (COLOR_CYAN << 4) | COLOR_BLACK        //Display background color cyan, text color black
 #define DISP_BRN_WHT   (COLOR_BROWN << 4) | COLOR_WHITE        //Display background color brown, text color black
 #define SLCT_BLK_YELW   (COLOR_BLACK << 4) | COLOR_YELLOW      //Selection background color black, text color yellow
@@ -214,6 +213,21 @@ void Menue_noAction(sint32 ind, TDISPLAYENTRY * pDispEntry)
 {
 }
 
+void Display_update_timeElapsed(void)
+{
+	displayTime.sec++;
+	if((displayTime.sec % 60)==0)
+	{
+		displayTime.sec= 0;
+		displayTime.min++;
+		if((displayTime.min % 60)==0)
+		{
+			displayTime.min= 0;
+			displayTime.hour++;
+		}
+	}
+}
+
 void Menue_displayTime (sint32 ind, TDISPLAYENTRY * pDispEntry)
 {
 	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
@@ -263,19 +277,20 @@ void Menue_displayOffset (sint32 ind, TDISPLAYENTRY * pDispEntry)
 	conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Position: %3d deg", angle);
 }
 
-
-//void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pDispEntry)
-//{
-//	uint8 status = 0; //= Motor_getRunningStatus();
-//	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
-//	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
-//	if(status == 0)
-//		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Stopped !");
-//	else if(status == 1)
-//		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Running !");
-//	else if(status == 2)
-//		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Demo !");
-//}
+#if 0
+void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pDispEntry)
+{
+	uint8 status = 0; //= Motor_getRunningStatus();
+	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
+	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_display);
+	if(status == 0)
+		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Stopped !");
+	else if(status == 1)
+		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Running !");
+	else if(status == 2)
+		conio_ascii_printfxy(DISPLAYMENU, pDispEntry->xmin, pDispEntry->y, (const uint8 *)"Mode  : %s", "Demo !");
+}
+#endif
 
 void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pDispEntry)
 {
@@ -325,7 +340,7 @@ void Menue_CalibrateSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
 			PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&g_motorControl.inverter.phaseCurrentSense);
 			PmsmFoc_resetEncoderCalibrationStatus(&g_motorControl);
 			PmsmFoc_PositionAcquisition_init(&g_motorControl.positionSensor, PositionAcquisition_SensorType_Encoder);
-			PmsmFoc_Interface_startMotor(&g_motorControl,TRUE);
+			PmsmFoc_Interface_startMotor(&g_motorControl);
 		}
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
@@ -338,12 +353,10 @@ void Menue_DemoSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
 	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		PmsmFoc_Interface_setDemo(&g_motorControl,TRUE);
+		PmsmFoc_Interface_setDemo(&g_motorControl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
-
-float32 g_refSpeed;
 
 void Menue_SpeedPlsSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
 {
@@ -372,16 +385,19 @@ void Menue_SpeedPlsSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
 void Menue_SpeedMnsSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
 {
 	float32 refSpeed;
+	float32 minSpeed;
 	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
 	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
 	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
 		refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
-		if(refSpeed > 0.0f)
+		minSpeed = PmsmFoc_SpeedControl_getMinSpeed(&g_motorControl.pmsmFoc.speedControl);
+
+		if(refSpeed > minSpeed)
 			refSpeed = refSpeed - 100.0f;
 		else
-			refSpeed = 0.0f;
+			refSpeed = minSpeed;
 
 		PmsmFoc_Interface_setMotorTargetSpeed(&g_motorControl, refSpeed);
 
@@ -396,8 +412,7 @@ void Menue_StartSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
 	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		PmsmFoc_Interface_startMotor(&g_motorControl,TRUE);
-		//        motor.control.start = 1;
+		PmsmFoc_Interface_startMotor(&g_motorControl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
@@ -410,8 +425,7 @@ void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
     if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
     {
     	touch_driver.touchmode &= ~MASK_TOUCH_UP; //clear
-		PmsmFoc_Interface_stopMotor(&g_motorControl,TRUE);
-		//        motor.control.stop = 1;
+		PmsmFoc_Interface_stopMotor(&g_motorControl);
 	}
 }
 

@@ -41,14 +41,16 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "Display_Functions.h"
+#include "Display_Cfg_AppKitTft_TC387A.h"
 #include "IfxPort.h"
 #include "IfxCpu.h"
-#include "Display_Cfg_AppKitTft_TC387A.h"
-IFX_EXTERN void tft_appl_init (void);
+#include "touch.h"
+#include "conio_tft.h"
+#include "PmsmFoc_Functions.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-
+extern MotorControl g_motorControl;
 /******************************************************************************/
 /*-------------------------Private Variables/Constants------------------------*/
 /******************************************************************************/
@@ -80,4 +82,29 @@ void Dispaly_touchpin_ready(void)
 	IfxPort_setPinModeInput(TFT_USE_CHIPSELECT.pin.port, TFT_USE_CHIPSELECT.pin.pinIndex, IfxPort_InputMode_pullUp);
 	// INT from touch
 	IfxPort_setPinModeInput(TOUCH_USE_INT.port, TOUCH_USE_INT.pinIndex, IfxPort_InputMode_pullUp);
+}
+
+void Dispaly_stdout0(void)
+{
+	conio_periodic(touch_driver.xdisp, touch_driver.ydisp, conio_driver.pmenulist, conio_driver.pstdlist);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 0, (uint8 *)SW_NAME);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 1, (uint8 *)"SW: V1.0.2, HW V3.2");
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 3, (uint8 *)"Speed Ref [rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.refSpeed);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 4, (uint8 *)"Speed Meas[rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.measSpeed);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 6, (uint8 *)"Iu[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO1.value);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 7, (uint8 *)"Iv[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO2.value);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 8, (uint8 *)"Iw[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO3.value);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 10, (uint8 *)"IqRef [A] = %.2f %c\n", g_motorControl.pmsmFoc.idqRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 11, (uint8 *)"IqMeas[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqMeas.imag);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 10, (uint8 *)"IdRef[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqRef.real);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 11, (uint8 *)"IdMeas[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqMeas.real);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 13, (uint8 *)"VqRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vdqRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 14, (uint8 *)"VdRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vdqRef.real);
+
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 16, (uint8 *)"ValphaRef[p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 17, (uint8 *)"VbetaRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.real);
 }

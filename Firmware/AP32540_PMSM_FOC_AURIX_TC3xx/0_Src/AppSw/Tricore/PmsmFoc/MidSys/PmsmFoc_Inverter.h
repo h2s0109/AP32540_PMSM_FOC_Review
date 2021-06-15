@@ -49,7 +49,6 @@
     #include "PmsmFoc_InitTLE9180.h"
 #endif /* End of TLE9180_DRIVER */
 #include "IfxGtm_Tom_PwmHl.h"
-#include "IfxGtm_Trig.h"
 
 #include "PmsmFoc_CurrentDcLinkSense.h"
 #include "PmsmFoc_CurrentThreeshuntSense.h"

@@ -1,5 +1,5 @@
 /*
- * \file Mcu_Init.c
+ * \file Gtm_Init.c
  * \copyright Copyright (c) 2019 Infineon Technologies AG. All rights reserved.
  *
  *                            IMPORTANT NOTICE
@@ -38,46 +38,52 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-#include "Mcu_Init.h"
-#include MCUCARD_TYPE_PATH
-#include "PmsmFoc_Inverter.h"
+#include "IfxPort.h"
+#include "IfxStm_reg.h"
+#include "IfxGtm_reg.h"
 /******************************************************************************/
 /*-------------------------------Global variables-----------------------------*/
 /******************************************************************************/
 
 /******************************************************************************/
-/*-----------------------------Private Variables/Constants--------------------*/
+/*-------------------------Private Variables/Constants------------------------*/
 /******************************************************************************/
 
 /******************************************************************************/
-/*-------------------------Function Implementations---------------------------*/
+/*-------------------------------Private Functions----------------------------*/
 /******************************************************************************/
-void PmsmFoc_initHardware(MotorControl* const motorCtrl)
+void Misc_LED_init(void)
 {
-	IfxCpu_disableInterrupts();
-	/* Initialize SPI interfaces */
-	PmsmFoc_Qspi_initQspi();
-#if(TLF35584_DRIVER == ENABLED)
-	/* TLF35584 (Power and WDT ASIC) init */
-	PmsmFoc_Tlf35584_Init();        /* This requires connected SPI module Initialized before */
-#endif /* End of TLF35584_DRIVER */
-#if(TLE9180_DRIVER == ENABLED)
-	/* Initialize TLE9180, this requires connected SPI module initialized before */
-	PmsmFoc_Tle9180_Init();
-#endif /* End of TLE9180_DRIVER */
+	/* Test Pins */
+	IfxPort_setPinModeOutput(&MODULE_P13, 0, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);	/* Set Pin13_0 as GP-Out */
+	IfxPort_setPinModeOutput(&MODULE_P13, 1, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);	/* Set Pin13_1 as GP-Out */
+	IfxPort_setPinModeOutput(&MODULE_P13, 2, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);	/* Set Pin13_2 as GP-Out */
+	IfxPort_setPinModeOutput(&MODULE_P13, 3, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);	/* Set Pin13_3 as GP-Out */
 
-    /* Initialize GTM Driver */
-	PmsmFoc_Gtm_initGtm(&motorCtrl->inverter);
-
-    /* Initialize EVADC Driver */
-	PmsmFoc_Evadc_initEvadc(&motorCtrl->inverter);
-
-	/* Initialize position sensor driver */
-	PmsmFoc_PositionAcquisition_init(&motorCtrl->positionSensor, PositionAcquisition_SensorType_Encoder);
-	Misc_LED_init();
-	Misc_ModuleDebug_init();
+	IfxPort_setPinMode(&MODULE_P13, 0, IfxPort_Mode_outputPushPullGeneral);     /* LED107_PORT */
+	IfxPort_setPinLow(&MODULE_P13, 0); 											/* LED107_ON */
+	IfxPort_setPinMode(&MODULE_P13, 1, IfxPort_Mode_outputPushPullGeneral);     /* LED108_PORT */
+	IfxPort_setPinHigh(&MODULE_P13, 1);											/* LED108_OFF */
+	IfxPort_setPinMode(&MODULE_P13, 2, IfxPort_Mode_outputPushPullGeneral);     /* LED109_PORT */
+	IfxPort_setPinLow(&MODULE_P13, 2);											/* LED109_ON */
+	IfxPort_setPinMode(&MODULE_P13, 3, IfxPort_Mode_outputPushPullGeneral);     /* LED110_PORT */
+	IfxPort_setPinHigh(&MODULE_P13, 3);											/* LED110_OFF */
 }
 
+void Misc_LED_toggle(void)
+{
+	/* Test Pins */
+	IfxPort_togglePin(&MODULE_P13, 0); 											/* LED107_ON */
+	IfxPort_togglePin(&MODULE_P13, 1);											/* LED108_OFF */
+	IfxPort_togglePin(&MODULE_P13, 2);											/* LED109_ON */
+	IfxPort_togglePin(&MODULE_P13, 3);											/* LED110_OFF */
+}
 
-
-
+void Misc_ModuleDebug_init(void)
+{
+    GTM_OCS.U = 0x12000000;
+    STM0_OCS.U = 0x12000000;
+    STM1_OCS.U = 0x12000000;
+    STM2_OCS.U = 0x12000000;
+    STM3_OCS.U = 0x12000000;
+}

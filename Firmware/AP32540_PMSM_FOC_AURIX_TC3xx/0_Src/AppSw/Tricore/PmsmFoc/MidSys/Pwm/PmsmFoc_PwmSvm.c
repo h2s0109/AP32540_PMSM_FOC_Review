@@ -42,8 +42,6 @@
 /******************************************************************************/
 #include "PmsmFoc_PwmSvm.h"
 #include "IfxGtm_Tom_PwmHl.h"
-#include "IfxGtm_Trig.h"
-#include "IfxStdIf_Timer.h"
 #include "PmsmFoc_Inverter.h"
 
 /******************************************************************************/
@@ -53,39 +51,48 @@
 /******************************************************************************/
 /*-------------------------Private Variables/Constants------------------------*/
 /******************************************************************************/
-
+static void PmsmFoc_SvmPwmUpdate(Pwm3PhaseOutput* const pwmoutputi);
 /******************************************************************************/
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
-#if(EMOTOR_LIB == MC_EMOTOR)
-
-void PmsmFoc_doSvPwmModulation(Inverter* const inverter, CplxStdReal modulationIndex)
+static void PmsmFoc_SvmPwmUpdate(Pwm3PhaseOutput* const pwmoutputi)
 {
-	Ifx_TimerValue period;
-	period = inverter->pwm3PhaseOutput.pwm.timer->base.period;
-	/* Space vector PWM */
-	uint8 Sector;
-	Sector = SpaceVectorModulation(modulationIndex,period,inverter->pwm3PhaseOutput.pwmOnTimes);
-	inverter->pwm3PhaseOutput.adcTrigerPoint= period>>1;
-	inverter->pwm3PhaseOutput.sectorSVM = Sector;
-}
-#endif
-
-void PmsmFoc_doPwmSvmUpdate(Inverter* const inverter)
-{
+	/* Set the period and duty value to GTM HW */
 	//iLLD GTM functions
 #if(GTM_USED == GTM_ATOM_WITH_DTM_USED )
 	//ATOM with DTM
 #elif(GTM_USED == GTM_ATOM_WITHOUT_DTM_USED)
 
 #elif(GTM_USED == GTM_TOM_WITHOUT_DTM_USED)
-
 	//TOM without DTM, two Channel per phase
-    IfxGtm_Tom_Timer_disableUpdate(&inverter->pwm3PhaseOutput.timer);
-    IfxGtm_Tom_Timer_setTrigger(&inverter->pwm3PhaseOutput.timer,
-    							inverter->pwm3PhaseOutput.adcTrigerPoint +
-								inverter->pwm3PhaseOutput.pwm.base.deadtime + 5);		/*  */
-    IfxGtm_Tom_PwmHl_setOnTime(&inverter->pwm3PhaseOutput.pwm, inverter->pwm3PhaseOutput.pwmOnTimes);
-    IfxGtm_Tom_Timer_applyUpdate(&inverter->pwm3PhaseOutput.timer);
+	/* set the GLB_CTRL to Disable */
+    IfxGtm_Tom_Timer_disableUpdate(&pwmoutputi->timer);
+    IfxGtm_Tom_Timer_setTrigger(&pwmoutputi->timer,
+    							pwmoutputi->adcTrigerPoint +
+								pwmoutputi->pwm.base.deadtime + 5);
+	/* Write the value to the SR0, SR1 */
+	/* IfxGtm_Tom_PwmHl_setOnTime is assigned to IfxGtm_Tom_PwmHl_updateCenterAligned */
+    IfxGtm_Tom_PwmHl_setOnTime(&pwmoutputi->pwm, pwmoutputi->pwmOnTimes);
+	/* set the GLB_CTRL to enable */
+    IfxGtm_Tom_Timer_applyUpdate(&pwmoutputi->timer);
 #endif
+}
+
+void PmsmFoc_SvmStart(Inverter* const inverter, CplxStdReal modulationIndex)
+{
+
+	Ifx_TimerValue period;
+	Pwm3PhaseOutput* pwmoutput;
+	uint8 Sector;
+	period = inverter->pwm3PhaseOutput.pwm.timer->base.period;
+	pwmoutput = &inverter->pwm3PhaseOutput;
+#if(EMOTOR_LIB == MC_EMOTOR)
+	/* Sector identification */
+	Sector = SpaceVectorModulation(modulationIndex,period,inverter->pwm3PhaseOutput.pwmOnTimes);
+#endif
+	// inverter->pwm3PhaseOutput.adcTrigerPoint= period>>1;
+	// inverter->pwm3PhaseOutput.sectorSVM = Sector;
+	pwmoutput->adcTrigerPoint= period>>1;
+	pwmoutput->sectorSVM = Sector;
+	PmsmFoc_SvmPwmUpdate(pwmoutput);
 }
