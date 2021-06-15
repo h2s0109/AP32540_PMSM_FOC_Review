@@ -48,14 +48,8 @@
 #include "PmsmFoc_UserConfig.h"
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
 #include "PmsmFoc_StateMachine.h"
-#include "PmsmFoc_Interface.h"
-#if(TLE9180_DRIVER == ENABLED)
-    #include "TLE9180.h"
-#endif /* End of TLE9180_DRIVER */
 #include "IfxGpt12_IncrEnc.h"
-
 #include "IfxQspi_SpiMaster.h"
 #include "IfxDma.h"
 /******************************************************************************/

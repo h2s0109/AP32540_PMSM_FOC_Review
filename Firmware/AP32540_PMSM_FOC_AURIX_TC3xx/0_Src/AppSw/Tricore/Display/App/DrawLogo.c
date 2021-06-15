@@ -46,7 +46,12 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 
-#include "Cpu/Std/Ifx_Types.h"
+#include <Cpu/Std/Ifx_Types.h>
+#include "IfxCpu_reg.h"
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#endif
+#include "Display_Cfg_AppKitTft_TC387A.h"
 #include "conio_tft.h"
 
 
@@ -172,7 +177,7 @@ void graph_drawInfineonLogo(void)
     y = (240 - height) / 2;
 
     idx = 0;
-    color = -1;
+    color = 0xFF;
     count = 0;
 
     // set blue frame
@@ -180,7 +185,7 @@ void graph_drawInfineonLogo(void)
     {
         for(j = 0; j < TFT_XSIZE; j++)
         {
-            conio_graphics_set(DISPLAYGRAPHICS0, j, i, RED);
+            conio_graphics_set(DISPLAYGRAPHICS0, j, i, COLOR_RED);
         }
     }
     // set red frame
@@ -188,7 +193,7 @@ void graph_drawInfineonLogo(void)
     {
         for(j = 5; j < TFT_XSIZE - 5; j++)
         {
-            conio_graphics_set(DISPLAYGRAPHICS0, j, i, BLUE);
+            conio_graphics_set(DISPLAYGRAPHICS0, j, i, COLOR_BLUE);
         }
     }
     // set white background
@@ -196,7 +201,7 @@ void graph_drawInfineonLogo(void)
     {
         for(j = 10; j < TFT_XSIZE - 10; j++)
         {
-            conio_graphics_set(DISPLAYGRAPHICS0, j, i, WHITE);
+            conio_graphics_set(DISPLAYGRAPHICS0, j, i, COLOR_WHITE);
         }
     }
     // paint the logo

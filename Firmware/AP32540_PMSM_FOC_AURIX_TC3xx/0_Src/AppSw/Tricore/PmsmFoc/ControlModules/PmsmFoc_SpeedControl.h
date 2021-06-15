@@ -46,7 +46,7 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "Ifx_PicF32.h"
-#include "Cpu/Std/IfxCpu_Intrinsics.h"
+#include "IfxCpu_Intrinsics.h"
 /******************************************************************************/
 /*--------------------------------Macros--------------------------------------*/
 /******************************************************************************/
@@ -54,7 +54,6 @@
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-//extern SpeedControl speedControl;
 
 /******************************************************************************/
 /*--------------------------------Enumerations--------------------------------*/
@@ -214,10 +213,10 @@ IFX_INLINE float32 PmsmFoc_SpeedControl_getMaxSpeed(SpeedControl *speedControl)
 }
 /** @brief Return the speed controller ref speed.
  *
- * @param SpeedControl Specifies the speed control object.
- *
- * @return Return the ref speed
- * @ingroup app_speed_control
+ *  @param SpeedControl Specifies the speed control object.
+ *  
+ *  @return Return the ref speed
+ *  @ingroup app_speed_control
  */
 IFX_INLINE float32 PmsmFoc_SpeedControl_getRefSpeed(SpeedControl *speedControl)
 {
@@ -225,11 +224,11 @@ IFX_INLINE float32 PmsmFoc_SpeedControl_getRefSpeed(SpeedControl *speedControl)
 }
 /** @brief Return a copy of the speed controller PI controller.
  *
- * @param SpeedControl Specifies the speed control object.
- * @param Pi Specifies the location where the copy must be saved.
- *
- * @return Return the max allowed ref speed
- * @ingroup app_speed_control
+ *  @param SpeedControl Specifies the speed control object.
+ *  @param Pi Specifies the location where the copy must be saved.
+ *  
+ *  @return Return the max allowed ref speed
+ *  @ingroup app_speed_control
  */
 IFX_INLINE void PmsmFoc_SpeedControl_getPi(SpeedControl *speedControl, Ifx_PicF32 *pi)
 {
@@ -259,11 +258,11 @@ IFX_INLINE float32 PmsmFoc_SpeedControl_getSpeed(SpeedControl *speedControl)
 }
 /** @brief Return a copy of the speed controller PI controller.
  *
- * @param SpeedControl Specifies the speed control object.
- * @param Pi Specifies the location where the copy must be saved.
- *
- * @return Return the max allowed ref speed
- * @ingroup app_speed_control
+ *  @param SpeedControl Specifies the speed control object.
+ *  @param Pi Specifies the location where the copy must be saved.
+ *  
+ *  @return Return the max allowed ref speed
+ *  @ingroup app_speed_control
  */
 
 

@@ -64,10 +64,13 @@
 	#include "OneEye_Init.h"
 #endif /* End of ONE_EYEMODE*/
 #if(TFT_DISPLAYMODE == ENABLED)
-	#include "Display_Functions.h"
+	#include "Display_pub.h"
 #endif /* End of TFT_DISPLAYMODE */
-
-
+#if(DBGCTRLMODE == ENABLED)
+    #include "Dbgctrl_pub.h"
+#endif
+#include "IfxStm_reg.h"
+#include "IfxGtm_reg.h"
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
@@ -87,19 +90,20 @@ void core0_main (void)
      * */
     IfxScuWdt_disableCpuWatchdog (IfxScuWdt_getCpuWatchdogPassword ());
     IfxScuWdt_disableSafetyWatchdog (IfxScuWdt_getSafetyWatchdogPassword ());
-
+#if(TFT_DISPLAYMODE == ENABLED)
+    Dispaly_touchpin_ready();
+#endif /* End of TFT_DISPLAYMODE */
     /* Cpu sync event wait*/
     IfxCpu_emitEvent(&cpuSyncEvent);
     IfxCpu_waitEvent(&cpuSyncEvent, 1);
 
-	/* Test Pins */
-	IfxPort_setPinModeOutput(&MODULE_P13, 0, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);	/* Set Pin13_0 as GP-Out */
-	IfxPort_setPinModeOutput(&MODULE_P13, 1, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);	/* Set Pin13_1 as GP-Out */
-	IfxPort_setPinModeOutput(&MODULE_P13, 2, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);	/* Set Pin13_2 as GP-Out */
-	IfxPort_setPinModeOutput(&MODULE_P13, 3, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);	/* Set Pin13_3 as GP-Out */
-
 	/* Initialize motor control */
 	PmsmFoc_initMotorControl(&g_motorControl);
+    GTM_OCS.U = 0x12000000;
+    STM0_OCS.U = 0x12000000;
+    STM1_OCS.U = 0x12000000;
+    STM2_OCS.U = 0x12000000;
+    STM3_OCS.U = 0x12000000;
 #if(TFT_DISPLAYMODE == ENABLED)
 	/* Initialize display */
 	Dispaly_initDisplay();
@@ -108,6 +112,9 @@ void core0_main (void)
 #if(ONE_EYEMODE == ENABLED)
 	OneEye_init();
 #endif /* End of ONE_EYEMODE*/
+#if(DBGCTRLMODE == ENABLED)
+    DbgCtrl_init(&g_motorControl.sDbgCtrl);
+#endif
 
 	/* Initialize operating system tasks */
 	extern void OS_Tasks_init(void);

@@ -43,9 +43,9 @@
  *
  */
 #include "Platform_Types.h"
+#include "PmsmFoc_UserConfig.h"
 #if(TFT_DISPLAYMODE == ENABLED)
-    #include "conio_tft.h"
-    #include "touch.h"
+    #include "Display_pub.h"
 #endif /* End of TFT_DISPLAYMODE */
 
 #if defined(__HIGHTEC__)

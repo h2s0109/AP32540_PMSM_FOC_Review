@@ -45,12 +45,23 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-#include "Cpu/Std/Ifx_Types.h"
-#include "stdio.h"
-#include "string.h"
+#include <Cpu/Std/Ifx_Types.h>
+#include <stdio.h>
+#include <string.h>
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#endif
+#include "Display_Cfg_AppKitTft_TC387A.h"
 #include "conio_tft.h"
 #include "touch.h"
-#include "Display.h"
+#if GENERAL_TFTKIT
+//#include "main_appl.h"
+#include "RTC.h"
+#include "background_light.h"
+#include "Measurement.h"
+#endif
+
+#include "menue.h"
 #include "PmsmFoc_Interface.h"
 /******************************************************************************/
 /*------------------------Inline Function Prototypes--------------------------*/
@@ -87,11 +98,11 @@ void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pDispEntry);
 /******************************************************************************/
 
 
-#define DISP_CYAN_BLK   (CYAN << 4) | BLACK        //Display background color cyan, text color black
-#define DISP_BRN_WHT   (BROWN << 4) | WHITE        //Display background color brown, text color black
-#define SLCT_BLK_YELW   (BLACK << 4) | YELLOW      //Selection background color black, text color yellow
-#define SLCT_RED_BLUE   (RED << 4) | BLUE      //Selection background color red, text color yellow
-#define DISP_BLUE_YELW   (BLUE << 4) | YELLOW        //Display background color blue, text color yellow
+#define DISP_CYAN_BLK   (COLOR_CYAN << 4) | COLOR_BLACK        //Display background color cyan, text color black
+#define DISP_BRN_WHT   (COLOR_BROWN << 4) | COLOR_WHITE        //Display background color brown, text color black
+#define SLCT_BLK_YELW   (COLOR_BLACK << 4) | COLOR_YELLOW      //Selection background color black, text color yellow
+#define SLCT_RED_BLUE   (COLOR_RED << 4) | COLOR_BLUE      //Selection background color red, text color yellow
+#define DISP_BLUE_YELW   (COLOR_BLUE << 4) | COLOR_YELLOW        //Display background color blue, text color yellow
 // *INDENT-OFF*
 const TDISPLAYENTRY menulist[] = {
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22, 0, Menue_display, Menue_display, Menue_input,"PMSM_FOC_AURIX_TC3xx"},        //TFT Main Menue
@@ -396,43 +407,43 @@ void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pDispEntry)
 	conio_ascii_textattr (DISPLAYMENU, pDispEntry->color_select);
 	conio_ascii_gotoxy (DISPLAYMENU, pDispEntry->xmin, pDispEntry->y);
 	conio_ascii_cputs (DISPLAYMENU, pDispEntry->text);
-	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
-	{
+    if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
+    {
+    	touch_driver.touchmode &= ~MASK_TOUCH_UP; //clear
 		PmsmFoc_Interface_stopMotor(&g_motorControl,TRUE);
 		//        motor.control.stop = 1;
-		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
 
 void showmenu (sint16 x, sint16 y, TDISPLAYENTRY * pmenulist)
 {
-	sint32 i;
-	conio_ascii_textbackground (DISPLAYMENU, MENU_BACKGRND);
-	conio_ascii_clrscr (DISPLAYMENU);
-	conio_ascii_textcolor (DISPLAYMENU, BLACK);
-	conio_ascii_textbackground (DISPLAYMENU, CYAN);
-	for (i = 0; pmenulist[i].select != 0; i += 1)
-	{
-		if ((x >= pmenulist[i].xmin) && (x <= pmenulist[i].xmax) && (y == pmenulist[i].y))
-		{
-			if (conio_driver.dialogmode == DIALOGOFF)
-			{
-				if (pmenulist[i].display == 0)
-					Menue_display (i, (struct DISPLAYENTRY *) &pmenulist[i]);
-				else
-				{
-					pmenulist[i].select (i, (struct DISPLAYENTRY *) &pmenulist[i]);
-				}
-			}
-		}
-		else
-		{
-			if (pmenulist[i].display == 0)
+    sint32 i;
+    conio_ascii_textbackground (DISPLAYMENU, MENU_BACKGRND);
+    conio_ascii_clrscr (DISPLAYMENU);
+    conio_ascii_textcolor (DISPLAYMENU, COLOR_BLACK);
+    conio_ascii_textbackground (DISPLAYMENU, COLOR_CYAN);
+    for (i = 0; pmenulist[i].select != 0; i += 1)
+    {
+        if ((x >= pmenulist[i].xmin) && (x <= pmenulist[i].xmax) && (y == pmenulist[i].y))
+        {
+            if (conio_driver.dialogmode == DIALOGOFF)
+            {
+                if (pmenulist[i].display == 0)
+                    Menue_display (i, (struct DISPLAYENTRY *) &pmenulist[i]);
+                else
+                {
+                    pmenulist[i].select (i, (struct DISPLAYENTRY *) &pmenulist[i]);
+                }
+            }
+        }
+        else
+        {
+            if (pmenulist[i].display == 0)
 				Menue_display(i, (struct DISPLAYENTRY *) &pmenulist[i]);
-			else
-			{
-				pmenulist[i].display (i, (struct DISPLAYENTRY *) &pmenulist[i]);
-			}
-		}
-	}
+            else
+            {
+                pmenulist[i].display (i, (struct DISPLAYENTRY *) &pmenulist[i]);
+            }
+        }
+    }
 }

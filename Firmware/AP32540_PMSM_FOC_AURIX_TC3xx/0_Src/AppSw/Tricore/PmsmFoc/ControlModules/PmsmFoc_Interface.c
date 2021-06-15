@@ -42,10 +42,6 @@
 /******************************************************************************/
 
 #include "PmsmFoc_Interface.h"
-#include "PmsmFoc_Functions.h"
-#include "PmsmFoc_VariablesScaling.h"
-#include "PmsmFoc_Inverter.h"
-#include "PmsmFoc_PwmSvm.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -77,7 +73,7 @@ void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl, boolean command
 			motorCtrl->pmsmFoc.speedControl.enabled = TRUE;
 			PmsmFoc_SpeedControl_enable(&motorCtrl->pmsmFoc.speedControl);
 			#if(TLE9180_DRIVER == ENABLED)
-				IfxTLE9180_activateEnable(&tle9180.driver);
+				IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
 			#endif /* End of TLE9180_DRIVER */
 		}
 		else
@@ -85,7 +81,7 @@ void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl, boolean command
 			motorCtrl->controlParameters.state = StateMachine_calibration;
 			PmsmFoc_SpeedControl_disable(&motorCtrl->pmsmFoc.speedControl);
 			#if(TLE9180_DRIVER == ENABLED)
-				IfxTLE9180_activateEnable(&tle9180.driver);
+				IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
 			#endif /* End of TLE9180_DRIVER */
 		}
 	}
@@ -108,7 +104,7 @@ void PmsmFoc_Interface_stopMotor(MotorControl* const motorCtrl, boolean command)
 		motorCtrl->pmsmFoc.modulationIndex.imag = 0;
 		PmsmFoc_doSvPwmModulation(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
 		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_deactivateEnable(&tle9180.driver);
+			IfxTLE9180_deactivateEnable(&Tle9180Ctrl.driver);
 		#endif /* End of TLE9180_DRIVER */
 		motorCtrl->controlParameters.state = StateMachine_motorStop;
 	}

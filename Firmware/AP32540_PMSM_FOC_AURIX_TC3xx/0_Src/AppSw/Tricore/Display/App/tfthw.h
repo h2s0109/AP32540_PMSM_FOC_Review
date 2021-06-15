@@ -45,31 +45,51 @@
 #ifndef TFTHW_H
 #define TFTHW_H
 
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#endif
 #include "Display_Cfg_AppKitTft_TC387A.h"
 
+#include "IfxCpu_cfg.h"
 
 #define TFT_XSIZE 320             //!< x dimension of tft display
 #define TFT_YSIZE 240             //!< y dimension of tft display
 
 #if defined(__DCC__)
-    #if TFT_DISPLAY_VAR_LOCATION == 0
+    #if CPU_WHICH_SERVICE_TFT == 0
 	#pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
-    #elif TFT_DISPLAY_VAR_LOCATION == 1
+    #pragma section CODE ".text_cpu0"
+    #elif ((CPU_WHICH_SERVICE_TFT == 1) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
 	#pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
-    #elif TFT_DISPLAY_VAR_LOCATION == 2
+    #pragma section CODE ".text_cpu1"
+    #elif ((CPU_WHICH_SERVICE_TFT == 2) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
 	#pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
-	#endif
+    #pragma section CODE ".text_cpu2"
+    #elif ((CPU_WHICH_SERVICE_TFT == 3) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
+    #pragma section CODE ".text_cpu3"
+    #elif ((CPU_WHICH_SERVICE_TFT == 4) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
+    #pragma section CODE ".text_cpu4"
+    #elif ((CPU_WHICH_SERVICE_TFT == 5) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
+    #pragma section CODE ".text_cpu5"
+    #endif
 #endif
 
-extern uint16 Row_Buff[];
-extern volatile uint32 tft_status;
+IFX_EXTERN uint16 Row_Buff[];
+IFX_EXTERN volatile uint32 tft_status;
 
 //specific entries tfthw.c
-void tft_drvinit (void);
-void tft_init (void);
+IFX_EXTERN void tft_init (void);
 // flush the actual row buff and callback pFunc if finished
-void tft_flush_row_buff(void *pFunc, uint32 numberOfPixel);
+IFX_EXTERN void tft_flush_row_buff(void *pFunc, uint32 numberOfPixel);
 // set the pixel datapointer to x,y location
-void tft_display_setxy (uint32 x, uint32 y);
+IFX_EXTERN void tft_display_setxy (uint32 x, uint32 y);
+
+#if defined(__DCC__)
+#pragma section CODE
+#pragma section DATA RW
+#endif
 
 #endif /* TFTHW_H */

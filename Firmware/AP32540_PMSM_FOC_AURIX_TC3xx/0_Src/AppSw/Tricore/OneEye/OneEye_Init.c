@@ -51,7 +51,8 @@
 #include "Ifx_DebugPipe.h"
 #include "IfxStdIf_DPipe.h"
 #include "PmsmFoc_Interface.h"
-
+#include MCUCARD_TYPE_PATH
+#include INVERTERCARD_TYPE_PATH
 /******************************************************************************/
 /*------------------------------Type Definitions------------------------------*/
 /******************************************************************************/
@@ -84,9 +85,6 @@ typedef struct
 OneEye g_oneEye; 				/**< \brief CPU 0 global data */
 Ifx_DebugPipe g_debugPipe;
 extern MotorControl				g_motorControl;
-
-//#define SW_NAME 			"eMotor Application Kit"
-//#define SW_REVISION         (0x00010000)            		/**< \brief Software version and revision 0x00vvrrpp, with vv the version number and rr the revision number, pp the patch number. even rr are public release */
 
 #define CFG_ASC0_RX_BUFFER_SIZE                              (128)      /**< \brief Define the Rx buffer size in byte. */
 #define CFG_ASC0_TX_BUFFER_SIZE                              (10000)     /**< \brief Define the Tx buffer size in byte. */

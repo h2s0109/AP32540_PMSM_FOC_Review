@@ -42,13 +42,16 @@
  *
  */
 
-
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include <Cpu/Std/Ifx_Types.h>
 #include "fifo.h"
-
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#endif
+#include "Display_Cfg_AppKitTft_TC387A.h"
+#include "IfxCpu_cfg.h"
 /******************************************************************************/
 /*------------------------Inline Function Prototypes--------------------------*/
 /******************************************************************************/
@@ -58,93 +61,151 @@
 /******************************************************************************/
 
 /******************************************************************************/
-/*------------------------Private Variables/Constants-------------------------*/
-/******************************************************************************/
-
-/******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-#if TFT_DISPLAY_VAR_LOCATION == 0
-	#if defined(__GNUC__)
-	#pragma section ".bss_cpu0" awc0
-	#endif
-	#if defined(__TASKING__)
-	#pragma section farbss "bss_cpu0"
-	#pragma section fardata "data_cpu0"
-	#endif
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 1
-	#if defined(__GNUC__)
-	#pragma section ".bss_cpu1" awc1
-	#endif
-	#if defined(__TASKING__)
-	#pragma section farbss "bss_cpu1"
-	#pragma section fardata "data_cpu1"
-	#endif
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 2
-	#if defined(__GNUC__)
-	#pragma section ".bss_cpu2" awc2
-	#endif
-	#if defined(__TASKING__)
-	#pragma section farbss "bss_cpu2"
-	#pragma section fardata "data_cpu2"
-	#endif
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 3
+#if CPU_WHICH_SERVICE_TFT == 0
     #if defined(__GNUC__)
-    #pragma section ".bss_cpu3" awc3
+    #pragma section ".text_cpu0" ax
+    #pragma section ".bss_cpu0" awc0
     #endif
     #if defined(__TASKING__)
-    #pragma section farbss "bss_cpu3"
+    #pragma section code    "text_cpu0"
+    #pragma section farbss  "bss_cpu0"
+    #pragma section fardata "data_cpu0"
+    #pragma section farrom  "rodata_cpu0"
+    #endif
+    #if defined(__DCC__)
+    #pragma section CODE ".text_cpu0"
+    #pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
+    #pragma section CONST ".rodata_cpu0"
+    #endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu0"
+    #pragma ghs section bss= ".bss_cpu0"
+    #pragma ghs section data=".data_cpu0"
+    #pragma ghs section rodata=".rodata_cpu0"
+    #endif
+#elif ((CPU_WHICH_SERVICE_TFT == 1) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+    #if defined(__GNUC__)
+    #pragma section ".text_cpu1" ax
+    #pragma section ".bss_cpu1" awc1
+    #endif
+    #if defined(__TASKING__)
+    #pragma section code    "text_cpu1"
+    #pragma section farbss  "bss_cpu1"
+    #pragma section fardata "data_cpu1"
+    #pragma section farrom  "rodata_cpu1"
+    #endif
+    #if defined(__DCC__)
+    #pragma section CODE ".text_cpu1"
+    #pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
+    #pragma section CONST ".rodata_cpu1"
+    #endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu1"
+    #pragma ghs section bss= ".bss_cpu1"
+    #pragma ghs section data=".data_cpu1"
+    #pragma ghs section rodata=".rodata_cpu1"
+    #endif
+#elif ((CPU_WHICH_SERVICE_TFT == 2) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+    #if defined(__GNUC__)
+    #pragma section ".text_cpu2" ax
+    #pragma section ".bss_cpu2" awc2
+    #endif
+    #if defined(__TASKING__)
+    #pragma section code    "text_cpu2"
+    #pragma section farbss  "bss_cpu2"
+    #pragma section fardata "data_cpu2"
+    #pragma section farrom  "rodata_cpu2"
+    #endif
+    #if defined(__DCC__)
+    #pragma section CODE ".text_cpu2"
+    #pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
+    #pragma section CONST ".rodata_cpu2"
+    #endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu2"
+    #pragma ghs section bss= ".bss_cpu2"
+    #pragma ghs section data=".data_cpu2"
+    #pragma ghs section rodata=".rodata_cpu2"
+    #endif
+#elif ((CPU_WHICH_SERVICE_TFT == 3) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#if defined(__GNUC__)
+    #pragma section ".text_cpu3" ax
+	#pragma section ".bss_cpu3" awc3
+	#endif
+	#if defined(__TASKING__)
+    #pragma section code    "text_cpu3"
+    #pragma section farbss  "bss_cpu3"
     #pragma section fardata "data_cpu3"
+    #pragma section farrom  "rodata_cpu3"
+	#endif
+	#if defined(__DCC__)
+    #pragma section CODE ".text_cpu3"
+	#pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
+    #pragma section CONST ".rodata_cpu3"
+	#endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu3"
+    #pragma ghs section bss= ".bss_cpu3"
+    #pragma ghs section data=".data_cpu3"
+    #pragma ghs section rodata=".rodata_cpu3"
     #endif
-    #if defined(__DCC__)
-    #pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
-    #endif
-#elif TFT_DISPLAY_VAR_LOCATION == 4
-    #if defined(__GNUC__)
-    #pragma section ".bss_cpu4" awc4
-    #endif
-    #if defined(__TASKING__)
-    #pragma section farbss "bss_cpu4"
+#elif ((CPU_WHICH_SERVICE_TFT == 4) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#if defined(__GNUC__)
+    #pragma section ".text_cpu4" ax
+	#pragma section ".bss_cpu4" awc4
+	#endif
+	#if defined(__TASKING__)
+    #pragma section code    "text_cpu4"
+    #pragma section farbss  "bss_cpu4"
     #pragma section fardata "data_cpu4"
+    #pragma section farrom  "rodata_cpu4"
+	#endif
+	#if defined(__DCC__)
+    #pragma section CODE ".text_cpu4"
+	#pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
+    #pragma section CONST ".rodata_cpu4"
+	#endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu4"
+    #pragma ghs section bss= ".bss_cpu4"
+    #pragma ghs section data=".data_cpu4"
+    #pragma ghs section rodata=".rodata_cpu4"
     #endif
-    #if defined(__DCC__)
-    #pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
-    #endif
-#elif TFT_DISPLAY_VAR_LOCATION == 5
-    #if defined(__GNUC__)
-    #pragma section ".bss_cpu5" awc5
-    #endif
-    #if defined(__TASKING__)
-    #pragma section farbss "bss_cpu5"
+#elif ((CPU_WHICH_SERVICE_TFT == 5) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#if defined(__GNUC__)
+    #pragma section ".text_cpu5" ax
+	#pragma section ".bss_cpu5" awc5
+	#endif
+	#if defined(__TASKING__)
+    #pragma section code    "text_cpu5"
+    #pragma section farbss  "bss_cpu5"
     #pragma section fardata "data_cpu5"
-    #endif
-    #if defined(__DCC__)
-    #pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
+    #pragma section farrom  "rodata_cpu5"
+	#endif
+	#if defined(__DCC__)
+    #pragma section CODE ".text_cpu5"
+	#pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
+    #pragma section CONST ".rodata_cpu5"
+	#endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu5"
+    #pragma ghs section bss= ".bss_cpu5"
+    #pragma ghs section data=".data_cpu5"
+    #pragma ghs section rodata=".rodata_cpu5"
     #endif
 #else
-#error "Set TFT_DISPLAY_VAR_LOCATION to a valid value!"
+#error "Set CPU_WHICH_SERVICE_TFT to a valid value!"
 #endif
 
 	TFIFODISPLAY fifodisplay;
 
+/******************************************************************************/
+/*------------------------Private Variables/Constants-------------------------*/
+/******************************************************************************/
 #if defined(__GNUC__)
-#pragma section
-#endif
-#if defined(__TASKING__)
-#pragma section farbss restore
-#pragma section fardata restore
-#endif
-#if defined(__DCC__)
-#pragma section DATA RW
+    #pragma section // end bss section
 #endif
 
 /******************************************************************************/
@@ -233,3 +294,24 @@ inline sint32 GET_FIFO_DISPLAY_NODROP (uint32 * pvalue)
     *pvalue = fifodisplay.pFIFO_DISPLAY[index];
     return (0);
 }
+
+#if defined(__GNUC__)
+#pragma section // end text section
+#endif
+#if defined(__TASKING__)
+#pragma section code restore
+#pragma section fardata restore
+#pragma section farbss restore
+#pragma section farrom restore
+#endif
+#if defined(__DCC__)
+#pragma section CODE
+#pragma section DATA RW
+#pragma section CONST
+#endif
+#if defined(__ghs__)
+#pragma ghs section text=default
+#pragma ghs section data=default
+#pragma ghs section bss=default
+#pragma ghs section rodata=default
+#endif

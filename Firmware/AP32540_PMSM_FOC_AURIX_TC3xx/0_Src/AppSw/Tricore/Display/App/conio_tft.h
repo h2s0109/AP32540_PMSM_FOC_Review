@@ -42,52 +42,67 @@
  *
  */
 
-//TODO (ARVO) Insert display of special character
-//TODO (ARVO) Insert english keyboard layout
-//TODO (ARVO) Insert Pos1 End
-//TODO (ARVO) Insert Ins Del + Status
-//TODO (ARVO) Insert on the fly valid check for input string ->other color
-//TODO (ARVO) Insert CAP, SHIFT, ESC
-//TODO (ARVO) Insert Status for Display Changes
-//TODO (ARVO) Insert Required Input Format HEX,TEXT,FLOAT,BYTE,SHORT,LONG...
-//TODO (ARVO) Insert Failure Modes
-//TODO (ARVO) Insert Blinky Modes
-//TODO (ARVO) Insert pure Overlay from Keyboard
-//TODO (ARVO) Potential second Keyboard with only Numbers (Y recognition for bigger buttons)
-//TODO (ARVO) Insert Handling of Colors during Scroll Text .... Stdout0, stdout1
-//TODO (ARVO) Idea keyboard own flag instead of 0x80 mask
-//TODO (ARVO) idea insert function pointers in struct for all default output functions
-//TODO (ARVO) Check for unified conio_driver.x and y update
-
-
 #ifndef CONIO_TFT_H
 #define CONIO_TFT_H
 
+/******************************************************************************/
+/*----------------------------------Includes----------------------------------*/
+/******************************************************************************/
 #include "conio_cfg.h"
 #include "font_8_12.h"
 #include "tfthw.h"
 #include <stdarg.h>
 
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#endif
+#include "Display_Cfg_AppKitTft_TC387A.h"
+#include "IfxCpu_cfg.h"
 
-#define BLACK 0
-#define WHITE 1
-#define RED 2
-#define GREEN 3
-#define BROWN 4
-#define BLUE 5
-#define MAGENTA 6
-#define CYAN 7
-#define LIGHTGRAY 8
-#define DARKGRAY 9
-#define LIGHTRED 10
-#define LIGHTGREEN 11
-#define YELLOW 12
-#define LIGHTBLUE 13
-#define LIGHTMAGENTA 14
-#define LIGHTCYAN 15
+#if defined(__DCC__)
+    #if CPU_WHICH_SERVICE_TFT == 0
+	#pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
+    #pragma section CODE ".text_cpu0"
+    #elif ((CPU_WHICH_SERVICE_TFT == 1) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
+    #pragma section CODE ".text_cpu1"
+    #elif ((CPU_WHICH_SERVICE_TFT == 2) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
+    #pragma section CODE ".text_cpu2"
+    #elif ((CPU_WHICH_SERVICE_TFT == 3) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
+    #pragma section CODE ".text_cpu3"
+    #elif ((CPU_WHICH_SERVICE_TFT == 4) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
+    #pragma section CODE ".text_cpu4"
+    #elif ((CPU_WHICH_SERVICE_TFT == 5) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
+    #pragma section CODE ".text_cpu5"
+    #endif
+#endif
 
-#define  MENU_BACKGRND BLUE
-#define  BAR_BACKGRND BLUE
+/******************************************************************************/
+/*-----------------------------------Macros-----------------------------------*/
+/******************************************************************************/
+#define COLOR_BLACK 0
+#define COLOR_WHITE 1
+#define COLOR_RED 2
+#define COLOR_GREEN 3
+#define COLOR_BROWN 4
+#define COLOR_BLUE 5
+#define COLOR_MAGENTA 6
+#define COLOR_CYAN 7
+#define COLOR_LIGHTGRAY 8
+#define COLOR_DARKGRAY 9
+#define COLOR_LIGHTRED 10
+#define COLOR_LIGHTGREEN 11
+#define COLOR_YELLOW 12
+#define COLOR_LIGHTBLUE 13
+#define COLOR_LIGHTMAGENTA 14
+#define COLOR_LIGHTCYAN 15
+
+#define  MENU_BACKGRND COLOR_BLUE
+#define  BAR_BACKGRND COLOR_BLUE
 
 //it is not rgb it is bgr, because LSB shifted first
 //RGB for DAS and BGR for display
@@ -134,7 +149,32 @@
 
 #define COLOR_BGR_SIMPSONS      COLOR_BGR(255,217,15)		// 255 217 15
 
+#define TOKEN_DISPLAY_GRAPHICS_LINE 0x0000FFE1
+#define TOKEN_DISPLAY_ASCII_CLRSCR 0x0000FFE2
+#define TOKEN_DISPLAY_GRAPHICS_CLRSCR 0x0000FFE3
+#define TOKEN_DISPLAY_ASCII_PRINTFXY 0x0000FFE4
+#define TOKEN_DISPLAY_GRAPHICS_PRINTFXY 0x0000FFE5
+#define TOKEN_DISPLAY_ASCII_PRINTF 0x0000FFE6
+#define TOKEN_DISPLAY_ASCII_CLREOL 0x0000FFE7
+#define TOKEN_DISPLAY_ASCII_TEXTATTR 0x0000FFE8
+#define TOKEN_DISPLAY_ASCII_TEXTCOLOR 0x0000FFE9
+#define TOKEN_DISPLAY_ASCII_TEXTBACKGROUND 0x0000FFEA
+#define TOKEN_DISPLAY_GRAPHICS_TEXTATTR 0x0000FFEB
+#define TOKEN_DISPLAY_GRAPHICS_TEXTCOLOR 0x0000FFEC
+#define TOKEN_DISPLAY_GRAPHICS_TEXTBACKGROUND 0x0000FFED
+#define TOKEN_DISPLAY_ASCII_TEXTCHANGEBACKGROUND 0x0000FFEE
+#define TOKEN_DISPLAY_ASCII_TEXTCHANGEFOREGROUND 0x0000FFEF
+#define TOKEN_DISPLAY_ASCII_TEXTCHANGECOLOR 0x0000FFF0
+#define TOKEN_DISPLAY_ASCII_CPUTS 0x0000FFF1
+#define TOKEN_DISPLAY_ASCII_GRAPHICS_CPUTS 0x0000FFF2
+#define TOKEN_DISPLAY_ASCII_GOTOXY 0x0000FFF3
+#define TOKEN_DISPLAY_GRAPHICS_GOTOXY 0x0000FFF4
+#define TOKEN_DISPLAY_GRAPHICS_PRINTF 0x0000FFF5
+#define TOKEN_DISPLAY_GRAPHICS_CPUTS 0x0000FFF6
 
+/******************************************************************************/
+/*--------------------------------Enumerations--------------------------------*/
+/******************************************************************************/
 /*!< \enum Mode of for single variable display */
 /*!< \brief Define the Mode of display */
 typedef enum
@@ -150,6 +190,9 @@ typedef enum
 /* TDISPLAYMODE is in conio_cfg.h */
 /* TDIALOGMODE is in conio_cfg.h */
 
+/******************************************************************************/
+/*-----------------------------Data Structures--------------------------------*/
+/******************************************************************************/
 //The graphicswidth is the amount of pixels used for graphics output
 //because the last lines are always characters the array is reduce by one character line
 #define GRAPHICSWIDTH (TFT_XSIZE*(TFT_YSIZE-FONT_YSIZE))    //last line is bar
@@ -228,124 +271,83 @@ typedef struct CONTROLMENU
     float32 cpusecondsdelta;
 } TCONTROLMENU;
 
-#if TFT_DISPLAY_VAR_LOCATION == 0
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 1
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 2
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 3
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 4
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 5
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
-	#endif
-#else
-#error "Set TFT_DISPLAY_VAR_LOCATION to a valid value!"
-#endif
+/******************************************************************************/
+/*------------------------------Global variables------------------------------*/
+/******************************************************************************/
+IFX_EXTERN TCONIO_DRIVER conio_driver;
+IFX_EXTERN TCONTROL control;
 
-extern TCONIO_DRIVER conio_driver;
-extern TCONTROL control;
-
+/******************************************************************************/
+/*-------------------------Function Prototypes--------------------------------*/
+/******************************************************************************/
 //the function is called with a valid cursor position and processes the commands and also triggers afterwards
 //the output to the TFT
-void conio_init (const pTCONIODMENTRY dm_list);
-void conio_periodic (sint16 x, sint16 y, TDISPLAYENTRY * pmenulist, TDISPLAYENTRY * pstdlist);  //this function is called out of the timer tick
+IFX_EXTERN void conio_init (const pTCONIODMENTRY dm_list);
+IFX_EXTERN void conio_periodic (sint16 x, sint16 y, TDISPLAYENTRY * pmenulist, TDISPLAYENTRY * pstdlist);  //this function is called out of the timer tick
 //specific entries libtft.c
-void conio_ascii_putch (TDISPLAYMODE displaymode, uint8 ch);    /* Writes a character directly to the console. */
-int conio_ascii_getch (TDISPLAYMODE displaymode);   /* Reads a character directly from the console, without echo. */
-int conio_ascii_kbhit (TDISPLAYMODE displaymode);   /* Determines if a keyboard key was pressed. */
-void conio_ascii_cputs (TDISPLAYMODE displaymode, uint8 * s);   /* Outputs a string directly to the console. */
-uint8 *conio_ascii_cgets (TDISPLAYMODE displaymode, uint8 * s); /* Gets a string directly from the console.  */
-void conio_ascii_clrscr (TDISPLAYMODE displaymode);
-void conio_ascii_clreol (TDISPLAYMODE displaymode);
-void conio_ascii_gotoxy (TDISPLAYMODE displaymode, sint32 x, sint32 y);
-void conio_ascii_textcolor (TDISPLAYMODE displaymode, sint32 color);
-void conio_ascii_textbackground (TDISPLAYMODE displaymode, sint32 color);
-void conio_ascii_textattr (TDISPLAYMODE displaymode, sint32 color);
-void conio_ascii_textchangebackground (TDISPLAYMODE displaymode, sint32 color);
-void conio_ascii_textchangeforeground (TDISPLAYMODE displaymode, sint32 color);
-void conio_ascii_textchangecolor (TDISPLAYMODE displaymode, sint32 color);
-void conio_ascii_printfxy (TDISPLAYMODE displaymode, sint32 x, sint32 y, const uint8 * format, ...);
-void conio_ascii_printf (TDISPLAYMODE displaymode, const uint8 * format, ...);
-void conio_ascii_char (TDISPLAYMODE displaymode, sint32 x, sint32 y, uint8 ch, uint8 color);
-void conio_ascii_setcolortable (uint32 ind, uint32 r, uint32 g, uint32 b);
-void conio_ascii_printfvalue (TDISPLAYMODE displaymode, TVARMODE varmode, uint32 value);
+IFX_EXTERN void conio_ascii_putch (TDISPLAYMODE displaymode, uint8 ch);    /* Writes a character directly to the console. */
+IFX_EXTERN int conio_ascii_getch (TDISPLAYMODE displaymode);   /* Reads a character directly from the console, without echo. */
+IFX_EXTERN int conio_ascii_kbhit (TDISPLAYMODE displaymode);   /* Determines if a keyboard key was pressed. */
+IFX_EXTERN void conio_ascii_cputs (TDISPLAYMODE displaymode, uint8 * s);   /* Outputs a string directly to the console. */
+IFX_EXTERN uint8 *conio_ascii_cgets (TDISPLAYMODE displaymode, uint8 * s); /* Gets a string directly from the console.  */
+IFX_EXTERN void conio_ascii_clrscr (TDISPLAYMODE displaymode);
+IFX_EXTERN void conio_ascii_clreol (TDISPLAYMODE displaymode);
+IFX_EXTERN void conio_ascii_gotoxy (TDISPLAYMODE displaymode, sint32 x, sint32 y);
+IFX_EXTERN void conio_ascii_textcolor (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_ascii_textbackground (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_ascii_textattr (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_ascii_textchangebackground (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_ascii_textchangeforeground (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_ascii_textchangecolor (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_ascii_printfxy (TDISPLAYMODE displaymode, sint32 x, sint32 y, const uint8 * format, ...);
+IFX_EXTERN void conio_ascii_printf (TDISPLAYMODE displaymode, const uint8 * format, ...);
+IFX_EXTERN void conio_ascii_char (TDISPLAYMODE displaymode, sint32 x, sint32 y, uint8 ch, uint8 color);
+IFX_EXTERN void conio_ascii_setcolortable (uint32 ind, uint32 r, uint32 g, uint32 b);
+IFX_EXTERN void conio_ascii_printfvalue (TDISPLAYMODE displaymode, TVARMODE varmode, uint32 value);
 
-void conio_graphics_clrscr (TDISPLAYMODE displaymode);
-void conio_graphics_textattr (TDISPLAYMODE displaymode, sint32 color);
-void conio_graphics_gotoxy (TDISPLAYMODE displaymode, sint32 x, sint32 y);
-void conio_graphics_cputs (TDISPLAYMODE displaymode, uint8 * s);
-void conio_graphics_textcolor (TDISPLAYMODE displaymode, sint32 color);
-void conio_graphics_textbackground (TDISPLAYMODE displaymode, sint32 color);
-void conio_graphics_ascii_textattr (TDISPLAYMODE displaymode, sint32 color);
-void conio_graphics_printfxy (TDISPLAYMODE displaymode, sint32 x, sint32 y, const uint8 * format, ...);
-void conio_graphics_set (TDISPLAYMODE displaymode, sint32 x, sint32 y, uint8 color);
-void conio_graphics_line (TDISPLAYMODE displaymode, sint32 x1, sint32 y1, sint32 x2, sint32 y2, uint8 color);
-void conio_graphics_setcolortable (uint32 ind, uint32 r, uint32 g, uint32 b);
-void conio_graphics_char (TDISPLAYMODE displaymode, sint32 x, sint32 y, uint8 ch, uint8 color);
+IFX_EXTERN void conio_graphics_clrscr (TDISPLAYMODE displaymode);
+IFX_EXTERN void conio_graphics_textattr (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_graphics_gotoxy (TDISPLAYMODE displaymode, sint32 x, sint32 y);
+IFX_EXTERN void conio_graphics_cputs (TDISPLAYMODE displaymode, uint8 * s);
+IFX_EXTERN void conio_graphics_textcolor (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_graphics_textbackground (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_graphics_ascii_textattr (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void conio_graphics_printfxy (TDISPLAYMODE displaymode, sint32 x, sint32 y, const uint8 * format, ...);
+IFX_EXTERN void conio_graphics_set (TDISPLAYMODE displaymode, sint32 x, sint32 y, uint8 color);
+IFX_EXTERN void conio_graphics_line (TDISPLAYMODE displaymode, sint32 x1, sint32 y1, sint32 x2, sint32 y2, uint8 color);
+IFX_EXTERN void conio_graphics_setcolortable (uint32 ind, uint32 r, uint32 g, uint32 b);
+IFX_EXTERN void conio_graphics_char (TDISPLAYMODE displaymode, sint32 x, sint32 y, uint8 ch, uint8 color);
 
-#define TOKEN_DISPLAY_GRAPHICS_LINE 0x0000FFE1
-#define TOKEN_DISPLAY_ASCII_CLRSCR 0x0000FFE2
-#define TOKEN_DISPLAY_GRAPHICS_CLRSCR 0x0000FFE3
-#define TOKEN_DISPLAY_ASCII_PRINTFXY 0x0000FFE4
-#define TOKEN_DISPLAY_GRAPHICS_PRINTFXY 0x0000FFE5
-#define TOKEN_DISPLAY_ASCII_PRINTF 0x0000FFE6
-#define TOKEN_DISPLAY_ASCII_CLREOL 0x0000FFE7
-#define TOKEN_DISPLAY_ASCII_TEXTATTR 0x0000FFE8
-#define TOKEN_DISPLAY_ASCII_TEXTCOLOR 0x0000FFE9
-#define TOKEN_DISPLAY_ASCII_TEXTBACKGROUND 0x0000FFEA
-#define TOKEN_DISPLAY_GRAPHICS_TEXTATTR 0x0000FFEB
-#define TOKEN_DISPLAY_GRAPHICS_TEXTCOLOR 0x0000FFEC
-#define TOKEN_DISPLAY_GRAPHICS_TEXTBACKGROUND 0x0000FFED
-#define TOKEN_DISPLAY_ASCII_TEXTCHANGEBACKGROUND 0x0000FFEE
-#define TOKEN_DISPLAY_ASCII_TEXTCHANGEFOREGROUND 0x0000FFEF
-#define TOKEN_DISPLAY_ASCII_TEXTCHANGECOLOR 0x0000FFF0
-#define TOKEN_DISPLAY_ASCII_CPUTS 0x0000FFF1
-#define TOKEN_DISPLAY_ASCII_GRAPHICS_CPUTS 0x0000FFF2
-#define TOKEN_DISPLAY_ASCII_GOTOXY 0x0000FFF3
-#define TOKEN_DISPLAY_GRAPHICS_GOTOXY 0x0000FFF4
-#define TOKEN_DISPLAY_GRAPHICS_PRINTF 0x0000FFF5
-#define TOKEN_DISPLAY_GRAPHICS_CPUTS 0x0000FFF6
+IFX_EXTERN void display_ascii_clrscr (TDISPLAYMODE displaymode);
+IFX_EXTERN void display_ascii_printfxy (TDISPLAYMODE displaymode, sint32 x, sint32 y, const uint8 * format, ...);
+IFX_EXTERN void display_ascii_printf (TDISPLAYMODE displaymode, const uint8 * format, ...);
+IFX_EXTERN void display_ascii_clreol (TDISPLAYMODE displaymode);
+IFX_EXTERN void display_ascii_textattr (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void display_ascii_textcolor (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void display_ascii_textbackground (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void display_ascii_textchangebackground (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void display_ascii_textchangeforeground (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void display_ascii_textchangecolor (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void display_ascii_cputs (TDISPLAYMODE displaymode, uint8 * s);
+IFX_EXTERN void display_ascii_gotoxy (TDISPLAYMODE displaymode, sint32 x, sint32 y);
 
-void display_ascii_clrscr (TDISPLAYMODE displaymode);
-void display_ascii_printfxy (TDISPLAYMODE displaymode, sint32 x, sint32 y, const uint8 * format, ...);
-void display_ascii_printf (TDISPLAYMODE displaymode, const uint8 * format, ...);
-void display_ascii_clreol (TDISPLAYMODE displaymode);
-void display_ascii_textattr (TDISPLAYMODE displaymode, sint32 color);
-void display_ascii_textcolor (TDISPLAYMODE displaymode, sint32 color);
-void display_ascii_textbackground (TDISPLAYMODE displaymode, sint32 color);
-void display_ascii_textchangebackground (TDISPLAYMODE displaymode, sint32 color);
-void display_ascii_textchangeforeground (TDISPLAYMODE displaymode, sint32 color);
-void display_ascii_textchangecolor (TDISPLAYMODE displaymode, sint32 color);
-void display_ascii_cputs (TDISPLAYMODE displaymode, uint8 * s);
-void display_ascii_gotoxy (TDISPLAYMODE displaymode, sint32 x, sint32 y);
+IFX_EXTERN void display_graphics_cputs (TDISPLAYMODE displaymode, uint8 * s);
+IFX_EXTERN void display_graphics_printf (TDISPLAYMODE displaymode, const uint8 * format, ...);
+IFX_EXTERN void display_graphics_gotoxy (TDISPLAYMODE displaymode, sint32 x, sint32 y);
+IFX_EXTERN void display_graphics_printfxy (TDISPLAYMODE displaymode, sint32 x, sint32 y, const uint8 * format, ...);
+IFX_EXTERN void display_graphics_clrscr (TDISPLAYMODE displaymode);
+IFX_EXTERN void display_graphics_line (TDISPLAYMODE displaymode, sint32 x1, sint32 y1, sint32 x2, sint32 y2, uint8 color);
+IFX_EXTERN void display_graphics_textattr (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void display_graphics_textcolor (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void display_graphics_textbackground (TDISPLAYMODE displaymode, sint32 color);
 
-void display_graphics_cputs (TDISPLAYMODE displaymode, uint8 * s);
-void display_graphics_printf (TDISPLAYMODE displaymode, const uint8 * format, ...);
-void display_graphics_gotoxy (TDISPLAYMODE displaymode, sint32 x, sint32 y);
-void display_graphics_printfxy (TDISPLAYMODE displaymode, sint32 x, sint32 y, const uint8 * format, ...);
-void display_graphics_clrscr (TDISPLAYMODE displaymode);
-void display_graphics_line (TDISPLAYMODE displaymode, sint32 x1, sint32 y1, sint32 x2, sint32 y2, uint8 color);
-void display_graphics_textattr (TDISPLAYMODE displaymode, sint32 color);
-void display_graphics_textcolor (TDISPLAYMODE displaymode, sint32 color);
-void display_graphics_textbackground (TDISPLAYMODE displaymode, sint32 color);
+IFX_EXTERN void tft_graphic (TMODE mode, uint8 * pdisplay, uint8 * pdisplaycolor);
+IFX_EXTERN void tft_ascii_bar (uint8 * pdisplay, uint8 * pdisplaycolor);
+IFX_EXTERN void tft_ascii (TMODE mode, uint8 * pdisplay, uint8 * pdisplaycolor);
 
-void tft_graphic (TMODE mode, uint8 * pdisplay, uint8 * pdisplaycolor);
-void tft_ascii_bar (uint8 * pdisplay, uint8 * pdisplaycolor);
-void tft_ascii (TMODE mode, uint8 * pdisplay, uint8 * pdisplaycolor);
-
+#if defined(__DCC__)
+#pragma section CODE
+#pragma section DATA RW
+#endif
 
 #endif /* CONIO_TFT_H */

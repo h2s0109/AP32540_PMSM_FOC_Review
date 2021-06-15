@@ -37,13 +37,8 @@
 #include "PmsmFoc_UserConfig.h"
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
 void OneEye_osciStep(void);
 void OneEye_init(void);
 void OneEye_processDataStream(void);
 void OneEye_copyRxBuffers(void);
-
-#define SW_NAME 			"PMSM_FOC_AURIX_TC3xx"
-#define SW_REVISION         (0x00010002)            		/**< \brief Software version and revision 0x00vvrrpp, with vv the version number and rr the revision number, pp the patch number. even rr are public release */
-
 #endif /* INIT_H_ */

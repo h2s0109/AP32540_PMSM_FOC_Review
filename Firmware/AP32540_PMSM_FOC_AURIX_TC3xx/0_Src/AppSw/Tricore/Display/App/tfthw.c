@@ -46,11 +46,16 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include <Cpu/Std/Ifx_Types.h>
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#include "ConfigurationIsr.h"
+#endif
+#include "Display_Cfg_AppKitTft_TC387A.h"
 #include "font_8_12.h"
 #include "tfthw.h"
+#include "touch.h"
+#include <Qspi/SpiMaster/IfxQspi_SpiMaster.h>
 
-#include "Display_Cfg_AppKitTft_TC387A.h"
-#include "Display_Qspi_Init.h"
 /******************************************************************************/
 /*------------------------Inline Function Prototypes--------------------------*/
 /******************************************************************************/
@@ -71,80 +76,148 @@ typedef struct
 {
     struct
     {
-        IfxQspi_SpiMaster         *spiMaster;            /**< \brief Pointer to spi Master handle */
+        IfxQspi_SpiMaster         spiMaster;             /**< \brief Spi Master handle */
         IfxQspi_SpiMaster_Channel spiMasterChannel;      /**< \brief Spi Master Channel handle */
     }drivers;
 }  App_Qspi_Tft;
 
 /******************************************************************************/
-/*------------------------Private Variables/Constants-------------------------*/
-/******************************************************************************/
-/******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-#if TFT_DISPLAY_VAR_LOCATION == 0
-	#if defined(__GNUC__)
-    #pragma section
-	#pragma section ".bss_cpu0" awc0
-	#endif
-	#if defined(__TASKING__)
-	#pragma section farbss "bss_cpu0"
-	#endif
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 1
-	#if defined(__GNUC__)
-	#pragma section ".bss_cpu1" awc1
-	#endif
-	#if defined(__TASKING__)
-	#pragma section farbss "bss_cpu1"
-	#endif
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 2
-	#if defined(__GNUC__)
-	#pragma section ".bss_cpu2" awc2
-	#endif
-	#if defined(__TASKING__)
-	#pragma section farbss "bss_cpu2"
-	#endif
-	#if defined(__DCC__)
-	#pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
-	#endif
-#elif TFT_DISPLAY_VAR_LOCATION == 3
+#if CPU_WHICH_SERVICE_TFT == 0
     #if defined(__GNUC__)
-    #pragma section ".bss_cpu3" awc3
+    #pragma section ".text_cpu0" ax
+    #pragma section ".bss_cpu0" awc0
     #endif
     #if defined(__TASKING__)
-    #pragma section farbss "bss_cpu3"
+    #pragma section code    "text_cpu0"
+    #pragma section farbss  "bss_cpu0"
+    #pragma section fardata "data_cpu0"
+    #pragma section farrom  "rodata_cpu0"
     #endif
     #if defined(__DCC__)
-    #pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
+    #pragma section CODE ".text_cpu0"
+    #pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
+    #pragma section CONST ".rodata_cpu0"
     #endif
-#elif TFT_DISPLAY_VAR_LOCATION == 4
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu0"
+    #pragma ghs section bss= ".bss_cpu0"
+    #pragma ghs section data=".data_cpu0"
+    #pragma ghs section rodata=".rodata_cpu0"
+    #endif
+#elif ((CPU_WHICH_SERVICE_TFT == 1) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
     #if defined(__GNUC__)
-    #pragma section ".bss_cpu4" awc4
+    #pragma section ".text_cpu1" ax
+    #pragma section ".bss_cpu1" awc1
     #endif
     #if defined(__TASKING__)
-    #pragma section farbss "bss_cpu4"
+    #pragma section code    "text_cpu1"
+    #pragma section farbss  "bss_cpu1"
+    #pragma section fardata "data_cpu1"
+    #pragma section farrom  "rodata_cpu1"
     #endif
     #if defined(__DCC__)
-    #pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
+    #pragma section CODE ".text_cpu1"
+    #pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
+    #pragma section CONST ".rodata_cpu1"
     #endif
-#elif TFT_DISPLAY_VAR_LOCATION == 5
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu1"
+    #pragma ghs section bss= ".bss_cpu1"
+    #pragma ghs section data=".data_cpu1"
+    #pragma ghs section rodata=".rodata_cpu1"
+    #endif
+#elif ((CPU_WHICH_SERVICE_TFT == 2) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
     #if defined(__GNUC__)
-    #pragma section ".bss_cpu5" awc5
+    #pragma section ".text_cpu2" ax
+    #pragma section ".bss_cpu2" awc2
     #endif
     #if defined(__TASKING__)
-    #pragma section farbss "bss_cpu5"
+    #pragma section code    "text_cpu2"
+    #pragma section farbss  "bss_cpu2"
+    #pragma section fardata "data_cpu2"
+    #pragma section farrom  "rodata_cpu2"
     #endif
     #if defined(__DCC__)
-    #pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
+    #pragma section CODE ".text_cpu2"
+    #pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
+    #pragma section CONST ".rodata_cpu2"
+    #endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu2"
+    #pragma ghs section bss= ".bss_cpu2"
+    #pragma ghs section data=".data_cpu2"
+    #pragma ghs section rodata=".rodata_cpu2"
+    #endif
+#elif ((CPU_WHICH_SERVICE_TFT == 3) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#if defined(__GNUC__)
+    #pragma section ".text_cpu3" ax
+	#pragma section ".bss_cpu3" awc3
+	#endif
+	#if defined(__TASKING__)
+    #pragma section code    "text_cpu3"
+    #pragma section farbss  "bss_cpu3"
+    #pragma section fardata "data_cpu3"
+    #pragma section farrom  "rodata_cpu3"
+	#endif
+	#if defined(__DCC__)
+    #pragma section CODE ".text_cpu3"
+	#pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
+    #pragma section CONST ".rodata_cpu3"
+	#endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu3"
+    #pragma ghs section bss= ".bss_cpu3"
+    #pragma ghs section data=".data_cpu3"
+    #pragma ghs section rodata=".rodata_cpu3"
+    #endif
+#elif ((CPU_WHICH_SERVICE_TFT == 4) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#if defined(__GNUC__)
+    #pragma section ".text_cpu4" ax
+	#pragma section ".bss_cpu4" awc4
+	#endif
+	#if defined(__TASKING__)
+    #pragma section code    "text_cpu4"
+    #pragma section farbss  "bss_cpu4"
+    #pragma section fardata "data_cpu4"
+    #pragma section farrom  "rodata_cpu4"
+	#endif
+	#if defined(__DCC__)
+    #pragma section CODE ".text_cpu4"
+	#pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
+    #pragma section CONST ".rodata_cpu4"
+	#endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu4"
+    #pragma ghs section bss= ".bss_cpu4"
+    #pragma ghs section data=".data_cpu4"
+    #pragma ghs section rodata=".rodata_cpu4"
+    #endif
+#elif ((CPU_WHICH_SERVICE_TFT == 5) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#if defined(__GNUC__)
+    #pragma section ".text_cpu5" ax
+	#pragma section ".bss_cpu5" awc5
+	#endif
+	#if defined(__TASKING__)
+    #pragma section code    "text_cpu5"
+    #pragma section farbss  "bss_cpu5"
+    #pragma section fardata "data_cpu5"
+    #pragma section farrom  "rodata_cpu5"
+	#endif
+	#if defined(__DCC__)
+    #pragma section CODE ".text_cpu5"
+	#pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
+    #pragma section CONST ".rodata_cpu5"
+	#endif
+    #if defined(__ghs__)
+    #pragma ghs section text=".text_cpu5"
+    #pragma ghs section bss= ".bss_cpu5"
+    #pragma ghs section data=".data_cpu5"
+    #pragma ghs section rodata=".rodata_cpu5"
     #endif
 #else
-#error "Set TFT_DISPLAY_VAR_LOCATION to a valid value!"
+#error "Set CPU_WHICH_SERVICE_TFT to a valid value!"
 #endif
 
 // the iLLD don't use cirular buffering, we need an align to 4 for DMA (32 bit access)
@@ -152,36 +225,106 @@ uint16 Row_Buff[FONT_YSIZE*TFT_XSIZE] IFX_ALIGN(4);
 volatile uint32 tft_status = 0;
 volatile uint16 tft_id = 0;
 
-volatile uint32 (*pCallbackFunction) (void) = (void *)0;
+uint32 (*pCallbackFunction) (void) = (void *)0;
 
 App_Qspi_Tft g_Qspi_Tft;
 
+/******************************************************************************/
+/*------------------------Private Variables/Constants-------------------------*/
+/******************************************************************************/
+#if defined(__GNUC__)
+    #pragma section // end bss section
+    #if CPU_WHICH_SERVICE_TFT == 0
+    #pragma section ".rodata_cpu0" ac0
+    #endif
+    #if ((CPU_WHICH_SERVICE_TFT == 1) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+    #pragma section ".rodata_cpu1" ac1
+    #endif
+    #if ((CPU_WHICH_SERVICE_TFT == 2) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+    #pragma section ".rodata_cpu2" ac2
+    #endif
+    #if ((CPU_WHICH_SERVICE_TFT == 3) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+    #pragma section ".rodata_cpu3" ac3
+    #endif
+    #if ((CPU_WHICH_SERVICE_TFT == 4) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+    #pragma section ".rodata_cpu4" ac4
+    #endif
+    #if ((CPU_WHICH_SERVICE_TFT == 5) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+    #pragma section ".rodata_cpu5" ac5
+    #endif
+#endif
+/* pin configuration */
+const IfxQspi_SpiMaster_Pins tft_qspi_pins = {&TFT_SCLK_PIN, IfxPort_OutputMode_pushPull,  /* SCLK */
+                                              &TFT_MTSR_PIN,  IfxPort_OutputMode_pushPull, /* MTSR */
+                                              &TFT_MRST_PIN,  IfxPort_InputMode_pullDown,  /* MRST */
+                                              IfxPort_PadDriver_ttlSpeed1		           /* pad driver mode */
+};
 
 #if defined(__GNUC__)
-#pragma section
-#endif
-#if defined(__TASKING__)
-#pragma section farbss restore
-#endif
-#if defined(__DCC__)
-#pragma section DATA RW
+    #pragma section // end rodata section
 #endif
 
 /******************************************************************************/
 /*-------------------------Function Prototypes--------------------------------*/
 /******************************************************************************/
+IFX_EXTERN void touch_init (IfxQspi_SpiMaster *spiMaster);
 
 /******************************************************************************/
 /*-------------------------Function Implementations---------------------------*/
 /******************************************************************************/
-void tft_transmit_callback(void)
+/** \brief Handle tft_qspi_Tx interrupt.
+ *
+ * \isrProvider \ref CPU_WHICH_SERVICE_TFT
+ * \isrPriority \ref ISR_PRIORITY_TFT_QSPI
+ *
+ */
+IFX_INTERRUPT(ISR_tft_qspi_Tx, CPU_WHICH_SERVICE_TFT, ISR_PRIORITY_TFT_QSPI_TX)
 {
+    IfxCpu_enableInterrupts();
+#ifdef TFT_USE_DMA
+    IfxQspi_SpiMaster_isrDmaTransmit(&(g_Qspi_Tft.drivers.spiMaster));
+#else
+    IfxQspi_SpiMaster_isrTransmit(&(g_Qspi_Tft.drivers.spiMaster));
+#endif
     // check that we are ready (no remaining bytes) in case that we are not using the DMA
-	if (g_Qspi_Tft.drivers.spiMaster->dma.useDma == 0)
+	if (g_Qspi_Tft.drivers.spiMaster.dma.useDma == 0)
         if (g_Qspi_Tft.drivers.spiMasterChannel.base.tx.remaining) return;
 	// if our pCallbackFunction is valid then we call it
 	if (pCallbackFunction != (void *)0)
 		pCallbackFunction();
+}
+
+
+/** \brief Handle tft_qspi_Rx interrupt.
+ *
+ * \isrProvider \ref CPU_WHICH_SERVICE_TFT
+ * \isrPriority \ref ISR_PRIORITY_TFT_QSPI
+ *
+ */
+IFX_INTERRUPT(ISR_tft_qspi_Rx, CPU_WHICH_SERVICE_TFT, ISR_PRIORITY_TFT_QSPI_RX)
+{
+    IfxCpu_enableInterrupts();
+#ifdef TFT_USE_DMA
+    IfxQspi_SpiMaster_isrDmaReceive(&(g_Qspi_Tft.drivers.spiMaster));
+#else
+    IfxQspi_SpiMaster_isrReceive(&(g_Qspi_Tft.drivers.spiMaster));
+#endif
+}
+
+/** \brief Handle tft_qspi_Er interrupt.
+ *
+ * \isrProvider \ref CPU_WHICH_SERVICE_TFT
+ * \isrPriority \ref ISR_PRIORITY_TFT_QSPI
+ *
+ */
+IFX_INTERRUPT(ISR_tft_qspi_Er, CPU_WHICH_SERVICE_TFT, ISR_PRIORITY_TFT_QSPI_ER)
+{
+    IfxCpu_enableInterrupts();
+    IfxQspi_SpiMaster_isrError(&(g_Qspi_Tft.drivers.spiMaster));
+}
+
+void tft_transmit_callback(void)
+{
 }
 
 static void delay_us (uint32 time)
@@ -283,15 +426,15 @@ static void tft_read_data_ili9341 (uint8 regaddr, uint16 *puiData, uint32 count)
     while (IfxQspi_SpiMaster_getStatus(&g_Qspi_Tft.drivers.spiMasterChannel) == SpiIf_Status_busy) {};
     /* we terminate the transfer by generate one SCLK without transfer */
     /* we make sure that the SCLK will be low when we switch to general output */
-    IfxPort_setPinLow(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_setPinLow(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* set the SCLK to general output */
-    IfxPort_setPinMode(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex, IfxPort_Mode_outputPushPullGeneral);
+    IfxPort_setPinMode(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex, IfxPort_Mode_outputPushPullGeneral);
     /* toggle the SCLK */
-    IfxPort_togglePin(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_togglePin(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* toggle the SCLK */
-    IfxPort_togglePin(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_togglePin(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* set the SCLK back to used alternate output */
-    IfxPort_setPinMode(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex, TFT_USE_SCLK.select);
+    IfxPort_setPinMode(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex, (IfxPort_Mode)TFT_SCLK_PIN.select);
     /* set back to 32 bit transfer */
     g_Qspi_Tft.drivers.spiMasterChannel.bacon.B.DL = 31;
     g_Qspi_Tft.drivers.spiMasterChannel.dataWidth = 32;
@@ -324,15 +467,15 @@ static void tft_write_data_ili9341 (uint8 regaddr, uint16 *puiData, uint32 count
     while (IfxQspi_SpiMaster_getStatus(&g_Qspi_Tft.drivers.spiMasterChannel) == SpiIf_Status_busy) {};
     /* we terminate the transfer by generate one SCLK without transfer */
     /* we make sure that the SCLK will be low when we switch to general output */
-    IfxPort_setPinLow(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_setPinLow(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* set the SCLK to general output */
-    IfxPort_setPinMode(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex, IfxPort_Mode_outputPushPullGeneral);
+    IfxPort_setPinMode(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex, IfxPort_Mode_outputPushPullGeneral);
     /* toggle the SCLK */
-    IfxPort_togglePin(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_togglePin(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* toggle the SCLK */
-    IfxPort_togglePin(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_togglePin(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* set the SCLK back to used alternate output */
-    IfxPort_setPinMode(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex, TFT_USE_SCLK.select);
+    IfxPort_setPinMode(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex, (IfxPort_Mode)TFT_SCLK_PIN.select);
     /* set back to 32 bit transfer */
     g_Qspi_Tft.drivers.spiMasterChannel.bacon.B.DL = 31;
     g_Qspi_Tft.drivers.spiMasterChannel.dataWidth = 32;
@@ -357,15 +500,15 @@ static uint32 tft_terminate_endless_transfer (void)
     while (IfxQspi_SpiMaster_getStatus(&g_Qspi_Tft.drivers.spiMasterChannel) == SpiIf_Status_busy) {};
     /* we terminate the transfer by generate one SCLK without transfer */
     /* we make sure that the SCLK will be low when we switch to general output */
-    IfxPort_setPinLow(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_setPinLow(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* set the SCLK to general output */
-    IfxPort_setPinMode(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex, IfxPort_Mode_outputPushPullGeneral);
+    IfxPort_setPinMode(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex, IfxPort_Mode_outputPushPullGeneral);
     /* toggle the SCLK */
-    IfxPort_togglePin(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_togglePin(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* toggle the SCLK */
-    IfxPort_togglePin(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex);
+    IfxPort_togglePin(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex);
     /* set the SCLK back to used alternate output */
-    IfxPort_setPinMode(TFT_USE_SCLK.pin.port, TFT_USE_SCLK.pin.pinIndex, TFT_USE_SCLK.select);
+    IfxPort_setPinMode(TFT_SCLK_PIN.pin.port, TFT_SCLK_PIN.pin.pinIndex, (IfxPort_Mode)TFT_SCLK_PIN.select);
     /* set back to 32 bit transfer */
     g_Qspi_Tft.drivers.spiMasterChannel.bacon.B.DL = 31;
     g_Qspi_Tft.drivers.spiMasterChannel.dataWidth = 32;
@@ -379,7 +522,37 @@ void tft_init (void)
     /* disable interrupts */
     boolean interruptState = IfxCpu_disableInterrupts();
 
-    g_Qspi_Tft.drivers.spiMaster = TFT_QSPI_INIT();
+    IfxQspi_SpiMaster_Config        spiMasterConfig;
+
+    /* create module config */
+    IfxQspi_SpiMaster_initModuleConfig(&spiMasterConfig, TFT_SCLK_PIN.module);
+
+    /* set the maximum baudrate */
+    spiMasterConfig.base.maximumBaudrate = TFT_MAX_BAUDRATE;
+
+    /* ISR priorities and interrupt target */
+    spiMasterConfig.base.txPriority  = ISR_PRIORITY_TFT_QSPI_TX;
+    spiMasterConfig.base.rxPriority  = ISR_PRIORITY_TFT_QSPI_RX;
+    spiMasterConfig.base.erPriority  = ISR_PRIORITY_TFT_QSPI_ER;
+    if (CPU_WHICH_SERVICE_TFT)
+    	spiMasterConfig.base.isrProvider = (IfxSrc_Tos)(CPU_WHICH_SERVICE_TFT+1);
+    else
+    	spiMasterConfig.base.isrProvider = (IfxSrc_Tos)CPU_WHICH_SERVICE_TFT;
+
+#ifdef TFT_USE_DMA
+        // DMA configuration
+        spiMasterConfig.dma.txDmaChannelId = (IfxDma_ChannelId)DMA_CH_TFT_TX;
+        spiMasterConfig.dma.rxDmaChannelId = (IfxDma_ChannelId)DMA_CH_TFT_RX;
+        spiMasterConfig.dma.useDma = 1;
+#endif
+    spiMasterConfig.pins = &tft_qspi_pins;
+
+    /* initialize module */
+    IfxQspi_SpiMaster_initModule(&(g_Qspi_Tft.drivers.spiMaster), &spiMasterConfig);
+    /* set the MRST_input also to the selected pad driver mode if needed */
+    if (tft_qspi_pins.mrst != NULL_PTR)
+        IfxPort_setPinPadDriver(tft_qspi_pins.mrst->pin.port, tft_qspi_pins.mrst->pin.pinIndex, tft_qspi_pins.pinDriver);
+
     IfxQspi_SpiMaster_ChannelConfig spiMasterChannelConfig;
 
     {
@@ -388,8 +561,7 @@ void tft_init (void)
    		// bug on DCC not all bits in mode are cleared
    		memset(&spiMasterChannelConfig, 0, sizeof(spiMasterChannelConfig));
 #endif
-        IfxQspi_SpiMaster_initChannelConfig(&spiMasterChannelConfig,
-            g_Qspi_Tft.drivers.spiMaster);
+        IfxQspi_SpiMaster_initChannelConfig(&spiMasterChannelConfig, &g_Qspi_Tft.drivers.spiMaster);
 
         /* set the baudrate for this channel */
         spiMasterChannelConfig.base.baudrate = 50000000;
@@ -688,6 +860,7 @@ void tft_init (void)
             delay_ms (1000);
         }
     }
+    touch_init (&g_Qspi_Tft.drivers.spiMaster);
 }
 
 void tft_display_setxy (uint32 x, uint32 y)
@@ -750,12 +923,33 @@ void tft_flush_row_buff(void *pFunc, uint32 numberOfPixel)
 
 	tft_status = 1; // TFT Busy
 
-	pCallbackFunction = pFunc;
+	pCallbackFunction = (uint32 (*)(void))pFunc;
 	if (pCallbackFunction == (void *)0)
-		pCallbackFunction = (void *)&tft_terminate_endless_transfer;
+		pCallbackFunction = (uint32 (*)(void))&tft_terminate_endless_transfer;
 
     /* wait until Spi is no longer busy (should not busy here) */
     while (IfxQspi_SpiMaster_getStatus(&g_Qspi_Tft.drivers.spiMasterChannel) == SpiIf_Status_busy) {};
     /* send the values to the display */
     IfxQspi_SpiMaster_exchange(&g_Qspi_Tft.drivers.spiMasterChannel, &Row_Buff[0], 0, numberOfPixel/2);
 }
+
+#if defined(__GNUC__)
+#pragma section // end text section
+#endif
+#if defined(__TASKING__)
+#pragma section code restore
+#pragma section fardata restore
+#pragma section farbss restore
+#pragma section farrom restore
+#endif
+#if defined(__DCC__)
+#pragma section CODE
+#pragma section DATA RW
+#pragma section CONST
+#endif
+#if defined(__ghs__)
+#pragma ghs section text=default
+#pragma ghs section data=default
+#pragma ghs section bss=default
+#pragma ghs section rodata=default
+#endif

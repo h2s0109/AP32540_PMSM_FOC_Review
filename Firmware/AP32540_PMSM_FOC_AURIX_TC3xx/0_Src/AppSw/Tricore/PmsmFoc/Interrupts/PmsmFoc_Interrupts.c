@@ -70,32 +70,34 @@ IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 	#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 	/** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
 	 *
- */
-IFX_INTERRUPT(PmsmFoc_Evadc_CurrentDCLinkSenseHs_Isr, 0, INTERRUPT_PRIORITY_EVADC_HSCUR)
-{
-	PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(&g_motorControl.inverter.highSideCurrentSense);
-}
+	*/
+	/* STEVE:INTERRUPT_PRIORITY_EVADC_HSCUR is not used */
+	IFX_INTERRUPT(PmsmFoc_Evadc_CurrentDCLinkSenseHs_Isr, 0, INTERRUPT_PRIORITY_EVADC_HSCUR)
+	{
+		PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(&g_motorControl.inverter.highSideCurrentSense);
+	}
 	#endif
 	#if(BEMF_MEASUREMENT == ENABLED)
-/** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
- *
- */
+	/** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
+	 *
+	 */
 
-IFX_INTERRUPT(PmsmFoc_Evadc_BemfVoltageSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_VBEMF)
-{
-	PmsmFoc_BemfVoltageSense_getValue(&g_motorControl.inverter.bemfVoltageSense);
-}
+	IFX_INTERRUPT(PmsmFoc_Evadc_BemfVoltageSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_VBEMF)
+	{
+		PmsmFoc_BemfVoltageSense_getValue(&g_motorControl.inverter.bemfVoltageSense);
+	}
 	#endif
 	#if(DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
-/** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
- *
- */
-IFX_INTERRUPT(PmsmFoc_Evadc_DcLinkVoltageSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_VDCL)
-{
-	PmsmFoc_DcLinkVoltageSense_getValue(&g_motorControl.inverter.dcLinkVoltageSense);
-}
+	/** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
+	 *
+	 */
+	IFX_INTERRUPT(PmsmFoc_Evadc_DcLinkVoltageSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_VDCL)
+	{
+		PmsmFoc_DcLinkVoltageSense_getValue(&g_motorControl.inverter.dcLinkVoltageSense);
+	}
 	#endif
-#endif
+#endif /* End of (INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1) */
+
 #if(POSITION_SENSOR_TYPE == ENCODER)
 /** \brief Interrupt service unit for GPT12 Zero position event
  *
@@ -147,45 +149,46 @@ IFX_INTERRUPT(PmsmFoc_Qspi_Tlf35584_ErrIsr, 0, INTERRUPT_PRIORITY_QSPI2_ERR)
 }
 #endif //(INTERRUPT_QSPI2_ERR > 0)
 #endif /* End of TLF35584_DRIVER */
+
 #if(TLE9180_DRIVER == ENABLED)
-#if (INTERRUPT_PRIORITY_QSPI4_TX > 0)
-/** \brief Interrupt service units for QSPI4 Transmit
- *
- */
-IFX_INTERRUPT(PmsmFoc_Qspi_Tle9180_TxIsr, 0, INTERRUPT_PRIORITY_QSPI4_TX)
-{
-	IfxCpu_enableInterrupts();
-#if (SPI_4_USE_DMA == TRUE)
-	IfxQspi_SpiMaster_isrDmaTransmit(&spiMasterQspi4);
-#else
-	IfxQspi_SpiMaster_isrTransmit(&spiMasterQspi4);
-#endif
-}
-#endif //(INTERRUPT_PRIORITY_QSPI4_TX > 0)
+	#if (INTERRUPT_PRIORITY_QSPI4_TX > 0)
+	/** \brief Interrupt service units for QSPI4 Transmit
+	 *
+	 */
+	IFX_INTERRUPT(PmsmFoc_Qspi_Tle9180_TxIsr, 0, INTERRUPT_PRIORITY_QSPI4_TX)
+	{
+		IfxCpu_enableInterrupts();
+	#if (SPI_4_USE_DMA == TRUE)
+		IfxQspi_SpiMaster_isrDmaTransmit(&spiMasterQspi4);
+	#else
+		IfxQspi_SpiMaster_isrTransmit(&spiMasterQspi4);
+	#endif
+	}
+	#endif //(INTERRUPT_PRIORITY_QSPI4_TX > 0)
 
-#if (INTERRUPT_PRIORITY_QSPI4_RX > 0)
-/** \brief Interrupt service units for QSPI4 Receive
- *
- */
-IFX_INTERRUPT(PmsmFoc_Qspi_Tle9180_RxIsr, 0, INTERRUPT_PRIORITY_QSPI4_RX)
-{
-	IfxCpu_enableInterrupts();
-#if (SPI_4_USE_DMA == TRUE)
-	IfxQspi_SpiMaster_isrDmaReceive(&spiMasterQspi4);
-#else
-	IfxQspi_SpiMaster_isrReceive(&spiMasterQspi4);
-#endif
-}
-#endif //(INTERRUPT_PRIORITY_QSPI4_RX > 0)
+	#if (INTERRUPT_PRIORITY_QSPI4_RX > 0)
+	/** \brief Interrupt service units for QSPI4 Receive
+	 *
+	 */
+	IFX_INTERRUPT(PmsmFoc_Qspi_Tle9180_RxIsr, 0, INTERRUPT_PRIORITY_QSPI4_RX)
+	{
+		IfxCpu_enableInterrupts();
+	#if (SPI_4_USE_DMA == TRUE)
+		IfxQspi_SpiMaster_isrDmaReceive(&spiMasterQspi4);
+	#else
+		IfxQspi_SpiMaster_isrReceive(&spiMasterQspi4);
+	#endif
+	}
+	#endif //(INTERRUPT_PRIORITY_QSPI4_RX > 0)
 
-#if (INTERRUPT_PRIORITY_QSPI4_ERR > 0)
-/** \brief Interrupt service units for QSPI4 Error
- *
- */
-IFX_INTERRUPT(PmsmFoc_Qspi_Tle9180_ErrIsr, 0, INTERRUPT_PRIORITY_QSPI4_ERR)
-{
-	IfxCpu_enableInterrupts();
-	IfxQspi_SpiMaster_isrError(&spiMasterQspi4);
-}
-#endif //(INTERRUPT_PRIORITY_QSPI4_ERR > 0)
+	#if (INTERRUPT_PRIORITY_QSPI4_ERR > 0)
+	/** \brief Interrupt service units for QSPI4 Error
+	 *
+	 */
+	IFX_INTERRUPT(PmsmFoc_Qspi_Tle9180_ErrIsr, 0, INTERRUPT_PRIORITY_QSPI4_ERR)
+	{
+		IfxCpu_enableInterrupts();
+		IfxQspi_SpiMaster_isrError(&spiMasterQspi4);
+	}
+	#endif //(INTERRUPT_PRIORITY_QSPI4_ERR > 0)
 #endif /* End of TLE9180_DRIVER */

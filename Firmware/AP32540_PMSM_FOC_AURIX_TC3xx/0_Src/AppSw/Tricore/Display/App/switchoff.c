@@ -41,17 +41,19 @@
 
  *
  */
-
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 
-#include "Cpu/Std/Ifx_Types.h"
-#include "Cpu/Std/IfxCpu_Intrinsics.h"
+#if GENERAL_TFTKIT
+#include <Cpu/Std/Ifx_Types.h>
+#include <Cpu/Std/IfxCpu_Intrinsics.h>
+#include "Configuration.h"
 #include "conio_tft.h"
 #include "touch.h"
-#include "string.h"
-#include "stdio.h"
+#include <string.h>
+#include <stdio.h>
+//#include "TLF3xx8x.h"
 #include "TLF35584.h"
 /******************************************************************************/
 /*------------------------Inline Function Prototypes--------------------------*/
@@ -84,8 +86,8 @@ const uint8 switchoff_outline[6][30] = {
 };
 
 const TDISPLAYENTRY switchofflist[SWITCHOFF_BUTTONS] = {
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 9, 16, 9, &switchoff_select_ok, &switchoff_display, &switchoff_input,"", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 23, 30, 9, &switchoff_select_cancel, &switchoff_display, &switchoff_input,"", 0x0}
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 9, 16, 9, &switchoff_select_ok, &switchoff_display, &switchoff_input,"", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 23, 30, 9, &switchoff_select_cancel, &switchoff_display, &switchoff_input,"", 0x0}
 };
 // *INDENT-ON*
 /******************************************************************************/
@@ -124,8 +126,11 @@ void switchoff_select_ok (sint32 ind, TDISPLAYENTRY * pdisplayentry)
     {
         touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
         conio_driver.dialogmode = DIALOGOFF;
-     	// we need to switch off the device by command to TLE35584 (standbymode)
-        IfxTLF35584_gotoStandbyState();
+     	// we need to switch off the device by command to TLE3xx8x (standbymode/powerdownmode)
+	   	IfxTLF35584_gotoStandbyState();
+        // IfxTLF3XX8X_goto_standby_powerdown_state();
+        // // we set the driver to Alarmset, because if there is an alarm the device is not shutdown
+        // conio_driver.dialogmode = SHOWALARMON;
         display_ascii_clrscr(conio_driver.displaymode);
     }
 }
@@ -143,14 +148,20 @@ void switchoff_select_cancel (sint32 ind, TDISPLAYENTRY * pdisplayentry)
         touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
         conio_driver.dialogmode = DIALOGOFF;
         conio_ascii_clrscr(conio_driver.displaymode);
+        // if (conio_driver.displaymode == DISPLAYSTDOUT0)
+        // {
+        //     /* setup our name string */
+        //    	conio_ascii_printfxy (DISPLAYSTDOUT0, 1, 0, (const uint8 *)"%s TC3%d%d %s with %s...", BOARD_TEXT_TFT,
+        //    			SCU_CHIPID.B.CHID, SCU_CHIPID.B.CHPK, BOARD_VERSION_TEXT, SW_VERSION_TEXT);
+        // }
     }
 }
 
 void switchoff (sint16 x, sint16 y)
 {
     sint32 i, j;
-    conio_ascii_textcolor (DISPLAYMENU, BLACK);
-    conio_ascii_textbackground (DISPLAYMENU, CYAN);
+    conio_ascii_textcolor (DISPLAYMENU, COLOR_BLACK);
+    conio_ascii_textbackground (DISPLAYMENU, COLOR_CYAN);
     for (j = 0; j < 6; j += 1)
     {
         conio_ascii_gotoxy (conio_driver.displaymode, 5, 6+j);
@@ -173,3 +184,4 @@ void switchoff (sint16 x, sint16 y)
         }
     }
 }
+#endif /* End of GENERAL_TFTKIT */

@@ -45,7 +45,50 @@
 #ifndef TOUCH_H_
 #define TOUCH_H_
 
+/******************************************************************************/
+/*----------------------------------Includes----------------------------------*/
+/******************************************************************************/
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#endif
+#include "Display_Cfg_AppKitTft_TC387A.h"
+#include "IfxCpu_cfg.h"
 
+#if defined(__DCC__)
+    #if CPU_WHICH_SERVICE_TFT == 0
+	#pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
+    #pragma section CODE ".text_cpu0"
+    #elif ((CPU_WHICH_SERVICE_TFT == 1) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
+    #pragma section CODE ".text_cpu1"
+    #elif ((CPU_WHICH_SERVICE_TFT == 2) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
+    #pragma section CODE ".text_cpu2"
+    #elif ((CPU_WHICH_SERVICE_TFT == 3) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
+    #pragma section CODE ".text_cpu3"
+    #elif ((CPU_WHICH_SERVICE_TFT == 4) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
+    #pragma section CODE ".text_cpu4"
+    #elif ((CPU_WHICH_SERVICE_TFT == 5) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
+    #pragma section CODE ".text_cpu5"
+    #endif
+#endif
+
+/******************************************************************************/
+/*-----------------------------------Macros-----------------------------------*/
+/******************************************************************************/
+#define MASK_TOUCH_UNINIT 0x1
+#define MASK_TOUCH_DOWN 0x2
+#define MASK_TOUCH_MOVE 0x4
+#define MASK_TOUCH_UP 0x8
+#define MASK_TOUCH_DOWN3S 0x10
+#define MASK_TOUCH_DOWN10S 0x20
+
+/******************************************************************************/
+/*--------------------------------Enumerations--------------------------------*/
+/******************************************************************************/
 typedef enum
 {
     TOUCH_UNINIT,               /*!< \brief Not used */
@@ -55,13 +98,10 @@ typedef enum
     TOUCH_DOWN3S,               /*!< \brief Failure Buffer Full */
     TOUCH_DOWN10S               /*!< \brief Failure Buffer Erased */
 } TTOUCH_STATUS;
-#define MASK_TOUCH_UNINIT 0x1
-#define MASK_TOUCH_DOWN 0x2
-#define MASK_TOUCH_MOVE 0x4
-#define MASK_TOUCH_UP 0x8
-#define MASK_TOUCH_DOWN3S 0x10
-#define MASK_TOUCH_DOWN10S 0x20
 
+/******************************************************************************/
+/*-----------------------------Data Structures--------------------------------*/
+/******************************************************************************/
 typedef struct TTOUCHCOMMAND
 {
     uint32 bacon;
@@ -89,14 +129,14 @@ typedef struct TOUCH_EVENT
 
 typedef struct TOUCH_DASINFO
 {
-uint32 event;
-uint32 button;
-uint32 x;
-uint32 y;
-float32 xmin;               // is equal to coordinate 0
-float32 xmax;               // is equal to coordinate TERMINAL_MAXX-1
-float32 ymin;               // is equal to coordinate 0
-float32 ymax;               // is equal to coordinate TERMINAL_MAXY-1
+	uint32 event;
+	uint32 button;
+	uint32 x;
+	uint32 y;
+	float32 xmin;               // is equal to coordinate 0
+	float32 xmax;               // is equal to coordinate TERMINAL_MAXX-1
+	float32 ymin;               // is equal to coordinate 0
+	float32 ymax;               // is equal to coordinate TERMINAL_MAXY-1
 } TTOUCH_DASINFO;
 
 typedef struct TOUCH_DRIVER
@@ -124,16 +164,26 @@ typedef struct TOUCH_DRIVER
     uint32 touchmode;
 } TTOUCH_DRIVER;
 
-extern TTOUCH_DRIVER touch_driver;
-extern TTOUCH_EVENT touch_event;
+
+/******************************************************************************/
+/*------------------------------Global variables------------------------------*/
+/******************************************************************************/
+IFX_EXTERN TTOUCH_DRIVER touch_driver;
+IFX_EXTERN TTOUCH_EVENT touch_event;
 
 #ifdef TFT_OVER_DAS
-extern TTOUCH_DASINFO das_touch_info;
+IFX_EXTERN TTOUCH_DASINFO das_touch_info;
 #endif
 
-void touch_periodic (void);
-void touch_init (void);
+/******************************************************************************/
+/*-------------------------Function Prototypes--------------------------------*/
+/******************************************************************************/
 
+IFX_EXTERN void touch_periodic (void);
 
+#if defined(__DCC__)
+#pragma section CODE
+#pragma section DATA RW
+#endif
 
 #endif /* TOUCH_H_ */

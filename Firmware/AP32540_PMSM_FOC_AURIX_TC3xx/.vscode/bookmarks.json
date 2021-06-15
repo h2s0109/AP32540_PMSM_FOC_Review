@@ -1,0 +1,57 @@
+[
+	{
+		"path": "$ROOTPATH$\\0_Src\\AppSw\\Tricore\\PmsmFoc\\ControlModules\\PmsmFoc_StateMachine.c",
+		"bookmarks": [
+			{
+				"line": 140,
+				"column": 1,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$\\0_Src\\AppSw\\Tricore\\Main\\Cpu0_Main.c",
+		"bookmarks": [
+			{
+				"line": 106,
+				"column": 1,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$\\0_Src\\AppSw\\Tricore\\OSTasks\\OsTasks.c",
+		"bookmarks": [
+			{
+				"line": 74,
+				"column": 10,
+				"label": ""
+			},
+			{
+				"line": 200,
+				"column": 19,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$\\0_Src\\AppSw\\Tricore\\PmsmFoc\\ControlModules\\PmsmFoc_Functions.h",
+		"bookmarks": [
+			{
+				"line": 205,
+				"column": 14,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$\\0_Src\\AppSw\\Tricore\\Debugger\\src\\Dbgctrl.c",
+		"bookmarks": [
+			{
+				"line": 67,
+				"column": 21,
+				"label": ""
+			}
+		]
+	}
+]

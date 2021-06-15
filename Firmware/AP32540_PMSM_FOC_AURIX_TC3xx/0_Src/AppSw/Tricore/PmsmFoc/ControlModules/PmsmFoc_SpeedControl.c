@@ -44,7 +44,7 @@
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-//SpeedControl speedControl;
+
 /******************************************************************************/
 /*-------------------------Private Variables/Constants------------------------*/
 /******************************************************************************/
@@ -54,11 +54,11 @@
 /******************************************************************************/
 /** @brief Execute the speed PI controller
  *
- * @param SpeedControl Specifies the speed control object.
- *
- * @return speed control output
- * @see Ifx_PicF32_step
- * @ingroup app_speed_control
+ *  @param SpeedControl Specifies the speed control object.
+ *  
+ *  @return speed control output
+ *  @see Ifx_PicF32_step
+ *  @ingroup app_speed_control
  */
 float32 PmsmFoc_SpeedControl_do(SpeedControl *speedControl)
 {
@@ -76,11 +76,11 @@ float32 PmsmFoc_SpeedControl_do(SpeedControl *speedControl)
 
 /** @brief Initialize the speed control object
  *
- * @param SpeedControl Specifies the speed control object.
+ *  @param SpeedControl Specifies the speed control object.
  *
- * @return None.
- * @see Ifx_PicF32_init
- * @ingroup app_speed_control
+ *  @return None.
+ *  @see Ifx_PicF32_init
+ *  @ingroup app_speed_control
  */
 void PmsmFoc_SpeedControl_init(SpeedControl *speedControl)
 {

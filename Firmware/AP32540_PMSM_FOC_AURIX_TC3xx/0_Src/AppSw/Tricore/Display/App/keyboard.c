@@ -46,12 +46,16 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 
-#include "Cpu/Std/Ifx_Types.h"
-#include "Cpu/Std/IfxCpu_Intrinsics.h"
+#include <Cpu/Std/Ifx_Types.h>
+#include <Cpu/Std/IfxCpu_Intrinsics.h>
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#endif
+#include "Display_Cfg_AppKitTft_TC387A.h"
 #include "conio_tft.h"
 #include "touch.h"
-#include "string.h"
-#include "stdio.h"
+#include <string.h>
+#include <stdio.h>
 
 /******************************************************************************/
 /*------------------------Inline Function Prototypes--------------------------*/
@@ -101,67 +105,67 @@ const uint8 keyboard_outline[TERMINAL_KEYBOARD_MAXY][TERMINAL_KEYBOARD_MAXX] = {
 
 
 const TDISPLAYENTRY keyboardlist[MAX_DISPLAYKEYBENTRY] = {
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 1, 19, 7, &keyboard_display_descr, &keyboard_display_descr,&keyboard_input, "DESCR", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | CYAN, 21, 39, 7, &keyboard_display_text, &keyboard_display_text, &keyboard_input, "TEXT", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 2, 2, 9, &keyboard_select, &keyboard_display, &keyboard_input, "^", '^'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 4, 4, 9, &keyboard_select, &keyboard_display, &keyboard_input, "1", '1'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 6, 6, 9, &keyboard_select, &keyboard_display, &keyboard_input, "2", '2'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 8, 8, 9, &keyboard_select, &keyboard_display, &keyboard_input, "3", '3'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 10, 10, 9, &keyboard_select, &keyboard_display, &keyboard_input, "4",'4'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 12, 12, 9, &keyboard_select, &keyboard_display, &keyboard_input, "5",'5'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 14, 14, 9, &keyboard_select, &keyboard_display, &keyboard_input, "6",'6'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 16, 16, 9, &keyboard_select, &keyboard_display, &keyboard_input, "7",'7'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 18, 18, 9, &keyboard_select, &keyboard_display, &keyboard_input, "8",'8'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 20, 20, 9, &keyboard_select, &keyboard_display, &keyboard_input, "9",'9'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 22, 22, 9, &keyboard_select, &keyboard_display, &keyboard_input, "0",'0'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 24, 24, 9, &keyboard_select, &keyboard_display, &keyboard_input, "\x0",0x40},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 26, 26, 9, &keyboard_select, &keyboard_display, &keyboard_input, "\x0",0x40},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 28, 31, 9, &keyboard_select_back, &keyboard_display, &keyboard_input,"BACK", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 33, 33, 9, &keyboard_select_left, &keyboard_display, &keyboard_input,"LEFT", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 35, 35, 9, &keyboard_select_right, &keyboard_display, &keyboard_input,"RIGHT", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 1, 3, 11, &keyboard_select, &keyboard_display, &keyboard_input, "TAB",0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 5, 5, 11, &keyboard_select, &keyboard_display, &keyboard_input, "Q",'Q'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 7, 7, 11, &keyboard_select, &keyboard_display, &keyboard_input, "W",'W'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 9, 9, 11, &keyboard_select, &keyboard_display, &keyboard_input, "E",'E'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 11, 11, 11, &keyboard_select, &keyboard_display, &keyboard_input, "R",'R'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 13, 13, 11, &keyboard_select, &keyboard_display, &keyboard_input, "T",'T'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 15, 15, 11, &keyboard_select, &keyboard_display, &keyboard_input, "Z",'Z'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 17, 17, 11, &keyboard_select, &keyboard_display, &keyboard_input, "U",'U'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 19, 19, 11, &keyboard_select, &keyboard_display, &keyboard_input, "I",'I'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 21, 21, 11, &keyboard_select, &keyboard_display, &keyboard_input, "O",'O'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 23, 23, 11, &keyboard_select, &keyboard_display, &keyboard_input, "P",'P'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 25, 25, 11, &keyboard_select, &keyboard_display, &keyboard_input, "Ü",'Ü'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 27, 27, 11, &keyboard_select, &keyboard_display, &keyboard_input, "+",'+'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 29, 31, 11, &keyboard_select_enter, &keyboard_display, &keyboard_input,"ENTER", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 30, 31, 12, &keyboard_select_enter, &keyboard_display, &keyboard_input,"ENTER", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 1, 4, 13, &keyboard_select, &keyboard_display, &keyboard_input, "CAPS",0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 6, 6, 13, &keyboard_select, &keyboard_display, &keyboard_input, "A",'A'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 8, 8, 13, &keyboard_select, &keyboard_display, &keyboard_input, "S",'S'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 10, 10, 13, &keyboard_select, &keyboard_display, &keyboard_input, "D",'D'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 12, 12, 13, &keyboard_select, &keyboard_display, &keyboard_input, "F",'F'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 14, 14, 13, &keyboard_select, &keyboard_display, &keyboard_input, "G",'G'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 16, 16, 13, &keyboard_select, &keyboard_display, &keyboard_input, "H",'H'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 18, 18, 13, &keyboard_select, &keyboard_display, &keyboard_input, "J",'J'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 20, 20, 13, &keyboard_select, &keyboard_display, &keyboard_input, "K",'K'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 22, 22, 13, &keyboard_select, &keyboard_display, &keyboard_input, "L",'L'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 24, 24, 13, &keyboard_select, &keyboard_display, &keyboard_input, "Ö",'Ö'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 26, 26, 13, &keyboard_select, &keyboard_display, &keyboard_input, "Ä",'Ä'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 28, 28, 13, &keyboard_select, &keyboard_display, &keyboard_input, "#",'#'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 30, 31, 13, &keyboard_select_enter, &keyboard_display, &keyboard_input,"ENTER", 0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 1, 3, 15, &keyboard_select, &keyboard_display, &keyboard_input, "SHI",0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 5, 5, 15, &keyboard_select, &keyboard_display, &keyboard_input, "<",'<'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 7, 7, 15, &keyboard_select, &keyboard_display, &keyboard_input, "Y",'Y'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 9, 9, 15, &keyboard_select, &keyboard_display, &keyboard_input, "X",'X'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 11, 11, 15, &keyboard_select, &keyboard_display, &keyboard_input, "C",'C'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 13, 13, 15, &keyboard_select, &keyboard_display, &keyboard_input, "V",'V'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 15, 15, 15, &keyboard_select, &keyboard_display, &keyboard_input, "B",'B'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 17, 17, 15, &keyboard_select, &keyboard_display, &keyboard_input, "N",'N'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 19, 19, 15, &keyboard_select, &keyboard_display, &keyboard_input, "M",'M'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 21, 21, 15, &keyboard_select, &keyboard_display, &keyboard_input, ",",','},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 23, 23, 15, &keyboard_select, &keyboard_display, &keyboard_input, ".",'.'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 25, 25, 15, &keyboard_select, &keyboard_display, &keyboard_input, "-",'-'},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 27, 31, 15, &keyboard_select, &keyboard_display, &keyboard_input, "SHI",0x0},
-{(CYAN << 4) | BLACK, (BLACK << 4) | YELLOW, 8, 22, 17, &keyboard_select, &keyboard_display, &keyboard_input, "SPACE",' '}
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 1, 19, 7, &keyboard_display_descr, &keyboard_display_descr,&keyboard_input, "DESCR", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_CYAN, 21, 39, 7, &keyboard_display_text, &keyboard_display_text, &keyboard_input, "TEXT", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 2, 2, 9, &keyboard_select, &keyboard_display, &keyboard_input, "^", '^'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 4, 4, 9, &keyboard_select, &keyboard_display, &keyboard_input, "1", '1'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 6, 6, 9, &keyboard_select, &keyboard_display, &keyboard_input, "2", '2'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 8, 8, 9, &keyboard_select, &keyboard_display, &keyboard_input, "3", '3'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 10, 10, 9, &keyboard_select, &keyboard_display, &keyboard_input, "4",'4'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 12, 12, 9, &keyboard_select, &keyboard_display, &keyboard_input, "5",'5'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 14, 14, 9, &keyboard_select, &keyboard_display, &keyboard_input, "6",'6'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 16, 16, 9, &keyboard_select, &keyboard_display, &keyboard_input, "7",'7'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 18, 18, 9, &keyboard_select, &keyboard_display, &keyboard_input, "8",'8'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 20, 20, 9, &keyboard_select, &keyboard_display, &keyboard_input, "9",'9'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 22, 22, 9, &keyboard_select, &keyboard_display, &keyboard_input, "0",'0'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 24, 24, 9, &keyboard_select, &keyboard_display, &keyboard_input, "\x0",0x40},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 26, 26, 9, &keyboard_select, &keyboard_display, &keyboard_input, "\x0",0x40},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 28, 31, 9, &keyboard_select_back, &keyboard_display, &keyboard_input,"BACK", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 33, 33, 9, &keyboard_select_left, &keyboard_display, &keyboard_input,"LEFT", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 35, 35, 9, &keyboard_select_right, &keyboard_display, &keyboard_input,"RIGHT", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 1, 3, 11, &keyboard_select, &keyboard_display, &keyboard_input, "TAB",0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 5, 5, 11, &keyboard_select, &keyboard_display, &keyboard_input, "Q",'Q'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 7, 7, 11, &keyboard_select, &keyboard_display, &keyboard_input, "W",'W'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 9, 9, 11, &keyboard_select, &keyboard_display, &keyboard_input, "E",'E'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 11, 11, 11, &keyboard_select, &keyboard_display, &keyboard_input, "R",'R'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 13, 13, 11, &keyboard_select, &keyboard_display, &keyboard_input, "T",'T'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 15, 15, 11, &keyboard_select, &keyboard_display, &keyboard_input, "Z",'Z'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 17, 17, 11, &keyboard_select, &keyboard_display, &keyboard_input, "U",'U'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 19, 19, 11, &keyboard_select, &keyboard_display, &keyboard_input, "I",'I'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 21, 21, 11, &keyboard_select, &keyboard_display, &keyboard_input, "O",'O'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 23, 23, 11, &keyboard_select, &keyboard_display, &keyboard_input, "P",'P'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 25, 25, 11, &keyboard_select, &keyboard_display, &keyboard_input, "Ü",'Ü'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 27, 27, 11, &keyboard_select, &keyboard_display, &keyboard_input, "+",'+'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 29, 31, 11, &keyboard_select_enter, &keyboard_display, &keyboard_input,"ENTER", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 30, 31, 12, &keyboard_select_enter, &keyboard_display, &keyboard_input,"ENTER", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 1, 4, 13, &keyboard_select, &keyboard_display, &keyboard_input, "CAPS",0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 6, 6, 13, &keyboard_select, &keyboard_display, &keyboard_input, "A",'A'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 8, 8, 13, &keyboard_select, &keyboard_display, &keyboard_input, "S",'S'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 10, 10, 13, &keyboard_select, &keyboard_display, &keyboard_input, "D",'D'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 12, 12, 13, &keyboard_select, &keyboard_display, &keyboard_input, "F",'F'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 14, 14, 13, &keyboard_select, &keyboard_display, &keyboard_input, "G",'G'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 16, 16, 13, &keyboard_select, &keyboard_display, &keyboard_input, "H",'H'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 18, 18, 13, &keyboard_select, &keyboard_display, &keyboard_input, "J",'J'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 20, 20, 13, &keyboard_select, &keyboard_display, &keyboard_input, "K",'K'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 22, 22, 13, &keyboard_select, &keyboard_display, &keyboard_input, "L",'L'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 24, 24, 13, &keyboard_select, &keyboard_display, &keyboard_input, "Ö",'Ö'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 26, 26, 13, &keyboard_select, &keyboard_display, &keyboard_input, "Ä",'Ä'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 28, 28, 13, &keyboard_select, &keyboard_display, &keyboard_input, "#",'#'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 30, 31, 13, &keyboard_select_enter, &keyboard_display, &keyboard_input,"ENTER", 0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 1, 3, 15, &keyboard_select, &keyboard_display, &keyboard_input, "SHI",0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 5, 5, 15, &keyboard_select, &keyboard_display, &keyboard_input, "<",'<'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 7, 7, 15, &keyboard_select, &keyboard_display, &keyboard_input, "Y",'Y'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 9, 9, 15, &keyboard_select, &keyboard_display, &keyboard_input, "X",'X'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 11, 11, 15, &keyboard_select, &keyboard_display, &keyboard_input, "C",'C'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 13, 13, 15, &keyboard_select, &keyboard_display, &keyboard_input, "V",'V'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 15, 15, 15, &keyboard_select, &keyboard_display, &keyboard_input, "B",'B'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 17, 17, 15, &keyboard_select, &keyboard_display, &keyboard_input, "N",'N'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 19, 19, 15, &keyboard_select, &keyboard_display, &keyboard_input, "M",'M'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 21, 21, 15, &keyboard_select, &keyboard_display, &keyboard_input, ",",','},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 23, 23, 15, &keyboard_select, &keyboard_display, &keyboard_input, ".",'.'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 25, 25, 15, &keyboard_select, &keyboard_display, &keyboard_input, "-",'-'},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 27, 31, 15, &keyboard_select, &keyboard_display, &keyboard_input, "SHI",0x0},
+{(COLOR_CYAN << 4) | COLOR_BLACK, (COLOR_BLACK << 4) | COLOR_YELLOW, 8, 22, 17, &keyboard_select, &keyboard_display, &keyboard_input, "SPACE",' '}
 };
 // *INDENT-ON*
 /******************************************************************************/
@@ -322,8 +326,8 @@ void keyboard (sint16 x, sint16 y)
     if (y > 17)
         y = 17;
 
-    conio_ascii_textcolor (DISPLAYMENU, BLACK);
-    conio_ascii_textbackground (DISPLAYMENU, CYAN);
+    conio_ascii_textcolor (DISPLAYMENU, COLOR_BLACK);
+    conio_ascii_textbackground (DISPLAYMENU, COLOR_CYAN);
 
     conio_ascii_gotoxy (conio_driver.displaymode, 0, 6);
     for (j = 0; j < 13; j += 1)
@@ -354,7 +358,7 @@ void keyboard (sint16 x, sint16 y)
             conio_ascii_putch (conio_driver.displaymode, 0x20);
     }
     conio_ascii_gotoxy (DISPLAYMENU, x, y);
-    conio_ascii_textchangebackground (DISPLAYMENU, RED);
+    conio_ascii_textchangebackground (DISPLAYMENU, COLOR_RED);
     for (i = 0; i < MAX_DISPLAYKEYBENTRY; i += 1)
     {
         if ((x >= keyboardlist[i].xmin) && (x <= keyboardlist[i].xmax) && (y == keyboardlist[i].y))

@@ -43,29 +43,13 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 
-#include "IfxStdIf_Pos.h"
 #include "SysSe/Math/IFX_Cf32.h"
 #include "PmsmFoc_Functions.h"
-#include "PmsmFoc_VariablesScaling.h"
-#include "PmsmFoc_PwmSvm.h"
-#include "PmsmFoc_CurrentThreeshuntSense.h"
-#include "PmsmFoc_VoltageSense.h"
-#include "PmsmFoc_PositionAndSpeedAcquisition.h"
-#include "PmsmFoc_Inverter.h"
 #include "Mcu_Init.h"
-#include "Gpt12_Init.h"
-#include "PmsmFoc_CurrentDcLinkSense.h"
 
-#include "Tables.h"
-#include "Arith.StdReal.h"
-#include "SpaceVectorModulation.h"
-#include "Clarke.h"
-#include "Park.h"
-#include "MotorControl.h"
 #if(TLE9180_DRIVER == ENABLED)
 	#include "TLE9180.h"
 #endif /* End of TLE9180_DRIVER */
-
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
@@ -501,6 +485,7 @@ void PmsmFoc_tuneCurrentRegulator(MotorControl* const motorCtrl)
 	{
 		motorCtrl->pmsmFoc.idqRef.real = 0.0;
 		motorCtrl->pmsmFoc.idqRef.imag = 0.0;
+		
 		motorCtrl->controlParameters.tuneCurrentRegsCounter = 0;
 	}
 	/* PI Controller #1 -  Iq PI controller of FOC */
@@ -523,8 +508,6 @@ void PmsmFoc_tuneCurrentRegulator(MotorControl* const motorCtrl)
 	PmsmFoc_doPwmSvmUpdate(&motorCtrl->inverter);
 }
 
-
-
 void PmsmFoc_doDqDecoupling(PmsmFoc* const foc)
 {
 
@@ -544,7 +527,7 @@ void PmsmFoc_doVfControl(MotorControl* const motorCtrl)
 	if(motorCtrl->interface.start == TRUE)
 	{
 	#if(TLE9180_DRIVER == ENABLED)
-		IfxTLE9180_activateEnable(&tle9180.driver);
+		IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
 	#endif /* End of TLE9180_DRIVER */
 		/* Update electrical angle and calculate modulation index */
 #if(EMOTOR_LIB == MC_EMOTOR)
@@ -564,7 +547,7 @@ void PmsmFoc_doVfControl(MotorControl* const motorCtrl)
 		motorCtrl->openLoop.modulationIndex.real = 0;
 		motorCtrl->openLoop.modulationIndex.imag = 0;
 	#if(TLE9180_DRIVER == ENABLED)
-		IfxTLE9180_deactivateEnable(&tle9180.driver);
+		IfxTLE9180_deactivateEnable(&Tle9180Ctrl.driver);
 	#endif /* End of TLE9180_DRIVER */
 	}
 

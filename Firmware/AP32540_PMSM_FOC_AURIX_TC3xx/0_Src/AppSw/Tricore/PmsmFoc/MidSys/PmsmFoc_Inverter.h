@@ -44,22 +44,16 @@
 /*-----------------------------------------------------Includes------------------------------------------------------*/
 /*********************************************************************************************************************/
 #include "PmsmFoc_UserConfig.h"
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
+
 #if(TLE9180_DRIVER == ENABLED)
     #include "PmsmFoc_InitTLE9180.h"
 #endif /* End of TLE9180_DRIVER */
 #include "IfxGtm_Tom_PwmHl.h"
 #include "IfxGtm_Trig.h"
-#include "IfxStdIf_Timer.h"
 
 #include "PmsmFoc_CurrentDcLinkSense.h"
 #include "PmsmFoc_CurrentThreeshuntSense.h"
 #include "PmsmFoc_VoltageSense.h"
-#if(TLE9180_DRIVER == ENABLED)
-    #include "TLE9180.h"
-#endif /* End of TLE9180_DRIVER */
 
 /*********************************************************************************************************************/
 /*------------------------------------------------------Macros-------------------------------------------------------*/
@@ -108,7 +102,7 @@ typedef struct
     BemfVoltageSense        bemfVoltageSense;       /**< \brief PWM output object */
 // #if(TLE9180_DRIVER == ENABLED)
     /*STEVE: define error TLE9180*/  
-    TLE9180                 tle9180;                /**< \brief Gate Driver object */
+    TLE9180_CONTROL_ST      tle9180;                /**< \brief Gate Driver object */
 // #endif /* End of TLE9180_DRIVER */
     InverterStatus          status;                 /**< \brief Current fault status from inverter */
 }Inverter;

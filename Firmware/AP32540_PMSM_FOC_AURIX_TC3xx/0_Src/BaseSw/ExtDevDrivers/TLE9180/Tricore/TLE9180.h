@@ -37,10 +37,8 @@
 #ifndef _TLE9180_H_
 #define _TLE9180_H_
 
-#include "If/SpiIf.h"
-#include "Port/Std/IfxPort.h"
+#include "IfxPort.h"
 #include "Cpu/Std/IfxCpu_Intrinsics.h"
-#include "Qspi/SpiMaster/IfxQspi_SpiMaster.h"
 
 /******************************************************************************/
 /*-----------------------------------Macros-----------------------------------*/

@@ -45,19 +45,22 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
 #include "Ifx_PicF32.h"
-#include "IfxStdIf_Pos.h"
-#include "PmsmFoc_Inverter.h"
-#include "PmsmFoc_Motor.h"
-#include "PmsmFoc_PositionAndSpeedAcquisition.h"
-#include "SysSe/Math/Ifx_RampF32.h"
-#include "Arith.StdReal.h"
-#include "MotorControl.h"
-#include "PmsmFoc_SpeedControl.h"
+#include "Ifx_RampF32.h"
 
+
+#include "LibMotordrive_pub.h"
+#include "PmsmFoc_Inverter.h"
+/* STEVE:Is it correct position */
+#include "PmsmFoc_Motor.h"
+#include "PmsmMid_ext.h"
+#include "LibMath_pub.h"
+
+#include "PmsmFoc_SpeedControl.h"
+#include MOTOR_TYPE_PATH
+#if(DBGCTRLMODE == ENABLED)
+	#include "Dbgctrl_pub.h"
+#endif
 
 /******************************************************************************/
 /*--------------------------------Enumerations--------------------------------*/
@@ -200,6 +203,9 @@ typedef struct
 	OpenLoop  			openLoop;     			/**< \brief Open loop object */
 	PositionAcquisition	positionSensor;			/**< \brief Position sensor object */
 	MotorParameters		motor;					/**< \brief Motor parameters object */
+#if(DBGCTRLMODE == ENABLED)
+	st_DbgCtrl 			sDbgCtrl;				/**< \brief Debugger control parameters object */
+#endif
 } MotorControl;
 
 /******************************************************************************/

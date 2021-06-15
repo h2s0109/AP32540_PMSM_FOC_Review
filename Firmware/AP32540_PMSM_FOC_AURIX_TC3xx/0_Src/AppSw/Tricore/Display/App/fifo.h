@@ -42,20 +42,51 @@
  *
  */
 
-
 #ifndef FIFO_H_
 #define FIFO_H_
 
+/******************************************************************************/
+/*----------------------------------Includes----------------------------------*/
+/******************************************************************************/
+#if GENERAL_TFTKIT
+#include "Configuration.h"
+#endif
+#include "Display_Cfg_AppKitTft_TC387A.h"
+#include "IfxCpu_cfg.h"
 
-void fifo_display_init (uint32 * pFIFO, uint32 size);
-sint32 fifo_display_used (void);
-uint32 fifo_max_used (void);
-sint32 PUT_FIFO_DISPLAY (uint32 value);
-sint32 GET_FIFO_DISPLAY (uint32 * pvalue);
-sint32 FIFO_DISPLAY_FREE (void);
-sint32 FIFO_DISPLAY_USED (void);
-sint32 GET_FIFO_DISPLAY_NODROP (uint32 * pvalue);
+#if defined(__DCC__)
+    #if CPU_WHICH_SERVICE_TFT == 0
+	#pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
+    #pragma section CODE ".text_cpu0"
+    #elif ((CPU_WHICH_SERVICE_TFT == 1) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
+    #pragma section CODE ".text_cpu1"
+    #elif ((CPU_WHICH_SERVICE_TFT == 2) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
+    #pragma section CODE ".text_cpu2"
+    #elif ((CPU_WHICH_SERVICE_TFT == 3) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
+    #pragma section CODE ".text_cpu3"
+    #elif ((CPU_WHICH_SERVICE_TFT == 4) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
+    #pragma section CODE ".text_cpu4"
+    #elif ((CPU_WHICH_SERVICE_TFT == 5) && (CPU_WHICH_SERVICE_TFT < IFXCPU_NUM_MODULES))
+	#pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
+    #pragma section CODE ".text_cpu5"
+    #endif
+#endif
 
+/******************************************************************************/
+/*-----------------------------------Macros-----------------------------------*/
+/******************************************************************************/
+
+/******************************************************************************/
+/*--------------------------------Enumerations--------------------------------*/
+/******************************************************************************/
+
+/******************************************************************************/
+/*-----------------------------Data Structures--------------------------------*/
+/******************************************************************************/
 typedef struct tfifodisplay
 {
     uint32 *pFIFO_DISPLAY;
@@ -64,5 +95,26 @@ typedef struct tfifodisplay
     volatile sint32 FIFO_DISPLAY_OUT;
     uint32 FIFO_MAX_USED;
 } TFIFODISPLAY;
+
+/******************************************************************************/
+/*------------------------------Global variables------------------------------*/
+/******************************************************************************/
+
+/******************************************************************************/
+/*-------------------------Function Prototypes--------------------------------*/
+/******************************************************************************/
+IFX_EXTERN void fifo_display_init (uint32 * pFIFO, uint32 size);
+IFX_EXTERN sint32 fifo_display_used (void);
+IFX_EXTERN uint32 fifo_max_used (void);
+IFX_EXTERN sint32 PUT_FIFO_DISPLAY (uint32 value);
+IFX_EXTERN sint32 GET_FIFO_DISPLAY (uint32 * pvalue);
+IFX_EXTERN sint32 FIFO_DISPLAY_FREE (void);
+IFX_EXTERN sint32 FIFO_DISPLAY_USED (void);
+IFX_EXTERN sint32 GET_FIFO_DISPLAY_NODROP (uint32 * pvalue);
+
+#if defined(__DCC__)
+#pragma section CODE
+#pragma section DATA RW
+#endif
 
 #endif /* FIFO_H_ */

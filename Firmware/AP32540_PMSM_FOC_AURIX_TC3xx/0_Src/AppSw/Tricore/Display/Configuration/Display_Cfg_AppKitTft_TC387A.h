@@ -43,48 +43,71 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-#include "IfxQspi_SpiMaster.h"
-#include "IfxDma.h"
-#include "SysSe/Bsp/Bsp.h"
-#include "Port/Std/IfxPort.h"
-#include "IfxPort_PinMap.h"
+#include <IfxSrc_reg.h>
+#include <_PinMap/IfxQspi_PinMap.h>
+#include <_PinMap/IfxPort_PinMap.h>
 
 /******************************************************************************/
-/*--------------------------------Macros--------------------------------------*/
+/*-----------------------------------Macros-----------------------------------*/
 /******************************************************************************/
 
-/**< \brief Interrupt priority assignment for the application 											*/
-/**< \brief Instruction: Arrange the interrupt defines in ascending order of their priority! 			*/
-/**< \brief Check if there are two interrupts assigned with same priority (unless they are grouped)  	*/
+/* set here the used pins for TFT and TOUCH (QSPI0) */
+#define TFT_MAX_BAUDRATE            50000000  // maximum baudrate which is possible to get a small time quantum
+#define TFT_SCLK_PIN	            IfxQspi0_SCLK_P20_13_OUT
+#define TFT_MTSR_PIN	            IfxQspi0_MTSR_P20_14_OUT
+#define TFT_MRST_PIN	            IfxQspi0_MRSTA_P20_12_IN
+#define TFT_USE_DMA  				// comment line for not using DMA
+#define DMA_CH_TFT_TX               TFT_DMA_CH_TXBUFF_TO_TXFIFO
+#define DMA_CH_TFT_RX               TFT_DMA_CH_RXBUFF_FROM_RXFIFO
+#define TFT_TRANSMIT_CALLBACK       tft_transmit_callback
+
+#define TFT_USE_CHIPSELECT          IfxQspi0_SLSO8_P20_6_OUT
+#define TFT_UPDATE_IRQ              MODULE_SRC.GPSR.GPSR[0].SR[0]
+
+#define TOUCH_USE_CHIPSELECT        IfxQspi0_SLSO9_P20_3_OUT
+#define TOUCH_USE_INT               IfxPort_P20_9
+
+/* define the CPU which service the selected peripherals */
+#define CPU_WHICH_SERVICE_TFT          0     /**< \brief Define the CPU which service the Tft and touch where functions/variables are located.  */
+
+/* define the CPU which holds the DAS variables */
+#define DAS_VAR_LOCATION            1
+
+//#define TFT_OVER_DAS
+
+#define REFRESH_TFT 50		// Refresh rate [ms]; 1x refresh ~0,8 % CPU load; for graphic-out: 4 colors ~ 1.2 % CPU load, 16 colors ~ 0.8 % CPU load
+							// Max refresh rate ~ 40 ms due to QSPI-load
 
 
-#define INTERRUPT_PRIORITY_QSPI0_TX     (40)  															/**< \brief Define the QSPI0 transmit interrupt priority.  */
-#define INTERRUPT_PRIORITY_QSPI0_RX     (41)  															/**< \brief Define the QSPI0 receive interrupt priority.  */
-#define INTERRUPT_PRIORITY_QSPI0_ERR    (42)  															/**< \brief Define the QSPI0 error interrupt priority.  */
+/**
+ * \name Interrupt priority configuration for CPU.
+ * The interrupt priority range is [1,255]
+ * \{
+ */
+#define ISR_PRIORITY_CPUSRV0        2  /**< \brief Define the conio periodic interrupt priority must be lower than QSPIx priorities.  */
+#define ISR_PRIORITY_TFT_QSPI_ER    42  /**< \brief Define the TFT error interrupt priority.  */
+#define ISR_PRIORITY_BACKLIGHT      30  /**< \brief Define the TOMx_x compare match interrupt priority.  */
+#define ISR_PRIORITY_TFT_QSPI_TX    40  /**< \brief Define the TFT transmit interrupt priority.  */
+#define ISR_PRIORITY_TFT_QSPI_RX    41  /**< \brief Define the TFT receive interrupt priority.  */
+
+/**
+ * \name DMA channel configuration.
+ * \{
+ */
+
+#define TFT_DMA_CH_TXBUFF_TO_TXFIFO        0 /**< \brief Dma channel used for TFT Master Qspi Transmit  */
+#define TFT_DMA_CH_RXBUFF_FROM_RXFIFO      1 /**< \brief Dma channel used for TFT Master Qspi Receive  */
 
 
-/* TFT GPIO and QSPI define */
-#define TFT_SPI_MODULE                	MODULE_QSPI0													/**< \brief Define the QSPI object */
-#define TFT_SPI_CLOCK_PIN             	IfxQspi0_SCLK_P20_13_OUT										/**< \brief Define the QSPI SLCK out pin  */
-#define TFT_SPI_MOSI_PIN              	IfxQspi0_MTSR_P20_14_OUT										/**< \brief Define the QSPI MTSR out pin */
-#define TFT_SPI_MISO_PIN              	IfxQspi0_MRSTA_P20_12_IN										/**< \brief Define the QSPI MRSTA input pin */
-#define TFT_SPI_HOST_CPU              	IfxSrc_Tos_cpu0													/**< \brief Define the handler of the interrupts*/
-#define TFT_SPI_USE_DMA               	TRUE															/**< \brief Define the use of DMA for data transfer/s */
-#define TFT_SPI_TX_DMA_CH             	IfxDma_ChannelId_0												/**< \brief Define the DMA channel no for the QSPI transmit */
-#define TFT_SPI_RX_DMA_CH             	IfxDma_ChannelId_1
-
-#define TFT_USE_SCLK                    TFT_SPI_CLOCK_PIN
-#define TFT_USE_CHIPSELECT              IfxQspi0_SLSO8_P20_6_OUT
 
 
-/**< \brief Define the DMA channel no for the QSPI receive */
+/**
+ * \name DMA channel configuration.
+ * \{
+ */
 
-/* TOUCH GPIO and QSPI define */
-#define TOUCH_SPI_CS_PIN             	IfxQspi0_SLSO9_P20_3_OUT
-#define TOUCH_USE_INT                   IfxPort_P20_9
-
-//#define TFT_OVER_DAS 					1
-
+#define TFT_DMA_CH_TXBUFF_TO_TXFIFO        0 /**< \brief Dma channel used for TFT Master Qspi Transmit  */
+#define TFT_DMA_CH_RXBUFF_FROM_RXFIFO      1 /**< \brief Dma channel used for TFT Master Qspi Receive  */
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/

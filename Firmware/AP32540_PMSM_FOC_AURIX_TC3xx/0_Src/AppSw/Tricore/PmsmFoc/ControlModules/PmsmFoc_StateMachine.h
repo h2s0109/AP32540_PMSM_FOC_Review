@@ -47,7 +47,6 @@
 #include "PmsmFoc_UserConfig.h"
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
-#include MOTOR_TYPE_PATH
 #include "PmsmFoc_Functions.h"
 /******************************************************************************/
 /*--------------------------------Macros--------------------------------------*/

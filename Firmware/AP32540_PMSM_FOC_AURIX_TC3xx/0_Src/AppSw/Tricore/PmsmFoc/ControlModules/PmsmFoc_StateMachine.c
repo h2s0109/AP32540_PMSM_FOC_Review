@@ -41,11 +41,6 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_StateMachine.h"
-
-#include "PmsmFoc_CurrentThreeshuntSense.h"
-#include "PmsmFoc_PositionAndSpeedAcquisition.h"
-#include "PmsmFoc_PwmSvm.h"
-#include "PmsmFoc_Interface.h"
 #if(TLE9180_DRIVER == ENABLED)
 #include "TLE9180.h"
 #endif /* End of TLE9180_DRIVER */
@@ -75,7 +70,7 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_notDone))
 		{
 		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_activateEnable(&tle9180.driver);
+			IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
 		#endif /* End of TLE9180_DRIVER */
 		}
 		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
@@ -91,7 +86,7 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done))
 		{
 		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_deactivateEnable(&tle9180.driver);
+			IfxTLE9180_deactivateEnable(&Tle9180Ctrl.driver);
 		#endif /* End of TLE9180_DRIVER */
 			motorCtrl->controlParameters.state = StateMachine_motorStop;
 		}
@@ -99,7 +94,7 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
 		{
 		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_activateEnable(&tle9180.driver);
+			IfxTLE9180_activateEnable(&Tle9180Ctrl.driver);
 		#endif /* End of TLE9180_DRIVER */
 		}
 		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
@@ -110,7 +105,7 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done)
 		{
 		#if(TLE9180_DRIVER == ENABLED)
-			IfxTLE9180_deactivateEnable(&tle9180.driver);
+			IfxTLE9180_deactivateEnable(&Tle9180Ctrl.driver);
 		#endif /* End of TLE9180_DRIVER */
 			motorCtrl->controlParameters.state = StateMachine_motorStop;
 		}
@@ -137,6 +132,8 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		/* From state machine: 	StateMachine_calibration */
 		/* From periodic task: 	PmsmFoc_Interface_doDemo */
 		/* Current reconstruction */
+        /* STEVE: functionlity overlapped */
+        #if 0
 		PmsmFoc_reconstructCurrent(motorCtrl);
 
 		/* Clarke Transformation */
@@ -148,6 +145,7 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 
 		/* Park Transformation */
 		PmsmFoc_doParkTransform(&motorCtrl->pmsmFoc);
+        #endif
 		break;
 	case StateMachine_motorIdle:
 		/* Not used*/

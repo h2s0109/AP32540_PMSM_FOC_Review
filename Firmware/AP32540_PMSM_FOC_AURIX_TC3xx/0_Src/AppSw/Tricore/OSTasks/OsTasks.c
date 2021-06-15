@@ -38,59 +38,57 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
-#include MCUCARD_TYPE_PATH
-#include INVERTERCARD_TYPE_PATH
 #include MOTOR_TYPE_PATH
 #include "IfxStm.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #if(TFT_DISPLAYMODE == ENABLED)
-	#include "conio_tft.h"
-	#include "touch.h"
+	#include "Display_pub.h"
 #endif /* End of TFT_DISPLAYMODE */
 #include "PmsmFoc_Functions.h"
-#include "Display.h"
-#include "PmsmFoc_InitTLE9180.h"
 #if(ONE_EYEMODE == ENABLED)
 	#include "OneEye_Init.h"
 #endif /* End of ONE_EYEMODE*/
-
 #include "PmsmFoc_Interface.h"
+
+#if(DBGCTRLMODE == ENABLED)
+	#include "Dbgctrl_pub.h"
+#endif
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-#if(TFT_DISPLAYMODE == ENABLED)
-	extern volatile boolean 		tft_ready;
-#endif /* End of TFT_DISPLAYMODE */
-
 extern MotorControl				g_motorControl;
 
 /******************************************************************************/
 /*-------------------------Private Variables/Constants------------------------*/
 /******************************************************************************/
 #define OS_CURRENT_RAMP_TASK_PERIOD_MS				((uint32)(USER_MOTOR_CURRENT_Q_RAMP_PERIOD*1000))
-#define OS_CURRENT_RAMP_TASK_PRIORITY				(8)
+#define OS_CURRENT_RAMP_TASK_PRIORITY				(10)
 
 #define OS_SPEED_CONTROL_TASK_PERIOD_MS				(5)
-#define OS_SPEED_CONTROL_TASK_PRIORITY				(8)
+#define OS_SPEED_CONTROL_TASK_PRIORITY				(9)
 
 #define OS_ONE_EYE_BUFFER_COPY_TASK_PERIOD_MS		(10)
-#define OS_ONE_EYE_BUFFER_COPY_TASK_PERIOD_PRIORITY	(7)
+#define OS_ONE_EYE_BUFFER_COPY_TASK_PERIOD_PRIORITY	(8)
 #if(TFT_DISPLAYMODE == ENABLED)
-	#define OS_TOUCH_CONTROL_TASK_PERIOD_MS				(20)
-	#define OS_TOUCH_CONTROL_TASK_PRIORITY				(6)
+	#define OS_TOUCH_CONTROL_TASK_PERIOD_MS			(20)
+	#define OS_TOUCH_CONTROL_TASK_PRIORITY			(7)
 #endif /* End of TFT_DISPLAYMODE */
+#if(DBGCTRLMODE == ENABLED)
+	#define OS_DEBUGGER_CONTROL_TASK_PERIOD_MS		(30)
+	#define OS_DEBUGGER_CONTROL_TASK_PRIORITY		(6)
+#endif /* End of DBGCTRL*/
 #define OS_SPEED_REF_RAMP_TASK_PERIOD_MS			((uint32)(USER_MOTOR_SPEED_RAMP_PERIOD*1000))
 #define OS_SPEED_REF_RAMP_TASK_PRIORITY				(5)
 #if(TFT_DISPLAYMODE == ENABLED)
-	#define OS_CONIO_TASK_PERIOD_MS						(100)
-	#define OS_CONIO_TASK_PRIORITY						(4)
+	#define OS_CONIO_TASK_PERIOD_MS					(100)
+	#define OS_CONIO_TASK_PRIORITY					(4)
 #endif /* End of TFT_DISPLAYMODE */
 #define OS_DEMO_CONTROL_TASK_PERIOD_MS				(200)
 #define OS_DEMO_CONTROL_TASK_PRIORITY				(3)
 #if(TFT_DISPLAYMODE == ENABLED)
-	#define OS_DISPLAY_TIME_TASK_PERIOD_MS				(1000)
-	#define OS_DISPLAY_TIME_TASK_PRIORITY				(2)
+	#define OS_DISPLAY_TIME_TASK_PERIOD_MS			(1000)
+	#define OS_DISPLAY_TIME_TASK_PRIORITY			(2)
 #endif /* End of TFT_DISPLAYMODE */
 
 
@@ -175,7 +173,27 @@ static __attribute__((__noreturn__)) void periodicTouchControlTask(void *arg)
 	}
 }
 #endif /* End of TFT_DISPLAYMODE */
+#if(DBGCTRLMODE == ENABLED)
+volatile uint32 debugControlCount= 0UL;
 
+static __attribute__((__noreturn__)) void periodicDebuggerTask(void *arg)
+{
+	TickType_t xLastWakeTime;
+	(void)arg;
+	xLastWakeTime = xTaskGetTickCount();
+
+	while (1)
+	{
+
+		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_DEBUGGER_CONTROL_TASK_PERIOD_MS));
+		debugControlCount++;
+		{
+			/* Call user tasks here */
+			DbgCtrl_periodic (&g_motorControl.sDbgCtrl);
+		}
+	}
+}
+#endif /* End of DBGCTRL */
 volatile uint32 speedControlCount= 0UL;
 
 
@@ -336,10 +354,7 @@ static __attribute__((__noreturn__)) void periodicConioTask(void *arg)
 			if (tft_ready == 1)
 			{
 				conio_periodic(touch_driver.xdisp, touch_driver.ydisp, conio_driver.pmenulist, conio_driver.pstdlist);
-				#if(ONE_EYEMODE == ENABLED)
-				/*STEVE: not ONE_EYEMODE but has a dependency with ONE_EYEMODE */ 
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 0, (uint8 *)SW_NAME);
-				#endif /* End of ONE_EYEMODE*/
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 1, (uint8 *)"SW: V1.0.2, HW V3.2");
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 3, (uint8 *)"Speed Ref [rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.refSpeed);
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 4, (uint8 *)"Speed Meas[rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.measSpeed);
@@ -359,7 +374,6 @@ static __attribute__((__noreturn__)) void periodicConioTask(void *arg)
 
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 16, (uint8 *)"ValphaRef[p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.imag);
 				conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 17, (uint8 *)"VbetaRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.real);
-
 			}
 			/******************************************************************
 			 *                          CONIO Task END                        *
@@ -459,7 +473,14 @@ void OS_Tasks_init(void)
 			OS_TOUCH_CONTROL_TASK_PRIORITY,
 			NULL);
 #endif /* End of TFT_DISPLAYMODE */
-
+#if(DBGCTRLMODE == ENABLED)
+	xTaskCreate(periodicDebuggerTask,
+			"Debugger Control",
+			configMINIMAL_STACK_SIZE,
+			NULL,
+			OS_DEBUGGER_CONTROL_TASK_PRIORITY,
+			NULL);
+#endif /* End of DBGCTRL*/
 	xTaskCreate(periodicSpeedControlTask,
 			"Speed Control",
 			configMINIMAL_STACK_SIZE,
@@ -472,7 +493,7 @@ void OS_Tasks_init(void)
 			"One Eye Buffer Copy",
 			configMINIMAL_STACK_SIZE,
 			NULL,
-			OS_SPEED_CONTROL_TASK_PRIORITY,
+			OS_ONE_EYE_BUFFER_COPY_TASK_PERIOD_PRIORITY,
 			NULL);
 #endif /* End of ONE_EYEMODE*/
 

@@ -63,3 +63,13 @@ MOTOR_TYPE_PATH
 > * Mixed usage with PmsmFoc_Functions.h,PmsmFoc_StateMachine.h
 > * change #if !defined(MOTOR_CONTROL_H) -> #ifndef MOTOR_CONTROL_H
 > * PmsmFoc_StateMachine.c bug fix, add the comment.
+>## Branch: Dbgctrl_dev
+>### V1.0.6.1: Debug control function
+> * on the develop.
+>### V1.0.6.2: Debug control function: compile test complete
+> * comile test completed.
+>### V1.0.6.3: Debug control function: improve the whole functionality.
+> * complete the whole debug function test on board.
+> * implement STM, GTM debug stop
+> * OS overlap priority change.
+> * StateMachine_motorStop need re-design.
