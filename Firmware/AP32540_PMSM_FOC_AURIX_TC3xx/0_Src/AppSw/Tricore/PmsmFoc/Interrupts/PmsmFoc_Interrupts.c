@@ -41,6 +41,9 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_Interrupts.h"
+#if(TLF35584_DRIVER == ENABLED)
+	#include "TLF3xx8x.h"
+#endif /* End of TLF35584_DRIVER*/
 #if(ONE_EYEMODE == ENABLED)
 	#include "OneEye_Init.h"
 #endif /* End of ONE_EYEMODE*/
@@ -108,46 +111,51 @@ IFX_INTERRUPT(PmsmFoc_Gpt12_Encoder_TzIsr, 0, INTERRUPT_PRIORITY_ENCODER_GPT12)
 }
 #endif
 #if(TLF35584_DRIVER == ENABLED)
-#if (INTERRUPT_PRIORITY_QSPI2_TX > 0)
-/** \brief Interrupt service units for QSPI2 Transmit
+/** \brief Handle tlf_qspi_Tx interrupt.
+ *
+ * \isrProvider \ref CPU_WHICH_SERVICE_TLF
+ * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
  *
  */
-IFX_INTERRUPT(PmsmFoc_Qspi_Tlf35584_TxIsr, 0, INTERRUPT_PRIORITY_QSPI2_TX)
+IFX_INTERRUPT(ISR_tlf_qspi_Tx, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_TX)
 {
-	IfxCpu_enableInterrupts();
-#if (SPI_2_USE_DMA == TRUE)
-	IfxQspi_SpiMaster_isrDmaTransmit(&spiMasterQspi2);
+    IfxCpu_enableInterrupts();
+#ifdef TLF_USE_DMA
+    IfxQspi_SpiMaster_isrDmaTransmit(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
 #else
-	IfxQspi_SpiMaster_isrTransmit(&spiMasterQspi2);
+    IfxQspi_SpiMaster_isrTransmit(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
+#endif
+
+}
+
+
+/** \brief Handle tlf_qspi_Rx interrupt.
+ *
+ * \isrProvider \ref CPU_WHICH_SERVICE_TLF
+ * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
+ *
+ */
+IFX_INTERRUPT(ISR_tlf_qspi_Rx, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_RX)
+{
+    IfxCpu_enableInterrupts();
+#ifdef TLF_USE_DMA
+    IfxQspi_SpiMaster_isrDmaReceive(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
+#else
+    IfxQspi_SpiMaster_isrReceive(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
 #endif
 }
-#endif //(INTERRUPT_PRIORITY_QSPI2_TX > 0)
 
-#if (INTERRUPT_PRIORITY_QSPI2_RX > 0)
-/** \brief Interrupt service units for QSPI2 Receive
+/** \brief Handle tlf_qspi_Er interrupt.
+ *
+ * \isrProvider \ref CPU_WHICH_SERVICE_TLF
+ * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
  *
  */
-IFX_INTERRUPT(PmsmFoc_Qspi_Tlf35584_RxIsr, 0, INTERRUPT_PRIORITY_QSPI2_RX)
+IFX_INTERRUPT(ISR_tlf_qspi_Er, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_ER)
 {
-	IfxCpu_enableInterrupts();
-#if (SPI_2_USE_DMA == TRUE)
-	IfxQspi_SpiMaster_isrDmaReceive(&spiMasterQspi2);
-#else
-	IfxQspi_SpiMaster_isrReceive(&spiMasterQspi2);
-#endif
+    IfxCpu_enableInterrupts();
+    IfxQspi_SpiMaster_isrError(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
 }
-#endif  //(INTERRUPT_PRIORITY_QSPI2_RX > 0)
-
-#if (INTERRUPT_PRIORITY_QSPI2_ERR > 0)
-/** \brief Interrupt service units for QSPI2 Error
- *
- */
-IFX_INTERRUPT(PmsmFoc_Qspi_Tlf35584_ErrIsr, 0, INTERRUPT_PRIORITY_QSPI2_ERR)
-{
-	IfxCpu_enableInterrupts();
-	IfxQspi_SpiMaster_isrError(&spiMasterQspi2);
-}
-#endif //(INTERRUPT_QSPI2_ERR > 0)
 #endif /* End of TLF35584_DRIVER */
 
 #if(TLE9180_DRIVER == ENABLED)

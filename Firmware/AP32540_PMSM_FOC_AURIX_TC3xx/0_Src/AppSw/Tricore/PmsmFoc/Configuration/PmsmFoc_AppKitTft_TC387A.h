@@ -51,7 +51,6 @@
 #include "IfxQspi_PinMap.h"
 #include "IfxSrc_cfg.h"
 #include "IfxDma_cfg.h"
-
 #include MOTOR_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
 /******************************************************************************/
@@ -67,12 +66,9 @@
 /** \brief Define the resolver (RDC) INTERRUPT_PRIORITY priority. */
 #define ISR_PRIORITY_RDC_DS_0       	 (35)
 
-/** \brief Define the QSPI2 transmit interrupt priority. */
-#define INTERRUPT_PRIORITY_QSPI2_TX      (45)
-/** \brief Define the QSPI2 receive interrupt priority. */
-#define INTERRUPT_PRIORITY_QSPI2_RX      (46)
-/** \brief Define the QSPI2 error interrupt priority. */
-#define INTERRUPT_PRIORITY_QSPI2_ERR     (47)
+#define ISR_PRIORITY_TLF_QSPI_ER        (45)  /**< \brief Define the TLF error interrupt priority.  */
+#define ISR_PRIORITY_TLF_QSPI_TX        (46)  /**< \brief Define the TLF transmit interrupt priority.  */
+#define ISR_PRIORITY_TLF_QSPI_RX        (47)  /**< \brief Define the TLF receive interrupt priority.  */
 
 /** \brief Define the QSPI4 transmit interrupt priority. */
 #define INTERRUPT_PRIORITY_QSPI4_TX      (50)
@@ -194,26 +190,20 @@
 /** \brief Define the DMA channel no for the QSPI receive */
 #define TLE9180_SPI_RX_DMA_CH           IfxDma_ChannelId_none
 #endif
+
 /* TLF35584 GPIO and QSPI define */
-/** \brief Define the QSPI slave select pin */
-/*STEVE: define error TLF35584*/
-#define TLF35584_SPI_CS_PIN             IfxQspi2_SLSO1_P14_2_OUT
-/** \brief Define the QSPI object*/
-#define TLF35584_SPI_MODULE           	MODULE_QSPI2
-/** \brief Define the QSPI SLCK out pin  */
-#define TLF35584_SPI_CLOCK_PIN        	IfxQspi2_SCLK_P15_3_OUT
-/** \brief Define the QSPI MTSR out pin */
-#define TLF35584_SPI_MOSI_PIN         	IfxQspi2_MTSR_P15_6_OUT
-/** \brief Define the QSPI MRSTA input pin */
-#define TLF35584_SPI_MISO_PIN         	IfxQspi2_MRSTB_P15_7_IN
-/** \brief Define the handler of the interrupts*/
-#define TLF35584_SPI_HOST_CPU         	IfxSrc_Tos_cpu0
-/** \brief Define the use of DMA for data transfer/s */
-#define TLF35584_SPI_USE_DMA          	FALSE
-/** \brief Define the DMA channel no for the QSPI transmit */
-#define TLF35584_SPI_TX_DMA_CH        	IfxDma_ChannelId_none
-/** \brief Define the DMA channel no for the QSPI receive */
-#define TLF35584_SPI_RX_DMA_CH        	IfxDma_ChannelId_none
+#define CPU_WHICH_SERVICE_TLF          0     /**< \brief Define the CPU which service the Tlf3xx8x and where functions/variables are located.  */
+/* set here the used pins for TLF3xx8x (QSPI2) */
+#define TLF_QSPI_MAX_BAUDRATE       50000000  // maximum baudrate which is possible to get a small time quantum
+#define TLF_SCLK_PIN	            IfxQspi2_SCLK_P15_8_OUT
+#define TLF_MTSR_PIN	            IfxQspi2_MTSR_P15_6_OUT      // for Application Kit TC3X7
+#define TLF_MRST_PIN	            IfxQspi2_MRSTB_P15_7_IN
+//#define TLF_USE_DMA  // uncomment line for using DMA
+//#define DMA_CH_TLF_TX             TLF_DMA_CH_TXBUFF_TO_TXFIFO
+//#define DMA_CH_TLF_RX             TLF_DMA_CH_RXBUFF_FROM_RXFIFO
+
+#define TLF_CS_PIN                  IfxQspi2_SLSO1_P14_2_OUT
+
 /** \brief Define the INA225AIDGK gain selection pin 0 GPIO.  */
 #define INA225AIDGK_GS0					&IfxPort_P33_2
 /** \brief Define the INA225AIDGK gain selection pin 1 GPIO.  */

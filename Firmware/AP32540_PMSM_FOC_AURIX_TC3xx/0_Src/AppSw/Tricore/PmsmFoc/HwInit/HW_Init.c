@@ -62,13 +62,13 @@
 /******************************************************************************/
 void PmsmFoc_initHardware(MotorControl* const motorCtrl)
 {
-	IfxCpu_disableInterrupts();
 	/* Initialize SPI interfaces */
 	PmsmFoc_Qspi_initQspi();
 #if(TLF35584_DRIVER == ENABLED)
 	/* TLF35584 (Power and WDT ASIC) init */
 	PmsmFoc_Tlf35584_Init();        /* This requires connected SPI module Initialized before */
 #endif /* End of TLF35584_DRIVER */
+
 #if(TLE9180_DRIVER == ENABLED)
 	/* Initialize TLE9180, this requires connected SPI module initialized before */
 	PmsmFoc_Tle9180_Init();

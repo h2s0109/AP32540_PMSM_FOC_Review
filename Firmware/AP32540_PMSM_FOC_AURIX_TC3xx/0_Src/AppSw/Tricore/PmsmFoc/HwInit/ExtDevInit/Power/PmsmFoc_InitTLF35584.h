@@ -1,16 +1,13 @@
-/*
- * \file Qspi_Init.c
- * \brief
- * \ingroup
- * \version
- * \copyright Copyright (c) 2019 Infineon Technologies AG. All rights reserved.
+/**
+ * \file TLF35584_Init.h
+ * \brief Initialization of TLF35584 ASIC.
+
+ * \copyright Copyright (C) Infineon Technologies AG 2019
  *
- *                            IMPORTANT NOTICE
- *
- * Use of this file is subject to the terms of use agreed between (i) you or
- * the company in which ordinary course of business you are acting and (ii)
- * Infineon Technologies AG or its licensees. If and as long as no such terms
- * of use are agreed, use of this file is subject to following:
+ * Use of this file is subject to the terms of use agreed between(i) you or the
+ * company in which ordinary course of business you are acting and(ii) Infineon
+ * Technologies AG or its licensees. If and as long as no such terms of use are
+ * agreed, use of this file is subject to following:
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -18,8 +15,8 @@
  * obtaining a copy of the software and accompanying documentation covered by
  * this license (the "Software") to use, reproduce, display, distribute,
  * execute, and transmit the Software, and to prepare derivative works of the
- * Software, and to permit third-parties to whom the Software is furnished to
- * do so, all subject to the following:
+ * Software, and to permit third-parties to whom the Software is furnished to do
+ * so, all subject to the following:
  *
  * The copyright notices in the Software and this entire statement, including
  * the above license grant, this restriction and the following disclaimer, must
@@ -31,47 +28,33 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
- * SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE
- * FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
+ * SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE FOR
+ * ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *
  */
 
-/******************************************************************************/
-/*----------------------------------Includes----------------------------------*/
-/******************************************************************************/
+#ifndef PMSMFOC_TLF35584_INIT_H_
+#define PMSMFOC_TLF35584_INIT_H_
 
-/******************************************************************************/
-/*-------------------------------Global variables-----------------------------*/
-/******************************************************************************/
-#include "Qspi_Init.h"
 #include "TLF3XX8X.h"
-#include "PmsmFoc_InitTLE9180.h"
 /******************************************************************************/
-/*-----------------------------Private Variables/Constants--------------------*/
-/******************************************************************************/
-
-/******************************************************************************/
-/*-------------------------Function Implementations---------------------------*/
+/*-----------------------------------Macros-----------------------------------*/
 /******************************************************************************/
 
-/** \brief Initialize Used SPI Modules
- *
- */
-void PmsmFoc_Qspi_initQspi(void)
-{
-#if(TLF35584_DRIVER == ENABLED)
-	IfxTLF3XX8X_init();
-#endif /* End of TLF35584_DRIVER */
+/******************************************************************************/
+/*-------------------------------Data Structures------------------------------*/
+/******************************************************************************/
 
-#if(TLE9180_DRIVER == ENABLED)
-	PmsmFoc_TLE9180_InitQspiModule();
-#endif /* End of TLE9180_DRIVER */
-}
+/******************************************************************************/
+/*------------------------------Global variables------------------------------*/
+/******************************************************************************/
 
+/******************************************************************************/
+/*-----------------------------Function Prototypes----------------------------*/
+/******************************************************************************/
 
+extern void PmsmFoc_Tlf35584_Init(void);
 
-
-
-
+#endif /* PMSMFOC_TLF35584_INIT_H_ */

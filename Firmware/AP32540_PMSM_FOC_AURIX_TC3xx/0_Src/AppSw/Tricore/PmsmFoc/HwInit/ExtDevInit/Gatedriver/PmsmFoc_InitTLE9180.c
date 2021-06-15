@@ -37,7 +37,6 @@
 
 #include "PmsmFoc_InitTLE9180.h"
 #include "IfxPort_PinMap.h"
-#include "bsp.h"
  #if(TLE9180_DRIVER == ENABLED)
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/

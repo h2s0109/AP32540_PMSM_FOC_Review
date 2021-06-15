@@ -1,7 +1,7 @@
 /**
- * \file TLF35584_Init.h
+ * \file TLF35584_Init.c
  * \brief Initialization of TLF35584 ASIC.
-
+ *
  * \copyright Copyright (C) Infineon Technologies AG 2019
  *
  * Use of this file is subject to the terms of use agreed between(i) you or the
@@ -34,43 +34,27 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-
-#ifndef PMSMFOC_TLF35584_INIT_H_
-#define PMSMFOC_TLF35584_INIT_H_
-
-#include "TLF35584.h"
-#include "Qspi_Init.h"
-#include MCUCARD_TYPE_PATH
-#include "IfxQspi_SpiMaster.h"
-/******************************************************************************/
-/*-----------------------------------Macros-----------------------------------*/
-/******************************************************************************/
-
-/******************************************************************************/
-/*-------------------------------Data Structures------------------------------*/
-/******************************************************************************/
-typedef struct
-{
-	IfxTLF35584                 driver;
-	IfxQspi_SpiMaster_Channel   spiChannel;
-} TLE35584_CONTROL_ST;
-#if 0
-typedef struct
-{
-    void                      *spiChannel;
-	IfxTLF35584_spiInterfaces spiIf;
-} IfxTLF35584_Config;
-#endif
+#include "PmsmFoc_InitTLF35584.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 
-extern TLE35584_CONTROL_ST tlf35584Ctrl;
-
 /******************************************************************************/
-/*-----------------------------Function Prototypes----------------------------*/
+/*-------------------------Function Implementations---------------------------*/
 /******************************************************************************/
 
-extern void PmsmFoc_Tlf35584_Init(void);
+#if(TLF35584_DRIVER == ENABLED)
+/** \brief Initialization for TLF35584
+ *
+ */
 
-#endif /* PMSMFOC_TLF35584_INIT_H_ */
+void PmsmFoc_Tlf35584_Init(void)
+{
+    /* Disable Window Watchdog and ERR pin */
+    IfxTLF3XX8X_unprotect_register();
+    IfxTLF3XX8X_disable_window_watchdog();
+    IfxTLF3XX8X_disable_err_pin_monitor();
+    IfxTLF3XX8X_protect_register();
+	IfxTLF3XX8X_goto_normal_state();
+}
+#endif /* End of TLF35584_DRIVER */

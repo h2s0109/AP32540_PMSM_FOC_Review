@@ -71,4 +71,5 @@
 /******************************************************************************/
 void Misc_LED_init(void);
 void Misc_ModuleDebug_init(void);
+void Misc_LED_toggle(void);
 #endif /* PORT_INIT_H_ */

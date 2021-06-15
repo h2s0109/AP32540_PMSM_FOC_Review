@@ -47,6 +47,7 @@
 #endif /* End of TFT_DISPLAYMODE */
 #include "PmsmFoc_Functions.h"
 #include "PmsmFoc.h"
+#include "HW_Init.h"
 #if(ONE_EYEMODE == ENABLED)
 	#include "OneEye_Init.h"
 #endif /* End of ONE_EYEMODE*/
