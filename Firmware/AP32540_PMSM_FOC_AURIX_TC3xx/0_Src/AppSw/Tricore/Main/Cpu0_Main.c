@@ -58,8 +58,7 @@
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
-#include "PmsmFoc_Interface.h"
-#include "Mcu_Init.h"
+#include "PmsmFoc_Functions.h"
 #if(ONE_EYEMODE == ENABLED)
 	#include "OneEye_Init.h"
 #endif /* End of ONE_EYEMODE*/

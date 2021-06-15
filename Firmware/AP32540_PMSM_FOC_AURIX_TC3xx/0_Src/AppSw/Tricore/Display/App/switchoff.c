@@ -41,6 +41,7 @@
 
  *
  */
+
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
@@ -53,8 +54,7 @@
 #include "touch.h"
 #include <string.h>
 #include <stdio.h>
-//#include "TLF3xx8x.h"
-#include "TLF35584.h"
+#include "TLF3xx8x.h"
 /******************************************************************************/
 /*------------------------Inline Function Prototypes--------------------------*/
 /******************************************************************************/
@@ -127,10 +127,9 @@ void switchoff_select_ok (sint32 ind, TDISPLAYENTRY * pdisplayentry)
         touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
         conio_driver.dialogmode = DIALOGOFF;
      	// we need to switch off the device by command to TLE3xx8x (standbymode/powerdownmode)
-	   	IfxTLF35584_gotoStandbyState();
-        // IfxTLF3XX8X_goto_standby_powerdown_state();
-        // // we set the driver to Alarmset, because if there is an alarm the device is not shutdown
-        // conio_driver.dialogmode = SHOWALARMON;
+        IfxTLF3XX8X_goto_standby_powerdown_state();
+        // we set the driver to Alarmset, because if there is an alarm the device is not shutdown
+        conio_driver.dialogmode = SHOWALARMON;
         display_ascii_clrscr(conio_driver.displaymode);
     }
 }
@@ -148,12 +147,12 @@ void switchoff_select_cancel (sint32 ind, TDISPLAYENTRY * pdisplayentry)
         touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
         conio_driver.dialogmode = DIALOGOFF;
         conio_ascii_clrscr(conio_driver.displaymode);
-        // if (conio_driver.displaymode == DISPLAYSTDOUT0)
-        // {
-        //     /* setup our name string */
-        //    	conio_ascii_printfxy (DISPLAYSTDOUT0, 1, 0, (const uint8 *)"%s TC3%d%d %s with %s...", BOARD_TEXT_TFT,
-        //    			SCU_CHIPID.B.CHID, SCU_CHIPID.B.CHPK, BOARD_VERSION_TEXT, SW_VERSION_TEXT);
-        // }
+        if (conio_driver.displaymode == DISPLAYSTDOUT0)
+        {
+            /* setup our name string */
+           	conio_ascii_printfxy (DISPLAYSTDOUT0, 1, 0, (const uint8 *)"%s TC3%d%d %s with %s...", BOARD_TEXT_TFT,
+           			SCU_CHIPID.B.CHID, SCU_CHIPID.B.CHPK, BOARD_VERSION_TEXT, SW_VERSION_TEXT);
+        }
     }
 }
 

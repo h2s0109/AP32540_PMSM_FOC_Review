@@ -45,6 +45,7 @@ TLE35584_CONTROL_ST tlf35584Ctrl;
 /******************************************************************************/
 /*-------------------------Function Implementations---------------------------*/
 /******************************************************************************/
+static void PmsmFoc_Tlf35584_InitQSpiChannel(void); 
 
 #if(TLF35584_DRIVER == ENABLED)
 IfxQspi_SpiMaster           spiMasterQspi2;
@@ -88,7 +89,7 @@ void PmsmFoc_TLF35584_InitQspiModule(void)
 }
 
 
-void PmsmFoc_Tlf35584_InitQSpiChannel(void)
+static void PmsmFoc_Tlf35584_InitQSpiChannel(void)
 {
     IfxQspi_SpiMaster_ChannelConfig spiChConfig;
     boolean interruptState = IfxCpu_disableInterrupts();

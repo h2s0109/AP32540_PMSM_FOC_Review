@@ -109,8 +109,7 @@
 #if !defined(PARK_H)
 #define PARK_H
 //------------------------------------------------------------------------------
-#include "MotorControl.h"
-//#include "Arith.StdReal.h"
+#include "Arith.StdReal.h"
 //------------------------------------------------------------------------------
 
 CplxStdReal Park(CplxStdReal *mab, CplxStdReal *cosSin);

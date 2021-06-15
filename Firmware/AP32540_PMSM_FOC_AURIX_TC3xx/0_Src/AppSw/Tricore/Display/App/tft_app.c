@@ -447,6 +447,7 @@ void tft_appl_init (void)
 	else
 		IfxSrc_init(&TFT_UPDATE_IRQ, (IfxSrc_Tos)CPU_WHICH_SERVICE_TFT, ISR_PRIORITY_CPUSRV0);
     IfxSrc_enable(&TFT_UPDATE_IRQ);
+
     /* First we check that there is an alarm activ */
     if (IfxPort_getPinState(RTC_ALARM_PIN_INPUT.pin.port,RTC_ALARM_PIN_INPUT.pin.pinIndex) == FALSE) conio_driver.dialogmode = SHOWALARMON;
     else conio_driver.dialogmode = DIALOGOFF;

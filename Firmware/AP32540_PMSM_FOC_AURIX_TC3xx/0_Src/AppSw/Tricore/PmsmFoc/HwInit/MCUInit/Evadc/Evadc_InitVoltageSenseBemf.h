@@ -48,7 +48,6 @@
 #include "PmsmFoc_UserConfig.h"
 #include INVERTERCARD_TYPE_PATH
 #include "Evadc_Init.h"
-#include "PmsmFoc_Inverter.h"
 
 /******************************************************************************/
 /*------------------------------------Macros----------------------------------*/

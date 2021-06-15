@@ -42,6 +42,7 @@
 /******************************************************************************/
 
 #include "PmsmFoc_Interface.h"
+#include "PmsmFoc_Functions.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -89,7 +90,7 @@ void PmsmFoc_Interface_stopMotor(MotorControl* motorCtrl)
 		PmsmFoc_setSpeedRefLinearRamp(&motorCtrl->pmsmFoc,0);
 		PmsmFoc_SpeedControl_StopRefSpeed(&motorCtrl->pmsmFoc.speedControl);
 		//PmsmFoc_Interface_setMotorTargetSpeed(&motorCtrl, 0);
-		PmsmFoc_Interface_setStopMotorTargetSpeed(&motorCtrl);
+		PmsmFoc_Interface_setStopMotorTargetSpeed(motorCtrl);
 		motorCtrl->CurrnetIfMode = STOP_MODE;
 		motorCtrl->interface.start = FALSE;
 		motorCtrl->interface.demo = FALSE;

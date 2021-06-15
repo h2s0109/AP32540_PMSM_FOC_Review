@@ -45,8 +45,8 @@
 
 #include "SysSe/Math/IFX_Cf32.h"
 #include "PmsmFoc_Functions.h"
-#include "Mcu_Init.h"
-
+#include "HW_Init.h"
+#include "PmsmFoc_CurrentDcLinkSense.h"
 #if(TLE9180_DRIVER == ENABLED)
 	#include "TLE9180.h"
 #endif /* End of TLE9180_DRIVER */
@@ -240,13 +240,13 @@ void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl)
 	CplxStdReal cossin;
 #endif
 	(void) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
-
+#if 0
 	/* Current reconstruction */
 	PmsmFoc_reconstructCurrent(motorCtrl);
 	
 	/* Clarke Transformation */
 	PmsmFoc_doClarkeTransform(&motorCtrl->pmsmFoc);
-
+#endif
 	if(motorCtrl->positionSensor.encoder.encSyncTopZero == TRUE)
 	{
 		motorCtrl->controlParameters.encTopZeroCounter++;

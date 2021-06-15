@@ -48,6 +48,7 @@
 #if(TLE9180_DRIVER == ENABLED)
     #include "PmsmFoc_InitTLE9180.h"
 #endif /* End of TLE9180_DRIVER */
+
 #include "IfxGtm_Tom_PwmHl.h"
 
 #include "PmsmFoc_CurrentDcLinkSense.h"
@@ -94,9 +95,12 @@ typedef struct
 typedef struct
 {
     Pwm3PhaseOutput         pwm3PhaseOutput;        /**< \brief PWM output object */
+    /* #include "PmsmFoc_CurrentThreeshuntSense.h" */
     PhaseCurrentSense       phaseCurrentSense;      /**< \brief Phase current sense object */
+    /* #include "PmsmFoc_CurrentDcLinkSense.h" */
     HighSideCurrentSense    highSideCurrentSense;   /**< \brief High-side DC-Link Current sense object */
     LowSideCurrentSense     lowSideCurrentSense;    /**< \brief PWM output object */
+    /* #include "PmsmFoc_VoltageSense.h" */
     DcLinkVoltageSense      dcLinkVoltageSense;     /**< \brief PWM output object */
     BemfVoltageSense        bemfVoltageSense;       /**< \brief PWM output object */
 // #if(TLE9180_DRIVER == ENABLED)

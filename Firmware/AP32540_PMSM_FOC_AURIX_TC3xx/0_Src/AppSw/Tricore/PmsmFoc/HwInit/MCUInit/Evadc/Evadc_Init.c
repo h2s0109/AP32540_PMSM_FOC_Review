@@ -40,10 +40,8 @@
 /******************************************************************************/
 #include "Evadc_Init.h"
 #if (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITHOUT_HIGHSIDE_MONITORING)
-//#include "PmsmFoc_CurrentThreeshuntSense.h"
 #include "Evadc_InitCurSenseLsTriShuntWoHsMon.h"
 #elif (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
-//#include "PmsmFoc_CurrentThreeshuntSense.h"
 #include "Evadc_InitCurSenseLsTriShuntHsMon.h"
 #elif (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT)
 #include "Evadc_InitCurSenseLsSingleShunt.h"

@@ -1,5 +1,5 @@
 /*
- * \file Mcuinit_pub.h
+ * \file PmsmMid_pub.h
  * \brief
  * \ingroup
  * \version 
@@ -39,13 +39,15 @@
  */
 
 
-#ifndef HWINIT_PUB_H_
-#define HWINIT_PUB_H_
-#include "Ifx_Types.h"
-#include "PmsmFoc_Functions.h"
+#ifndef PMSMMID_PUB_H_
+#define PMSMMID_PUB_H_
+
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
+#include "PmsmFoc_PositionAndSpeedAcquisition.h"
+#include "PmsmFoc_PwmSvm.h"
+#include "PmsmFoc_VoltageSense.h"
 
 /******************************************************************************/
 /*--------------------------------Macros--------------------------------------*/
@@ -70,16 +72,7 @@
 /******************************************************************************/
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
-/** /brief
- *
- * /param motorCtrl Reference to structure that contains instance data members
- * /return
- * /note
- * /see
- * /ingroup
- */
-IFX_EXTERN void PmsmFoc_initHardware(MotorControl* const motorCtrl);
-IFX_EXTERN void Misc_LED_toggle(void);
+
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/
@@ -89,4 +82,4 @@ IFX_EXTERN void Misc_LED_toggle(void);
 /******************************************************************************/
 
 
-#endif /* HWINIT_PUB_H_ */
+#endif /* PMSMMID_PUB_H_ */

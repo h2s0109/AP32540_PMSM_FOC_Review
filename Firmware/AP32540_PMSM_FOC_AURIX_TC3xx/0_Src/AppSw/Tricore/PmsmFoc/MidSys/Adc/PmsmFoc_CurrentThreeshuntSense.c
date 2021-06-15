@@ -39,7 +39,7 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_CurrentThreeshuntSense.h"
-#include "PmsmFoc_Inverter.h"
+#include "PmsmFoc_UserConfig.h"
 #include INVERTERCARD_TYPE_PATH
 
 /******************************************************************************/

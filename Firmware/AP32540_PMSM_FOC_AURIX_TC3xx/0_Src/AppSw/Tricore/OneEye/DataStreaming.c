@@ -35,7 +35,7 @@
  *
  */
 #include "DataStreaming.h"
-#include "PmsmFoc_Interface.h"
+#include "PmsmFoc.h"
 
 #define SYNCPROTOCOL_MESSAGE_ID_DATASTREAMING_DATA_0 (0x4000)    /**< \see Oscilloscope_MessageAssignedChannel */
 #if defined(__HIGHTEC__)

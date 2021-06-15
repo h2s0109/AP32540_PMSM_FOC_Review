@@ -46,6 +46,7 @@
 	#include "Display_pub.h"
 #endif /* End of TFT_DISPLAYMODE */
 #include "PmsmFoc_Functions.h"
+#include "PmsmFoc.h"
 #if(ONE_EYEMODE == ENABLED)
 	#include "OneEye_Init.h"
 #endif /* End of ONE_EYEMODE*/
@@ -54,7 +55,7 @@
 #if(DBGCTRLMODE == ENABLED)
 	#include "Dbgctrl_pub.h"
 #endif
-#include "HWinit_pub.h"
+
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/

@@ -158,8 +158,8 @@
 #if !defined(SPACE_VECTOR_MODULATION_H)
 #define SPACE_VECTOR_MODULATION_H
 //------------------------------------------------------------------------------
-#include "MotorControl.h"
-
+#include "Cpu/Std/IfxCpu_Intrinsics.h"
+#include "Arith.StdReal.h"
 //------------------------------------------------------------------------------
 #if(1)
 uint8 SpaceVectorModulation(CplxStdReal m, Ifx_TimerValue period, Ifx_TimerValue *  tOn);

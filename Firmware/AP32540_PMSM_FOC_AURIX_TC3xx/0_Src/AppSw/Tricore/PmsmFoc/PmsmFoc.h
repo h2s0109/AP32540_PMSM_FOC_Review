@@ -40,24 +40,18 @@
 
 #ifndef PMSMFOC_PUB_H
 #define PMSMFOC_PUB_H
-#if 0
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
-#include "Ifx_PicF32.h"
 #include "Ifx_RampF32.h"
-#include "StdReal.h"
-
-#include "LibMotordrive_pub.h"
-#include "PmsmFoc_Inverter.h"
-/* STEVE:Is it correct position */
-#include "PmsmFoc_Motor.h"
-#include "PmsmMid_ext.h"
+#include "Ifx_PicF32.h"
 #include "LibMath_pub.h"
-
+#include "PmsmFoc_Inverter.h"
+#include "LibMotordrive_pub.h"
+#include "PmsmFoc_Motor.h"
+#include "PmsmMid_pub.h"
 #include "PmsmFoc_SpeedControl.h"
-#include MOTOR_TYPE_PATH
 #if(DBGCTRLMODE == ENABLED)
 	#include "Dbgctrl_pub.h"
 #endif
@@ -234,5 +228,4 @@ extern MotorControl g_motorControl;
 /******************************************************************************/
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
-#endif
 #endif /* PMSMFOC_PUB_H */
