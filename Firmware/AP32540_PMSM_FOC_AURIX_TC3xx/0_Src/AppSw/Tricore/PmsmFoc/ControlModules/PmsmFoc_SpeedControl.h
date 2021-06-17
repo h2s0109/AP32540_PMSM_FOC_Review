@@ -72,7 +72,7 @@ typedef struct
     float32 maxSpeed;                /**< @brief Absolute value of the max allowed speed reference in rpm. Range=[0, +INF] */
     float32 minSpeed;                /**< @brief Absolute value of the min allowed speed reference in rpm. Range=[0, +INF] */
     boolean enabled;                 /**< @brief Speed control enable flag. TRUE: the speed control is enabled. FALSE the speed control is disabled */
-} SpeedControl;
+} SPDCTRL_S;
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/
@@ -80,8 +80,8 @@ typedef struct
 /******************************************************************************/
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
-void PmsmFoc_SpeedControl_init(SpeedControl *speedControl);
-float32 PmsmFoc_SpeedControl_do(SpeedControl *speedControl);
+void PmsmFoc_speedcontrol_init(SPDCTRL_S *speedControl);
+float32 PmsmFoc_speedcontrol_do(SPDCTRL_S *speedControl);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/
@@ -96,7 +96,7 @@ float32 PmsmFoc_SpeedControl_do(SpeedControl *speedControl);
  * @return none
  * @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_reset(SpeedControl *speedControl)
+IFX_INLINE void PmsmFoc_speedcontrol_reset(SPDCTRL_S *speedControl)
 {
     speedControl->refSpeed = 0;
     Ifx_PicF32_reset(&speedControl->piSpeed);
@@ -109,7 +109,7 @@ IFX_INLINE void PmsmFoc_SpeedControl_reset(SpeedControl *speedControl)
  * @return none
  * @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_enable(SpeedControl *speedControl)
+IFX_INLINE void PmsmFoc_speedcontrol_enable(SPDCTRL_S *speedControl)
 {
     speedControl->enabled = TRUE;
 }
@@ -121,7 +121,7 @@ IFX_INLINE void PmsmFoc_SpeedControl_enable(SpeedControl *speedControl)
  * @retval FALSE Returns FALSE if the speed controller is disabled
  * @ingroup app_speed_control
  */
-IFX_INLINE boolean PmsmFoc_SpeedControl_isEnabled(SpeedControl *speedControl)
+IFX_INLINE boolean PmsmFoc_speedcontrol_isEnabled(SPDCTRL_S *speedControl)
 {
     return speedControl->enabled;
 }
@@ -132,10 +132,10 @@ IFX_INLINE boolean PmsmFoc_SpeedControl_isEnabled(SpeedControl *speedControl)
  * @return none
  * @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_disable(SpeedControl *speedControl)
+IFX_INLINE void PmsmFoc_speedcontrol_disable(SPDCTRL_S *speedControl)
 {
     speedControl->enabled = FALSE;
-    PmsmFoc_SpeedControl_reset(speedControl);
+    PmsmFoc_speedcontrol_reset(speedControl);
 }
 
 /** @brief Reset the speed controller limit flag.
@@ -145,7 +145,7 @@ IFX_INLINE void PmsmFoc_SpeedControl_disable(SpeedControl *speedControl)
  * @return none
  * @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_resetLimitFlag(SpeedControl *speedControl)
+IFX_INLINE void PmsmFoc_speedcontrol_resetLimitFlag(SPDCTRL_S *speedControl)
 {
 	Ifx_PicF32_resetLimitHit(&speedControl->piSpeed);
 }
@@ -160,7 +160,7 @@ IFX_INLINE void PmsmFoc_SpeedControl_resetLimitFlag(SpeedControl *speedControl)
  * @see Pic_SetLimit()
  * @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_setLimit(SpeedControl *speedControl, float32 min, float32 max)
+IFX_INLINE void PmsmFoc_speedcontrol_setLimit(SPDCTRL_S *speedControl, float32 min, float32 max)
 {
 	Ifx_PicF32_setLimit(&speedControl->piSpeed, min, max);
 }
@@ -172,7 +172,7 @@ IFX_INLINE void PmsmFoc_SpeedControl_setLimit(SpeedControl *speedControl, float3
  * @return none
  * @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_setMaxSpeed(SpeedControl *speedControl, float32 max)
+IFX_INLINE void PmsmFoc_speedcontrol_setMaxSpeed(SPDCTRL_S *speedControl, float32 max)
 {
     speedControl->maxSpeed = max;
 }
@@ -185,7 +185,7 @@ IFX_INLINE void PmsmFoc_SpeedControl_setMaxSpeed(SpeedControl *speedControl, flo
  * @return none
  * @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_setMinSpeed(SpeedControl *speedControl, float32 min)
+IFX_INLINE void PmsmFoc_speedcontrol_setMinSpeed(SPDCTRL_S *speedControl, float32 min)
 {
     speedControl->minSpeed = min;
 }
@@ -199,7 +199,7 @@ IFX_INLINE void PmsmFoc_SpeedControl_setMinSpeed(SpeedControl *speedControl, flo
  * @retval FALSE Returns FALSE if the reference speed is out of range
  * @ingroup app_speed_control
  */
-IFX_INLINE boolean PmsmFoc_SpeedControl_setRefSpeed(SpeedControl *speedControl, float32 speed)
+IFX_INLINE boolean PmsmFoc_speedcontrol_setRefSpeed(SPDCTRL_S *speedControl, float32 speed)
 {
     boolean result;
     if ((__absf(speed)) > (speedControl->maxSpeed))
@@ -220,7 +220,7 @@ IFX_INLINE boolean PmsmFoc_SpeedControl_setRefSpeed(SpeedControl *speedControl, 
     return result;
 }
 
-IFX_INLINE boolean PmsmFoc_SpeedControl_setStopRefSpeed(SpeedControl *speedControl, float32 speed)
+IFX_INLINE boolean PmsmFoc_speedcontrol_setStopRefSpeed(SPDCTRL_S *speedControl, float32 speed)
 {
     boolean result;
     if ((__absf(speed)) > (speedControl->maxSpeed))
@@ -248,7 +248,7 @@ IFX_INLINE boolean PmsmFoc_SpeedControl_setStopRefSpeed(SpeedControl *speedContr
  * @return Return the max allowed ref speed
  * @ingroup app_speed_control
  */
-IFX_INLINE float32 PmsmFoc_SpeedControl_getMaxSpeed(SpeedControl *speedControl)
+IFX_INLINE float32 PmsmFoc_speedcontrol_getMaxSpeed(SPDCTRL_S *speedControl)
 {
     return speedControl->maxSpeed;
 }
@@ -260,7 +260,7 @@ IFX_INLINE float32 PmsmFoc_SpeedControl_getMaxSpeed(SpeedControl *speedControl)
  * @return Return the min allowed ref speed
  * @ingroup app_speed_control
  */
-IFX_INLINE float32 PmsmFoc_SpeedControl_getMinSpeed(SpeedControl *speedControl)
+IFX_INLINE float32 PmsmFoc_speedcontrol_getMinSpeed(SPDCTRL_S *speedControl)
 {
     return speedControl->minSpeed;
 }
@@ -272,7 +272,7 @@ IFX_INLINE float32 PmsmFoc_SpeedControl_getMinSpeed(SpeedControl *speedControl)
  *  @return Return the ref speed
  *  @ingroup app_speed_control
  */
-IFX_INLINE float32 PmsmFoc_SpeedControl_getRefSpeed(SpeedControl *speedControl)
+IFX_INLINE float32 PmsmFoc_speedcontrol_getRefSpeed(SPDCTRL_S *speedControl)
 {
     return speedControl->refSpeed;
 }
@@ -284,7 +284,7 @@ IFX_INLINE float32 PmsmFoc_SpeedControl_getRefSpeed(SpeedControl *speedControl)
  *  @return Return the max allowed ref speed
  *  @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_getPi(SpeedControl *speedControl, Ifx_PicF32 *pi)
+IFX_INLINE void PmsmFoc_speedcontrol_getPi(SPDCTRL_S *speedControl, Ifx_PicF32 *pi)
 {
     *pi = speedControl->piSpeed;
 }
@@ -301,12 +301,12 @@ IFX_INLINE void PmsmFoc_SpeedControl_getPi(SpeedControl *speedControl, Ifx_PicF3
  * @see Pic_SetKpKi_StdReal()
  * @ingroup app_speed_control
  */
-IFX_INLINE void PmsmFoc_SpeedControl_setKpKi(SpeedControl *speedControl, float32 kp, float32 ki, float32 period)
+IFX_INLINE void PmsmFoc_speedcontrol_setKpKi(SPDCTRL_S *speedControl, float32 kp, float32 ki, float32 period)
 {
 	Ifx_PicF32_setKpKi(&speedControl->piSpeed, kp, ki, period);
 }
 
-IFX_INLINE float32 PmsmFoc_SpeedControl_getSpeed(SpeedControl *speedControl)
+IFX_INLINE float32 PmsmFoc_speedcontrol_getSpeed(SPDCTRL_S *speedControl)
 {
     return speedControl->measSpeed;
 }

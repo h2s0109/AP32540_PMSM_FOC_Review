@@ -271,7 +271,42 @@ static const IfxTLE9180_SpiTx IfxTLE9180_readCommands[IFX_TLE9180_SPI_READ_COMMA
     { .B.C=0, .B.ADDRESS= 0x00, .B.DATA= 0x00, .B.CRC= 4},   /**< \brief Read Configuration Signature */
     { .B.C=0, .B.ADDRESS= 0x00, .B.DATA= 0x00, .B.CRC= 4}    /**< \brief To read the received frame for the prior command.*/
 };
-
+/*Offset VRO Finetunning */
+static const IfxTLE9180_SpiTx IfxTLE9180_ofs_finetunning[2]=
+{
+    { .B.C=1, .B.ADDRESS= 0x00, .B.DATA= 0xBA, .B.CRC= 2},   /**< \brief Read Short Circuit Detection Threshold LS1 */
+    { .B.C=1, .B.ADDRESS= 0x23, .B.DATA= 0x95, .B.CRC= 2}   /**< \brief Read Short Circuit Detection Threshold LS2 */
+};
+#if 0
+uint32 IfxTLE9180_ofs_finetunning[25]=
+{
+	0xA38005,//max nagative
+	0xA39502,
+	0xA39604,
+	0xA39706,
+	0xA39805,
+	0xA39907,
+	0xA39907,
+	0xA39A01,
+	0xA39B03,
+	0xA39C06,
+	0xA39D04,
+	0xA39E02,
+	0xA39F00,//no
+	0xA3A001,//positive
+	0xA3A103,
+	0xA3A205,
+	0xA3A307,
+	0xA3A402,
+	0xA3A500,
+	0xA3A606,
+	0xA3A704,
+	0xA3A807,
+	0xA3A905,
+	0xA3AA03,
+	0xA3BF05//max positive
+}
+#endif
 static const IfxTLE9180_Pins cfg_Tle9180 =
 {
     .inhibit	= TLE9180_INHIBIT_PIN,
@@ -378,6 +413,9 @@ void IfxTLE9180_initSpi(void)
  */
 
 
+    #if 0
+    uint8 test;
+    #endif
 boolean IfxTLE9180_init(IfxTLE9180_Pins *tle9180PinCtrl)
 {
     /* Initialize time constants for Time functions, see bsp.c */
@@ -407,18 +445,27 @@ boolean IfxTLE9180_init(IfxTLE9180_Pins *tle9180PinCtrl)
     while(isDeadLine(time) != TRUE);	// Wait
     IfxTLE9180_deactivateSafeOff(tle9180PinCtrl);
     IfxTLE9180_loadStartupConfiguration();
-    #if 0
-    IfxTLE9180_readRegister();
 
-    uint32 senddat[5];
-    uint32 num;
-    num =5;
-    senddat[0] = 0x0250007;
-    senddat[1] = 0x0260000;
-    senddat[2] = 0x0270004;
-    senddat[3] = 0x0280002;
-    senddat[4] = 0x0280002;
-    IfxTLE9180_read_write(senddat, num);
+    IfxTLE9180_readRegister();
+    
+    IfxTLE9180_read_write(IfxTLE9180_ofs_finetunning, 2);
+
+    #if 0
+    /* Calibration test */
+    uint32 senddat2[2];
+    /* Calibration */
+    senddat2[0] = 0x80BA02;
+    senddat2[1] = 0xA4E001;
+    
+    IfxTLE9180_read_write(senddat2, 2);
+
+    senddat2[0] = 0x240003;
+    IfxTLE9180_read_write(senddat2, 1);
+    test = g_Qspi_TLE9180_Cpu.qspiBuffer.spiRxBuffer[1].B.DATA;
+    while (test!=0x07)
+    {
+        IfxTLE9180_read_write(senddat2, 1);
+    }
     #endif
     return result;
 }
@@ -500,14 +547,6 @@ static void IfxTLE9180_initBuffer(void)
         g_Qspi_TLE9180_Cpu.qspiBuffer.spiRxBuffer[i].U = 0;
     }
 }
-#if 0
-void IfxTLE9180_activateEnable(IfxTLE9180_Pins* handle)
-{
-	Ifx_P * port= handle->enable->port;
-	uint8 pinIndex= handle->enable->pinIndex;
-	IfxPort_setPinState(port, pinIndex, IfxPort_State_high);
-}
-#endif
 #if defined(__GNUC__)
 #pragma section // end text section
 #endif

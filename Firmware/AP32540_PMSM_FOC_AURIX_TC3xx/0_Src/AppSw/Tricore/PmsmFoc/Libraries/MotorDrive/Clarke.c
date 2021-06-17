@@ -73,7 +73,9 @@
 CplxStdReal Clarke(T3Phase *currents)
 {
 	CplxStdReal result;
+    /* alphaAxis */
     result.real = currents->u;
+    /* betaAxis */
     result.imag = __mul_rSR_iSR_iSR(OneOverSqrt3_SR, __subs_rSR_iSR_iSR(currents->v, currents->w));
     return result;
 }

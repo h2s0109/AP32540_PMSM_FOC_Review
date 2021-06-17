@@ -70,7 +70,7 @@ void PmsmFoc_Gpt12_initGpt12(IfxGpt12_IncrEnc* gpt12IncrEnc)
 		gpt12Config.base.offset                    = 0;
 		gpt12Config.base.reversed                  = ENCODER_REVERSED;
 		gpt12Config.base.resolution                = ENCODER_RESOLUTION;
-		gpt12Config.base.resolutionFactor          = IfxStdIf_Pos_ResolutionFactor_fourFold;
+		gpt12Config.base.resolutionFactor          = ENCODER_FOLD;
 
 		/* Configure Speed */
 		gpt12Config.base.speedModeThreshold        = ENCODER_SPEED_MODE_THRESHOLD;

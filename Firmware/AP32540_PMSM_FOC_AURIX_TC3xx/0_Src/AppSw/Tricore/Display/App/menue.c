@@ -256,19 +256,19 @@ void Menue_displaySpeed (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Speed: %4.0f rpm", PmsmFoc_SpeedControl_getSpeed(&g_motorControl.pmsmFoc.speedControl));
+	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Speed: %4.0f rpm", PmsmFoc_speedcontrol_getSpeed(&g_motorCtrl.pmsmFoc.speedControl));
 }
 
 void Menue_displayRSpeed (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Ref  : %4.0f rpm", PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl));
+	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Ref  : %4.0f rpm", PmsmFoc_speedcontrol_getRefSpeed(&g_motorCtrl.pmsmFoc.speedControl));
 }
 
 void Menue_displayPosition (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	uint32 angle= (IfxGpt12_IncrEnc_getRawPosition(&g_motorControl.positionSensor.encoder.incrEncoder)*4*360/g_motorControl.positionSensor.encoder.incrEncoder.resolution)%360;
+	uint32 angle= (IfxGpt12_IncrEnc_getRawPosition(&g_motorCtrl.positionSensor.encoder.incrEncoder)*4*360/g_motorCtrl.positionSensor.encoder.incrEncoder.resolution)%360;
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
 	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Position: %3d deg", angle);
@@ -279,36 +279,36 @@ void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
 	currenttime = displayTime.msec;
-	switch (g_motorControl.controlParameters.state)
+	switch (g_motorCtrl.CtrlParms.state)
 	{
-	case StateMachine_PhaseCalibration:
+	case STATE_PhaseCalibration:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "PhaseCal!");
 		break;
-	case StateMachine_PositionCalibration:
+	case STATE_PositionCalibration:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "PosCal");
 		break;
-	case StateMachine_focClosedLoop:
+	case STATE_focClosedLoop:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "FOC!");
 		break;
-	case StateMachine_tuneCurrentRegulators:
+	case STATE_tuneCurrentRegulators:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Tune PI!");
 		break;
-	case StateMachine_prePositioning:
+	case STATE_prePositioning:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Pre Positioning!");
 		break;
-	case StateMachine_motorStop:
+	case STATE_motorStop:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Stop!");
 		break;
-	case StateMachine_motorIdle:
+	case STATE_motorIdle:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Idle!");
 		break;
-	case StateMachine_vfOpenLoop:
+	case STATE_vfOpenLoop:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "VF Control!");
 		break;
-	case StateMachine_enableInverter:
+	case STATE_enableInverter:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Enable Inverter!");
 		break;
-	case StateMachine_demo:
+	case STATE_demo:
 		conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"State: %s", "Demo");
 		break;
 	default:
@@ -323,8 +323,8 @@ void Menue_CalibrateSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		/* Go to StateMachine_PhaseCalibration */
-		PmsmFoc_Interface_calMotor(&g_motorControl);
+		/* Go toSTATE_PhaseCalibration */
+		PmsmFoc_Interface_calMotor(&g_motorCtrl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
@@ -336,7 +336,7 @@ void Menue_DemoSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		PmsmFoc_Interface_setDemo(&g_motorControl);
+		PmsmFoc_Interface_setDemo(&g_motorCtrl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
@@ -348,7 +348,7 @@ void Menue_SpeedPlsSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		PmsmFoc_Interface_PlsMotorTargetSpeed(&g_motorControl);
+		PmsmFoc_Interface_plsMotorTargetSpeed(&g_motorCtrl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
@@ -360,7 +360,7 @@ void Menue_SpeedMnsSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		PmsmFoc_Interface_MnsMotorTargetSpeed(&g_motorControl);
+		PmsmFoc_Interface_mnsMotorTargetSpeed(&g_motorCtrl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
@@ -372,8 +372,8 @@ void Menue_StartSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		/* Go to StateMachine_focClosedLoop or StateMachine_PhaseCalibration */
-		PmsmFoc_Interface_startMotor(&g_motorControl);
+		/* Go toSTATE_focClosedLoop orSTATE_PhaseCalibration */
+		PmsmFoc_Interface_startMotor(&g_motorCtrl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
@@ -385,9 +385,9 @@ void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
     if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
     {
-		/* Go to StateMachine_motorStop */
-		PmsmFoc_Interface_stopMotor(&g_motorControl);
-		if(g_motorControl.interface.CurrnetIfMode == STOPPING_MODE)
+		/* Go toSTATE_motorStop */
+		PmsmFoc_Interface_stopMotor(&g_motorCtrl);
+		if(g_motorCtrl.interface.CurrnetIfMode == STOPPING_MODE)
 		{
 			/* ignore the command from touch_periodic */
 			/* Command stop selection by force */
@@ -439,23 +439,23 @@ void showsdtou0 (void)
 {
   	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 0, (uint8 *)SW_NAME);
 	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 1, (uint8 *)"SW: V1.0.2, HW V3.2");
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 3, (uint8 *)"Speed Ref [rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.refSpeed);
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 4, (uint8 *)"Speed Meas[rpm] = %.1f %c\n", g_motorControl.pmsmFoc.speedControl.measSpeed);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 3, (uint8 *)"Speed Ref [rpm] = %.1f %c\n", g_motorCtrl.pmsmFoc.speedControl.refSpeed);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 4, (uint8 *)"Speed Meas[rpm] = %.1f %c\n", g_motorCtrl.pmsmFoc.speedControl.measSpeed);
 
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 6, (uint8 *)"Iu[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO1.value);
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 7, (uint8 *)"Iv[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO2.value);
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 8, (uint8 *)"Iw[A] = %.3f %c\n", g_motorControl.inverter.phaseCurrentSense.curVO3.value);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 6, (uint8 *)"Iu[A] = %.3f %c\n", g_motorCtrl.inverter.phaseCurrentSense.curVO1.value);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 7, (uint8 *)"Iv[A] = %.3f %c\n", g_motorCtrl.inverter.phaseCurrentSense.curVO2.value);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 8, (uint8 *)"Iw[A] = %.3f %c\n", g_motorCtrl.inverter.phaseCurrentSense.curVO3.value);
 
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 10, (uint8 *)"IqRef [A] = %.2f %c\n", g_motorControl.pmsmFoc.idqRef.imag);
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 11, (uint8 *)"IqMeas[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqMeas.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 10, (uint8 *)"IqRef [A] = %.2f %c\n", g_motorCtrl.pmsmFoc.idqRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 11, (uint8 *)"IqMeas[A] = %.2f %c\n", g_motorCtrl.pmsmFoc.idqMeas.imag);
 
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 10, (uint8 *)"IdRef[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqRef.real);
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 11, (uint8 *)"IdMeas[A] = %.2f %c\n", g_motorControl.pmsmFoc.idqMeas.real);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 10, (uint8 *)"IdRef[A] = %.2f %c\n", g_motorCtrl.pmsmFoc.idqRef.real);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 20, 11, (uint8 *)"IdMeas[A] = %.2f %c\n", g_motorCtrl.pmsmFoc.idqMeas.real);
 
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 13, (uint8 *)"VqRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vdqRef.imag);
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 14, (uint8 *)"VdRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vdqRef.real);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 13, (uint8 *)"VqRef [p.u.] = %.2f %c\n", g_motorCtrl.pmsmFoc.vdqRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 14, (uint8 *)"VdRef [p.u.] = %.2f %c\n", g_motorCtrl.pmsmFoc.vdqRef.real);
 
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 16, (uint8 *)"ValphaRef[p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.imag);
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 17, (uint8 *)"VbetaRef [p.u.] = %.2f %c\n", g_motorControl.pmsmFoc.vabRef.real);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 16, (uint8 *)"ValphaRef[p.u.] = %.2f %c\n", g_motorCtrl.pmsmFoc.vabRef.imag);
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 17, (uint8 *)"VbetaRef [p.u.] = %.2f %c\n", g_motorCtrl.pmsmFoc.vabRef.real);
 }
 

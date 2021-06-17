@@ -158,7 +158,7 @@ IFX_INLINE void PmsmFoc_Gtm_initTrigToEvadcVoltageSense(void)
 /******************************************************************************/
 /*---------------------------Function Implementations-------------------------*/
 /******************************************************************************/
-void PmsmFoc_Gtm_initGtm(Inverter* const inverter)
+void PmsmFoc_Gtm_initGtm(INVERTER_S * const inverter)
 {
     boolean interruptState;
     Ifx_GTM *gtm= &MODULE_GTM;
@@ -197,12 +197,12 @@ void PmsmFoc_Gtm_initGtm(Inverter* const inverter)
 #endif
 }
 
-void PmsmFoc_Gtm_initAtom(Inverter * const inverter)
+void PmsmFoc_Gtm_initAtom(INVERTER_S * const inverter)
 {
     /* Not used */
 }
 
-void PmsmFoc_Gtm_initTom(Inverter * const inverter)
+void PmsmFoc_Gtm_initTom(INVERTER_S * const inverter)
 {
     /* GTM TOM configuration */
     IfxGtm_Tom_Timer_Config timerConfig;

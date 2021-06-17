@@ -77,7 +77,7 @@
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_vfOpenLoopRampup(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_vfOpenLoopRampup(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -86,7 +86,7 @@ IFX_EXTERN void PmsmFoc_Interface_vfOpenLoopRampup(MotorControl* const motorCtrl
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_startMotor(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -95,7 +95,7 @@ IFX_EXTERN void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_calMotor(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_calMotor(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -105,7 +105,7 @@ IFX_EXTERN void PmsmFoc_Interface_calMotor(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_stopMotor(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_stopMotor(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -114,7 +114,7 @@ IFX_EXTERN void PmsmFoc_Interface_stopMotor(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_setDemo(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_setDemo(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -124,7 +124,7 @@ IFX_EXTERN void PmsmFoc_Interface_setDemo(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_brakeMotor(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_brakeMotor(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -133,7 +133,7 @@ IFX_EXTERN void PmsmFoc_Interface_brakeMotor(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_disableInverter(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_disableInverter(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -142,7 +142,7 @@ IFX_EXTERN void PmsmFoc_Interface_disableInverter(MotorControl* const motorCtrl)
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_enableInverter(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_enableInverter(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -151,7 +151,7 @@ IFX_EXTERN void PmsmFoc_Interface_enableInverter(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Interface_geVdcLink(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_Interface_geVdcLink(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -162,11 +162,11 @@ IFX_EXTERN void PmsmFoc_Interface_geVdcLink(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN boolean PmsmFoc_Interface_setMotorTargetSpeed(MotorControl* const motorCtrl, float32 motorTargetSpeed);
-IFX_EXTERN boolean PmsmFoc_Interface_PlsMotorTargetSpeed(MotorControl* motorCtrl);
-IFX_EXTERN boolean PmsmFoc_Interface_MnsMotorTargetSpeed(MotorControl* motorCtrl);
-IFX_EXTERN boolean PmsmFoc_Interface_setStartTargetSpeed(MotorControl* motorCtrl);
-IFX_EXTERN boolean PmsmFoc_Interface_setStopMotorTargetSpeed(MotorControl* motorCtrl);
+IFX_EXTERN boolean PmsmFoc_Interface_setMotorTargetSpeed(MOTORCTRL_S* motorCtrl, float32 motorTargetSpeed);
+IFX_EXTERN boolean PmsmFoc_Interface_plsMotorTargetSpeed(MOTORCTRL_S* motorCtrl);
+IFX_EXTERN boolean PmsmFoc_Interface_mnsMotorTargetSpeed(MOTORCTRL_S* motorCtrl);
+IFX_EXTERN boolean PmsmFoc_Interface_setStartTargetSpeed(MOTORCTRL_S* motorCtrl);
+IFX_EXTERN boolean PmsmFoc_Interface_setStopMotorTargetSpeed(MOTORCTRL_S* motorCtrl);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

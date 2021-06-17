@@ -60,7 +60,7 @@
  *  @see Ifx_PicF32_step
  *  @ingroup app_speed_control
  */
-float32 PmsmFoc_SpeedControl_do(SpeedControl *speedControl)
+float32 PmsmFoc_speedcontrol_do(SPDCTRL_S *speedControl)
 {
 	float32 result;
     if (speedControl->enabled != FALSE)
@@ -82,7 +82,7 @@ float32 PmsmFoc_SpeedControl_do(SpeedControl *speedControl)
  *  @see Ifx_PicF32_init
  *  @ingroup app_speed_control
  */
-void PmsmFoc_SpeedControl_init(SpeedControl *speedControl)
+void PmsmFoc_speedcontrol_init(SPDCTRL_S *speedControl)
 {
 	Ifx_PicF32_init(&speedControl->piSpeed);
     speedControl->measSpeed = 0;

@@ -79,7 +79,7 @@
  * /see
  * /ingroup
  */
-void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl);
+void PmsmFoc_StateMacine_doControlLoop(MOTORCTRL_S* const motorCtrl);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

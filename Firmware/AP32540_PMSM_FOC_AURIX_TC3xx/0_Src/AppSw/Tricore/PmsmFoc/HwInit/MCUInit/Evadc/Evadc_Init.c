@@ -285,7 +285,7 @@ void PmsmFoc_Evadc_initGroups(void)
 /******************************************************************************/
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
-void PmsmFoc_Evadc_initEvadc(Inverter *const inverter)
+void PmsmFoc_Evadc_initEvadc(INVERTER_S *const inverter)
 {
     PmsmFoc_Evadc_initModule();
     PmsmFoc_Evadc_initGroups();

@@ -56,31 +56,31 @@
 /******************************************************************************/
 /*--------------------------------Enumerations--------------------------------*/
 /******************************************************************************/
-typedef enum StateMachine
+typedef enum
 {
-	StateMachine_PhaseCalibration = 0,
-	StateMachine_PositionCalibration,
-	StateMachine_focClosedLoop,
-	StateMachine_enableInverter,
-	StateMachine_vfOpenLoop,
-	StateMachine_tuneCurrentRegulators,
-	StateMachine_prePositioning,
-	StateMachine_motorIdle,
-	StateMachine_motorStop,
-	StateMachine_motorHold,
-	StateMachine_identifyMotorParameters,
-	StateMachine_ifOpenLoop,
-	StateMachine_dtcClosedLoop,
-	StateMachine_demo
-}StateMachine;
+	STATE_PhaseCalibration = 0,
+	STATE_PositionCalibration,
+	STATE_focClosedLoop,
+	STATE_enableInverter,
+	STATE_vfOpenLoop,
+	STATE_tuneCurrentRegulators,
+	STATE_prePositioning,
+	STATE_motorIdle,
+	STATE_motorStop,
+	STATE_motorHold,
+	STATE_identifyMotorParameters,
+	STATE_ifOpenLoop,
+	STATE_dtcClosedLoop,
+	STATE_demo
+}STATEMACHINE_S;
 
-typedef enum ControlScheme
+typedef enum
 {
 	ControlScheme_speed = 0,
 	ControlScheme_current,
 	ControlScheme_torque,
 	ControlScheme_voltage,
-}ControlScheme;
+}CTRLSCHEME_E;
 /******************************************************************************/
 /*-----------------------------Data Structures--------------------------------*/
 /******************************************************************************/
@@ -93,15 +93,15 @@ typedef enum
 	STOPPING_MODE,
 	CAL_MODE,
 	DEMO_MODE
-} IFMODE;
+} IFMODE_E;
 
 /** @brief Interfaces information.
  */
 typedef struct
 {
-	IFMODE CurrnetIfMode;
+	IFMODE_E CurrnetIfMode;
 	float32 motorTargetSpeed;					/**< @brief Target speed reference in rpm */
-} Interfaces;
+} INTERFACE_S;
 
 /** @brief Open loop information.
  */
@@ -114,7 +114,7 @@ typedef struct
 	CplxStdReal AngleCosSin;					/**< \brief sin(angle) and cos(angle) values */
     CplxStdReal  modulationIndex;				/**< \brief Modulation Index */
 #endif
-} OpenLoop;
+} OPENLOOP_S;
 
 
 /** @brief FOC information.
@@ -159,15 +159,15 @@ typedef struct
 	#endif
 
 	sint16 electricalAngle;						/**< \brief Rotor angle from Encoder, Resolver, Estimator, etc. */
-	SpeedControl speedControl;					/**< \brief Speed control object */
+	SPDCTRL_S speedControl;					/**< \brief Speed control object */
 	CplxStdReal modulationIndex;				/**< \brief Modulation Index */
 #endif
-} PmsmFoc;
+} PMSMFOC_S;
 
 typedef struct
 {
-	StateMachine state; 						/**< \brief Motor state (e.g.: V/f, FOC) */
-	ControlScheme controlScheme; 				/**< \brief Control scheme (e.g. speed control, current control) */
+	STATEMACHINE_S state; 						/**< \brief Motor state (e.g.: V/f, FOC) */
+	CTRLSCHEME_E controlScheme; 				/**< \brief Control scheme (e.g. speed control, current control) */
 	uint16 rotationDir; 						/**< \brief Rotation direction of motor (rotor angle increasing, or decreasing) */
 	uint16 inverterStatus;						/**< \brief 0 -> Inverter disabled, 1 -> Inverter enabled */
 	uint32 counter;								/**< \brief General purpose counter */
@@ -175,13 +175,10 @@ typedef struct
 	uint32 alignmentCounter; 					/**< \brief Counter for rotor initial positioning / alignment in V/f */
 	uint32 nonRealTimeCounter; 					/**< \brief Counter for tasks that don't need real-time computing */
 
-	uint32 encOffsetCalCounter; 				/**< \brief Counter for calibration */
-	uint32 encTopZeroCounter; 					/**< \brief Counter for calibration */
-
 	uint32 tuneCurrentRegsCounter; 				/**< \brief  Counter for calibration */
     boolean tuneCurrentRegs;					/**< \brief 1 = current regulator tuning is enabled. 0 = regulator tuning is disabled. */
 
-} ControlParameters;
+} CTRLPRAMS_S;
 #if 0 
 typedef struct
 {
@@ -197,22 +194,22 @@ typedef struct
 #endif
 typedef struct
 {
-	Interfaces			interface;				/**< \brief Interface parameters object */
-	ControlParameters 	controlParameters;		/**< \brief Control parameters object */
+	INTERFACE_S		interface;				/**< \brief Interface parameters object */
+	CTRLPRAMS_S 	CtrlParms;		/**< \brief Control parameters object */
 	#if 0
 	Diagnostic			diagnostic;				/**< \brief Diagnostic object */
 	#endif
-	Inverter  			inverter;				/**< \brief Inverter object */
-	PmsmFoc   			pmsmFoc;				/**< \brief FOC object */
-	OpenLoop  			openLoop;     			/**< \brief Open loop object */
-	PositionAcquisition	positionSensor;			/**< \brief Position sensor object */
-	MotorParameters		motor;					/**< \brief Motor parameters object */
-} MotorControl;
+	INVERTER_S   		inverter;				/**< \brief Inverter object */
+	PMSMFOC_S   		pmsmFoc;				/**< \brief FOC object */
+	OPENLOOP_S  			openLoop;     			/**< \brief Open loop object */
+	POSACQUIRE_S		positionSensor;			/**< \brief Position sensor object */
+	MOTROPRAMS_S		motor;					/**< \brief Motor parameters object */
+} MOTORCTRL_S;
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-extern MotorControl g_motorControl;
+extern MOTORCTRL_S g_motorCtrl;
 extern float32 demospeed[8][8];
 extern uint8 scenarioCnt;
 /******************************************************************************/

@@ -92,7 +92,7 @@
  * /ingroup
  */
 
-IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(Inverter * const inverter)
+IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(INVERTER_S * const inverter)
 {
 
     IfxEvadc_Adc_ChannelConfig adcChConfig;

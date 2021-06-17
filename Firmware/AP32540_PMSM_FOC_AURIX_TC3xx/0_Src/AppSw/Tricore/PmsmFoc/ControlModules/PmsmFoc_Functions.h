@@ -61,7 +61,7 @@
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_initMotorControl(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_initMotorControl(MOTORCTRL_S* const motorCtrl);
 
 /** /brief Initialize the control variables.
  *
@@ -71,7 +71,7 @@ IFX_EXTERN void PmsmFoc_initMotorControl(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_initControlVariables(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_initControlVariables(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -81,7 +81,7 @@ IFX_EXTERN void PmsmFoc_initControlVariables(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_doFieldOrientedControl(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_doFieldOrientedControl(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -91,7 +91,7 @@ IFX_EXTERN void PmsmFoc_doFieldOrientedControl(MotorControl* const motorCtrl);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doVfControl(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_doVfControl(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -101,7 +101,7 @@ IFX_EXTERN void PmsmFoc_doVfControl(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_reconstructCurrent(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_reconstructCurrent(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -111,7 +111,7 @@ IFX_EXTERN void PmsmFoc_reconstructCurrent(MotorControl* const motorCtrl);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doClarkeTransform(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_doClarkeTransform(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -120,7 +120,7 @@ IFX_EXTERN void PmsmFoc_doClarkeTransform(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_getCosSin(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_getCosSin(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -129,7 +129,7 @@ IFX_EXTERN void PmsmFoc_getCosSin(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doParkTransform(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_doParkTransform(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -138,7 +138,7 @@ IFX_EXTERN void PmsmFoc_doParkTransform(PmsmFoc* const foc);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_setIdqRef(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_setIdqRef(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -147,7 +147,7 @@ IFX_EXTERN void PmsmFoc_setIdqRef(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_getIdqRef(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_getIdqRef(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -156,7 +156,7 @@ IFX_EXTERN void PmsmFoc_getIdqRef(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_setIdRefLimit(MotorControl* const motorCtrl, float32 min, float32 max);
+IFX_EXTERN void PmsmFoc_setIdRefLimit(MOTORCTRL_S* const motorCtrl, float32 min, float32 max);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -165,7 +165,7 @@ IFX_EXTERN void PmsmFoc_setIdRefLimit(MotorControl* const motorCtrl, float32 min
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_setIqRefLimit(MotorControl* const motorCtrl, float32 min, float32 max);
+IFX_EXTERN void PmsmFoc_setIqRefLimit(MOTORCTRL_S* const motorCtrl, float32 min, float32 max);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -174,7 +174,7 @@ IFX_EXTERN void PmsmFoc_setIqRefLimit(MotorControl* const motorCtrl, float32 min
  * /see
  * /ingroup
  */
-IFX_EXTERN StdReal PmsmFoc_getIdRefLimit(MotorControl* const motorCtrl);
+IFX_EXTERN StdReal PmsmFoc_getIdRefLimit(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -183,7 +183,7 @@ IFX_EXTERN StdReal PmsmFoc_getIdRefLimit(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN StdReal PmsmFoc_getIqRefLimit(MotorControl* const motorCtrl);
+IFX_EXTERN StdReal PmsmFoc_getIqRefLimit(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -192,7 +192,7 @@ IFX_EXTERN StdReal PmsmFoc_getIqRefLimit(MotorControl* const motorCtrl);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doIdControl(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_doIdControl(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -201,7 +201,7 @@ IFX_EXTERN void PmsmFoc_doIdControl(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doIqControl(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_doIqControl(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -210,7 +210,7 @@ IFX_EXTERN void PmsmFoc_doIqControl(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN StdReal PmsmFoc_getVdqMagnitude(PmsmFoc* const foc);
+IFX_EXTERN StdReal PmsmFoc_getVdqMagnitude(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -219,7 +219,7 @@ IFX_EXTERN StdReal PmsmFoc_getVdqMagnitude(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN StdReal PmsmFoc_getVdqLimit(PmsmFoc* const foc);
+IFX_EXTERN StdReal PmsmFoc_getVdqLimit(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -228,7 +228,7 @@ IFX_EXTERN StdReal PmsmFoc_getVdqLimit(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_setVdqLimit(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_setVdqLimit(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -237,7 +237,7 @@ IFX_EXTERN void PmsmFoc_setVdqLimit(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doVdqLimit(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_doVdqLimit(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -246,7 +246,7 @@ IFX_EXTERN void PmsmFoc_doVdqLimit(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doInverseParkTransform(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_doInverseParkTransform(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param foc Reference to structure that contains instance data members
@@ -255,7 +255,7 @@ IFX_EXTERN void PmsmFoc_doInverseParkTransform(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doDqDecoupling(PmsmFoc* const foc);
+IFX_EXTERN void PmsmFoc_doDqDecoupling(PMSMFOC_S* const foc);
 
 /** /brief
  *
@@ -265,7 +265,7 @@ IFX_EXTERN void PmsmFoc_doDqDecoupling(PmsmFoc* const foc);
  * /see
  * /ingroup pmsm_foc_controlmodules
  */
-IFX_EXTERN void PmsmFoc_doMiscWorks (MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_doMiscWorks (MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -275,7 +275,7 @@ IFX_EXTERN void PmsmFoc_doMiscWorks (MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_doEncoderCalibration(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *
@@ -285,7 +285,7 @@ IFX_EXTERN void PmsmFoc_doEncoderCalibration(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_resetEncoderCalibrationStatus(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_resetEncoderCalibrationStatus(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * Iq_ref:   _ _ _ _ _ _ _ __ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -299,7 +299,7 @@ IFX_EXTERN void PmsmFoc_resetEncoderCalibrationStatus(MotorControl* const motorC
  * /ingroup
  *
  */
-IFX_EXTERN void PmsmFoc_tuneCurrentRegulator(MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_tuneCurrentRegulator(MOTORCTRL_S* const motorCtrl);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -308,7 +308,7 @@ IFX_EXTERN void PmsmFoc_tuneCurrentRegulator(MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_doPeriodicRoutine (MotorControl* const motorCtrl);
+IFX_EXTERN void PmsmFoc_doPeriodicRoutine (MOTORCTRL_S* const motorCtrl);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/
@@ -320,7 +320,7 @@ IFX_EXTERN void PmsmFoc_doPeriodicRoutine (MotorControl* const motorCtrl);
  * /see
  * /ingroup
  */
-IFX_INLINE void PmsmFoc_doSpeedRefLinearRamp(PmsmFoc* const foc);
+IFX_INLINE void PmsmFoc_doSpeedRefLinearRamp(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -329,7 +329,7 @@ IFX_INLINE void PmsmFoc_doSpeedRefLinearRamp(PmsmFoc* const foc);
  * /see
  * /ingroup
  */
-IFX_INLINE void PmsmFoc_doCurrentRefLinearRamp(PmsmFoc* const foc);
+IFX_INLINE void PmsmFoc_doCurrentRefLinearRamp(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -338,7 +338,7 @@ IFX_INLINE void PmsmFoc_doCurrentRefLinearRamp(PmsmFoc* const foc);
  * /see
  * /ingroup
  */
-IFX_INLINE float32 PmsmFoc_getSpeedRefLinearRamp(PmsmFoc* const foc);
+IFX_INLINE float32 PmsmFoc_getSpeedRefLinearRamp(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -347,7 +347,7 @@ IFX_INLINE float32 PmsmFoc_getSpeedRefLinearRamp(PmsmFoc* const foc);
  * /see
  * /ingroup
  */
-IFX_INLINE CplxStdReal PmsmFoc_getCurrentRefLinearRamp(PmsmFoc* const foc);
+IFX_INLINE CplxStdReal PmsmFoc_getCurrentRefLinearRamp(PMSMFOC_S* const foc);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -356,7 +356,7 @@ IFX_INLINE CplxStdReal PmsmFoc_getCurrentRefLinearRamp(PmsmFoc* const foc);
  * /see
  * /ingroup
  */
-IFX_INLINE void PmsmFoc_setSpeedRefLinearRamp(PmsmFoc* const foc, float32 ref);
+IFX_INLINE void PmsmFoc_setSpeedRefLinearRamp(PMSMFOC_S* const foc, float32 ref);
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -365,28 +365,28 @@ IFX_INLINE void PmsmFoc_setSpeedRefLinearRamp(PmsmFoc* const foc, float32 ref);
  * /see
  * /ingroup
  */
-IFX_INLINE void PmsmFoc_setCurrentRefLinearRamp(PmsmFoc* const foc, CplxStdReal ref);
+IFX_INLINE void PmsmFoc_setCurrentRefLinearRamp(PMSMFOC_S* const foc, CplxStdReal ref);
 
 /******************************************************************************/
 /*---------------------Inline Function Implementations------------------------*/
 /******************************************************************************/
-IFX_INLINE void PmsmFoc_doSpeedRefLinearRamp(PmsmFoc* const foc)
+IFX_INLINE void PmsmFoc_doSpeedRefLinearRamp(PMSMFOC_S* const foc)
 {
 	Ifx_RampF32_step(&foc->speedRamp);
 }
 
-IFX_INLINE void PmsmFoc_doCurrentRefLinearRamp(PmsmFoc* const foc)
+IFX_INLINE void PmsmFoc_doCurrentRefLinearRamp(PMSMFOC_S* const foc)
 {
 	Ifx_RampF32_step(&foc->iqRefExternalRamp);
 	Ifx_RampF32_step(&foc->idRefExternalRamp);
 }
 
-IFX_INLINE float32 PmsmFoc_getSpeedRefLinearRamp(PmsmFoc* const foc)
+IFX_INLINE float32 PmsmFoc_getSpeedRefLinearRamp(PMSMFOC_S* const foc)
 {
 	return Ifx_RampF32_getValue(&foc->speedRamp);
 }
 
-IFX_INLINE CplxStdReal PmsmFoc_getCurrentRefLinearRamp(PmsmFoc* const foc)
+IFX_INLINE CplxStdReal PmsmFoc_getCurrentRefLinearRamp(PMSMFOC_S* const foc)
 {
 	CplxStdReal result;
 	result.imag = Ifx_RampF32_getValue(&foc->iqRefExternalRamp);
@@ -395,12 +395,12 @@ IFX_INLINE CplxStdReal PmsmFoc_getCurrentRefLinearRamp(PmsmFoc* const foc)
 	return result;
 }
 
-IFX_INLINE void PmsmFoc_setSpeedRefLinearRamp(PmsmFoc* const foc, float32 ref)
+IFX_INLINE void PmsmFoc_setSpeedRefLinearRamp(PMSMFOC_S* const foc, float32 ref)
 {
 	Ifx_RampF32_setRef(&foc->speedRamp,ref);
 }
 
-IFX_INLINE void PmsmFoc_setCurrentRefLinearRamp(PmsmFoc* const foc, CplxStdReal ref)
+IFX_INLINE void PmsmFoc_setCurrentRefLinearRamp(PMSMFOC_S* const foc, CplxStdReal ref)
 {
 	Ifx_RampF32_setRef(&foc->iqRefExternalRamp,ref.imag);
 	Ifx_RampF32_setRef(&foc->idRefExternalRamp,ref.real);

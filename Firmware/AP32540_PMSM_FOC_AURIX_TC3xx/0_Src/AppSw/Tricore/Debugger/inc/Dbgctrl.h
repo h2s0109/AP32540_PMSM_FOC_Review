@@ -69,7 +69,7 @@ typedef enum
     DBG_SPEEDAPPLY,
     DBG_DEMO,
     DBG_STOPPING
-} DBG_SPEEDSEL;
+} DBG_MODE_E;
 typedef enum
 {
     D0_READY = 0,
@@ -78,18 +78,18 @@ typedef enum
     D3_CAL,
     D4_SPEEDAPPLY,
     D5_DEMO
-} DBG_SPEEDSELG;
+} DBG_DISPLAY_E;
 #define DBG_TOTALMODE 5
 /******************************************************************************/
 /*-----------------------------Data Structures--------------------------------*/
 /******************************************************************************/
 typedef struct {
-    DBG_SPEEDSELG   eDbgCtrl_display_case[DBG_TOTALMODE];
-    DBG_SPEEDSEL    eDbgCtrl_mode_usrsel;
-    DBG_SPEEDSEL    eDbgCtrl_mode_current;
-    float           DbgCtrl_target_speed;
-    float           DbgCtrl_current_speed;
-} DbgCtrls;
+    DBG_DISPLAY_E   Dbg_eDispMode[DBG_TOTALMODE];
+    DBG_MODE_E      Dbg_eUsrMode;
+    DBG_MODE_E      Dbg_eCurMode;
+    float           Dbg_TargetSpeed;
+    float           Dbg_CurSpeed;
+} DBGCTRL_S;
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/

@@ -136,6 +136,8 @@
 #define ENCODER_REVERSED        		TRUE
 /** \brief Define the encoder resolution. */
 #define ENCODER_RESOLUTION      		USER_MOTOR_ENCODER_PULSES_PER_REVOLUTION
+/** \brief Define the encoder fold */
+#define ENCODER_FOLD    		        USER_MOTOR_ENCODER_FOLD
 /** \brief Define the default encoder offset. */
 #define ENCODER_OFFSET					USER_MOTOR_ENCODER_OFFSET
 /** \brief Define the encoder function update period. */

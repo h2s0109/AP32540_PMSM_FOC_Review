@@ -87,7 +87,7 @@
     float32	pMax;			/**< \brief Maximal power in W */
     float32 nNom;			/**< \brief Nominal speed in rpm */
     float32 nMax;			/**< \brief Maximal speed in rpm */
-} MotorParameters;
+} MOTROPRAMS_S;
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/

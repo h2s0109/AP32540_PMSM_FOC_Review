@@ -59,11 +59,11 @@
 
 float32 downspeed;
 float32 upspeed;
-void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
+void PmsmFoc_StateMacine_doControlLoop(MOTORCTRL_S* const motorCtrl)
 {
-	switch (motorCtrl->controlParameters.state)
+	switch (motorCtrl->CtrlParms.state)
 	{
-	case StateMachine_PhaseCalibration:
+	case STATE_PhaseCalibration:
 		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
 		{
 			PmsmFoc_PhaseCurrentSense_getRawPhaseCurrentValues(&motorCtrl->inverter.phaseCurrentSense);
@@ -72,64 +72,64 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		else
 		{
 #if(POSITION_SENSOR_TYPE == ENCODER)
-			motorCtrl->controlParameters.state = StateMachine_PositionCalibration;
+			motorCtrl->CtrlParms.state = STATE_PositionCalibration;
 #else
-			motorCtrl->controlParameters.state = StateMachine_motorStop;
+			motorCtrl->CtrlParms.state = STATE_motorStop;
 			PmsmFoc_Gatedriver_Disable();
 #endif
 		}
 		break;
-	case StateMachine_PositionCalibration:
+	case STATE_PositionCalibration:
 		PmsmFoc_doEncoderCalibration(motorCtrl);
-		if(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done)
+		if(motorCtrl->positionSensor.encoder.calibrationStatus == ENC_CAL_DONE)
 		{
-			motorCtrl->controlParameters.state = StateMachine_motorStop;
+			motorCtrl->CtrlParms.state = STATE_motorStop;
 			PmsmFoc_Gatedriver_Disable();
 		}
 		break;
-	case StateMachine_focClosedLoop:
+	case STATE_focClosedLoop:
 		PmsmFoc_doFieldOrientedControl(motorCtrl);
 		break;
-	case StateMachine_tuneCurrentRegulators:
+	case STATE_tuneCurrentRegulators:
 		/* Not used*/
 		PmsmFoc_tuneCurrentRegulator(motorCtrl);
 		break;
-	case StateMachine_prePositioning:
+	case STATE_prePositioning:
 		/* Not used*/
 		break;
-	case StateMachine_motorStop:
+	case STATE_motorStop:
 	/* To avoid the backward roatation measSpeed value*/
 	/* Update electrical position and measSpeed*/
 	motorCtrl->pmsmFoc.electricalAngle =
 			(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
 		break;
-	case StateMachine_motorIdle:
+	case STATE_motorIdle:
 		/* Not used*/
 		break;
-	case StateMachine_vfOpenLoop:
+	case STATE_vfOpenLoop:
 		/* Not used*/
 		PmsmFoc_doVfControl(motorCtrl);
 		break;
-	case StateMachine_enableInverter:
+	case STATE_enableInverter:
 		/* Not used*/
 		break;
-	case StateMachine_demo:
+	case STATE_demo:
 		if(motorCtrl->interface.CurrnetIfMode == DEMO_MODE)
 		{
-			upspeed = g_motorControl.interface.motorTargetSpeed+50;
-			downspeed = g_motorControl.interface.motorTargetSpeed-50;
-			if(g_motorControl.pmsmFoc.speedControl.measSpeed<upspeed && g_motorControl.pmsmFoc.speedControl.measSpeed>downspeed)
+			upspeed = g_motorCtrl.interface.motorTargetSpeed+50;
+			downspeed = g_motorCtrl.interface.motorTargetSpeed-50;
+			if(g_motorCtrl.pmsmFoc.speedControl.measSpeed<upspeed && g_motorCtrl.pmsmFoc.speedControl.measSpeed>downspeed)
 			{
 				if (scenarioCnt<7)
 				{
 					scenarioCnt++;
 					Ifx_RampF32_setSlewRate(&motorCtrl->pmsmFoc.speedRamp,demospeed[scenarioCnt][1],USER_MOTOR_SPEED_RAMP_PERIOD);
-					PmsmFoc_Interface_setMotorTargetSpeed(&g_motorControl,demospeed[scenarioCnt][0]);
+					PmsmFoc_Interface_setMotorTargetSpeed(&g_motorCtrl,demospeed[scenarioCnt][0]);
 				}
 				else
 				{
 					scenarioCnt = 0;
-					PmsmFoc_Interface_stopMotor(&g_motorControl);
+					PmsmFoc_Interface_stopMotor(&g_motorCtrl);
 				}
 			}
 			PmsmFoc_doFieldOrientedControl(motorCtrl);
@@ -138,7 +138,7 @@ void PmsmFoc_StateMacine_doControlLoop(MotorControl* const motorCtrl)
 		{	
 			scenarioCnt = 0;
 			PmsmFoc_doFieldOrientedControl(motorCtrl);
-			PmsmFoc_Interface_stopMotor(&g_motorControl);
+			PmsmFoc_Interface_stopMotor(&g_motorCtrl);
 		}
 		break;
 	default:

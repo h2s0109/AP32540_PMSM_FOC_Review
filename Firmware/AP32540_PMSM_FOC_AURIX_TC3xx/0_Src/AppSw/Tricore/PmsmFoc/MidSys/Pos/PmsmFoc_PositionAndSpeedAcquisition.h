@@ -68,54 +68,55 @@ typedef enum
 	PositionAcquisition_SensorType_Resolver = 2,            /**< \brief Resolver	sensor is used */
 	PositionAcquisition_SensorType_Sensorless = 3,			/**< \brief Sensorless method is used */
 	PositionAcquisition_SensorType_Encoder_and_Resolver = 4 /**< \brief Encoder and Resolver sensors are used */
-} PositionAcquisition_SensorType;
+} POSACQUIRE_SENSORTYPE_E;
 
 typedef enum
 {
-	Encoder_CalibrationStatus_notDone = 0,
-	Encoder_CalibrationStatus_done
-} Encoder_CalibrationStatus;
+	ENC_FIND_INDEX = 0,
+	ENC_FIND_OFFSET,
+	ENC_CAL_DONE
+} ENC_CAL_STATUS_E;
 /******************************************************************************/
 /*-----------------------------Data Structures--------------------------------*/
 /******************************************************************************/
 typedef struct
 {
 	uint32 dummy;
-} PositionAcquisition_Hall;
+} POSACQUIRE_HALL_S;
 
 typedef struct
 {
 	uint32 dummy;
-} PositionAcquisition_Sensorless;
+} POSACQUIRE_SENSORLESS_S;
 
 typedef struct
 {
-	IfxGpt12_IncrEnc incrEncoder;
-	Encoder_CalibrationStatus calibrationStatus;
-	boolean encSyncTopZero;						/**< \brief encoder top zero synchronization: 1 =  enabled, 0 = disabled. */
 	boolean	encOffsetCal;						/**< \brief encoder offset calibration: 1 =  enabled, 0 = disabled. */
-
-} PositionAcquisition_Encoder;
+	uint16	encFwdCnt;
+	uint16 	encOffsetCalCounter; 				/**< \brief Counter for calibration */
+	IfxGpt12_IncrEnc incrEncoder;
+	ENC_CAL_STATUS_E calibrationStatus;
+} POSACQUIRE_ENC_S;
 
 typedef struct
 {
 	uint32 dummy;
-} PositionAcquisition_Resolver;
+} POSACQUIRE_RESOLVER_S;
 
 
 /** @brief Position acquisition object
  */
 typedef struct
 {
-	PositionAcquisition_Encoder     encoder;     /**< \brief Pointer to the Encoder handler*/
-	//PositionAcquisition_Hall       	hall;        /**< \brief Pointer to the Hall sensor handler */
-	//PositionAcquisition_Resolver    resolver;    /**< \brief Pointer to the Resolver handler */
-	//PositionAcquisition_Sensorless 	sensorless;  /**< \brief Pointer to the Sensorless handler */
-	PositionAcquisition_SensorType  sensorType;   /**< \brief Position sensor used */
-	boolean                         statusOk;     /**< \brief Position sensor status*/
-    uint32    	electricalAngle;          		/**< \brief Electrical angle. */
-	float32 	rotorSpeed;						/*< @brief Motor shaft speed */
-} PositionAcquisition;
+	POSACQUIRE_ENC_S     		encoder;     	/**< \brief Pointer to the Encoder handler*/
+	//POSACQUIRE_HALL_S       	hall;        	/**< \brief Pointer to the Hall sensor handler */
+	//POSACQUIRE_RESOLVER_S    	resolver;    	/**< \brief Pointer to the Resolver handler */
+	//POSACQUIRE_SENSORLESS_S 	sensorless;  	/**< \brief Pointer to the Sensorless handler */
+	POSACQUIRE_SENSORTYPE_E 	sensorType;   	/**< \brief Position sensor used */
+	boolean                     statusOk;     	/**< \brief Position sensor status*/
+    uint32    					electricalAngle;/**< \brief Electrical angle. */
+	float32						rotorSpeed;		/*< @brief Motor shaft speed */
+} POSACQUIRE_S;
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/
@@ -133,7 +134,8 @@ typedef struct
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_PositionAcquisition_init(PositionAcquisition* positionAcquisition, PositionAcquisition_SensorType sensorType);
+
+IFX_EXTERN void PmsmFoc_PositionAcquisition_init(POSACQUIRE_S* positionAcquisition, POSACQUIRE_SENSORTYPE_E sensorType);
 /** /brief
  *
  * /param positionAcquisition Reference to structure that contains instance data members
@@ -142,7 +144,7 @@ IFX_EXTERN void PmsmFoc_PositionAcquisition_init(PositionAcquisition* positionAc
  * /see
  * /ingroup
  */
-IFX_EXTERN sint32 PmsmFoc_PositionAcquisition_updatePosition(PositionAcquisition* positionAcquisition);
+IFX_EXTERN sint32 PmsmFoc_PositionAcquisition_updatePosition(POSACQUIRE_S* positionAcquisition);
 /** /brief
  *
  * /param positionAcquisition Reference to structure that contains instance data members
@@ -151,7 +153,7 @@ IFX_EXTERN sint32 PmsmFoc_PositionAcquisition_updatePosition(PositionAcquisition
  * /see
  * /ingroup
  */
-IFX_EXTERN float32 PmsmFoc_PositionAcquisition_updateSpeed(PositionAcquisition* positionAcquisition);
+IFX_EXTERN float32 PmsmFoc_PositionAcquisition_updateSpeed(POSACQUIRE_S* positionAcquisition);
 
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/

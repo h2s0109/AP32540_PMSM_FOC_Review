@@ -84,7 +84,7 @@
  * /ingroup
  */
 
-IFX_EXTERN void PmsmFoc_SvmStart(Inverter* const inverter, CplxStdReal modulationIndex);
+IFX_EXTERN void PmsmFoc_SvmStart(INVERTER_S * const inverter, CplxStdReal modulationIndex);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

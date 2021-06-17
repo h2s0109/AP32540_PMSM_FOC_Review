@@ -78,7 +78,7 @@
  * /see
  * /ingroup
  */
-void PmsmFoc_initHardware(MotorControl* const motorCtrl);
+void PmsmFoc_initHardware(MOTORCTRL_S* const motorCtrl);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

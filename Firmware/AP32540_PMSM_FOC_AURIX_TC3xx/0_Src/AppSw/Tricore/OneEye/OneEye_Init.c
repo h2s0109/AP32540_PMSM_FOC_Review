@@ -294,63 +294,63 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 	{
 		if (Ifx_Shell_matchToken(&args, "refSpeed") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.speedControl.refSpeed) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.speedControl.refSpeed) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu refSpeed %f"KEY_CR, g_motorControl.pmsmFoc.speedControl.refSpeed);
+				IfxStdIf_DPipe_print(io, "! ecu refSpeed %f"KEY_CR, g_motorCtrl.pmsmFoc.speedControl.refSpeed);
 
 				result                  = TRUE;
 			}
 		}
 		else if (Ifx_Shell_matchToken(&args, "kpSpeedReg") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.speedControl.piSpeed.a0) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.speedControl.piSpeed.a0) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu kpSpeedReg %f"KEY_CR, g_motorControl.pmsmFoc.speedControl.piSpeed.a0);
+				IfxStdIf_DPipe_print(io, "! ecu kpSpeedReg %f"KEY_CR, g_motorCtrl.pmsmFoc.speedControl.piSpeed.a0);
 
 				result                  = TRUE;
 			}
 		}
 		else if (Ifx_Shell_matchToken(&args, "kiSpeedReg") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.speedControl.piSpeed.a1) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.speedControl.piSpeed.a1) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu kiSpeedReg %f"KEY_CR, g_motorControl.pmsmFoc.speedControl.piSpeed.a0);
+				IfxStdIf_DPipe_print(io, "! ecu kiSpeedReg %f"KEY_CR, g_motorCtrl.pmsmFoc.speedControl.piSpeed.a0);
 
 				result                  = TRUE;
 			}
 		}
 		else if (Ifx_Shell_matchToken(&args, "kpIdReg") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.piId.a0) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.piId.a0) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu kpIdReg %f"KEY_CR, g_motorControl.pmsmFoc.piId.a0);
+				IfxStdIf_DPipe_print(io, "! ecu kpIdReg %f"KEY_CR, g_motorCtrl.pmsmFoc.piId.a0);
 
 				result                  = TRUE;
 			}
 		}
 		else if (Ifx_Shell_matchToken(&args, "kiIdReg") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.piId.a1) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.piId.a1) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu kiIdReg %f"KEY_CR, g_motorControl.pmsmFoc.piId.a1);
+				IfxStdIf_DPipe_print(io, "! ecu kiIdReg %f"KEY_CR, g_motorCtrl.pmsmFoc.piId.a1);
 
 				result                  = TRUE;
 			}
 		}
 		else if (Ifx_Shell_matchToken(&args, "kpIqReg") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.piIq.a0) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.piIq.a0) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu kpIqReg %f"KEY_CR, g_motorControl.pmsmFoc.piIq.a0);
+				IfxStdIf_DPipe_print(io, "! ecu kpIqReg %f"KEY_CR, g_motorCtrl.pmsmFoc.piIq.a0);
 
 				result                  = TRUE;
 			}
 		}
 		else if (Ifx_Shell_matchToken(&args, "kiIqReg") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.piIq.a1) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.piIq.a1) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu kiIqReg %f"KEY_CR, g_motorControl.pmsmFoc.piIq.a1);
+				IfxStdIf_DPipe_print(io, "! ecu kiIqReg %f"KEY_CR, g_motorCtrl.pmsmFoc.piIq.a1);
 
 				result                  = TRUE;
 			}
@@ -362,13 +362,13 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 			{
 				if (run)
 				{
-					/* Go to StateMachine_focClosedLoop or StateMachine_PhaseCalibration */
-					PmsmFoc_Interface_startMotor(&g_motorControl);
+					/* Go toSTATE_focClosedLoop orSTATE_PhaseCalibration */
+					PmsmFoc_Interface_startMotor(&g_motorCtrl);
 				}
 				else
 				{
-					/* Go to StateMachine_motorStop */
-					PmsmFoc_Interface_stopMotor(&g_motorControl);
+					/* Go toSTATE_motorStop */
+					PmsmFoc_Interface_stopMotor(&g_motorCtrl);
 				}
 				//IfxStdIf_DPipe_print(io, "! ecu run %f"KEY_CR, velocityControl.ref);
 
@@ -382,8 +382,8 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 			{
 				if (cal)
 				{
-					/* Go to StateMachine_PhaseCalibration */
-					PmsmFoc_Interface_calMotor(&g_motorControl);
+					/* Go toSTATE_PhaseCalibration */
+					PmsmFoc_Interface_calMotor(&g_motorCtrl);
 				}
 				//IfxStdIf_DPipe_print(io, "! ecu run %f"KEY_CR, velocityControl.ref);
 
@@ -415,18 +415,18 @@ boolean shellCmdGet(pchar args, void *data, IfxStdIf_DPipe *io)
 	{
 		if (Ifx_Shell_matchToken(&args, "refSpeed") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.speedControl.refSpeed) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.speedControl.refSpeed) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu refSpeed %f"KEY_CR, g_motorControl.pmsmFoc.speedControl.refSpeed);
+				IfxStdIf_DPipe_print(io, "! ecu refSpeed %f"KEY_CR, g_motorCtrl.pmsmFoc.speedControl.refSpeed);
 
 				result                  = TRUE;
 			}
 		}
 		else if (Ifx_Shell_matchToken(&args, "Speed") != FALSE)
 		{
-			if (Ifx_Shell_parseFloat32(&args, &g_motorControl.pmsmFoc.speedControl.measSpeed) != FALSE)
+			if (Ifx_Shell_parseFloat32(&args, &g_motorCtrl.pmsmFoc.speedControl.measSpeed) != FALSE)
 			{
-				IfxStdIf_DPipe_print(io, "! ecu Speed %f"KEY_CR, g_motorControl.pmsmFoc.speedControl.measSpeed);
+				IfxStdIf_DPipe_print(io, "! ecu Speed %f"KEY_CR, g_motorCtrl.pmsmFoc.speedControl.measSpeed);
 
 				result                  = TRUE;
 			}
@@ -505,15 +505,15 @@ void OneEye_init(void)
     Ifx_Osci_setSamplingPeriod(osci, 1.0/USER_INVERTER_PWM_FREQ_HZ);
 
     /* Add Signals */
-    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_U, Ifx_Osci_DataType_Float32, &g_motorControl.pmsmFoc.iPhaseMeas.u, 0);
-    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_V, Ifx_Osci_DataType_Float32, &g_motorControl.pmsmFoc.iPhaseMeas.v, 0);
-    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_W, Ifx_Osci_DataType_Float32, &g_motorControl.pmsmFoc.iPhaseMeas.w, 0);
-    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_SPEED, Ifx_Osci_DataType_Float32, &g_motorControl.pmsmFoc.speedControl.measSpeed, 0);
+    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_U, Ifx_Osci_DataType_Float32, &g_motorCtrl.pmsmFoc.iPhaseMeas.u, 0);
+    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_V, Ifx_Osci_DataType_Float32, &g_motorCtrl.pmsmFoc.iPhaseMeas.v, 0);
+    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_W, Ifx_Osci_DataType_Float32, &g_motorCtrl.pmsmFoc.iPhaseMeas.w, 0);
+    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_SPEED, Ifx_Osci_DataType_Float32, &g_motorCtrl.pmsmFoc.speedControl.measSpeed, 0);
 
-    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_ID_REF, Ifx_Osci_DataType_Float32, &g_motorControl.pmsmFoc.idqRef.real, 0);
-    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_ID_MEAS, Ifx_Osci_DataType_Float32, &g_motorControl.pmsmFoc.idqMeas.real, 0);
-    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_IQ_REF, Ifx_Osci_DataType_Float32, &g_motorControl.pmsmFoc.idqRef.imag, 0);
-    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_IQ_MEAS, Ifx_Osci_DataType_Float32, &g_motorControl.pmsmFoc.idqMeas.imag, 0);
+    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_ID_REF, Ifx_Osci_DataType_Float32, &g_motorCtrl.pmsmFoc.idqRef.real, 0);
+    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_ID_MEAS, Ifx_Osci_DataType_Float32, &g_motorCtrl.pmsmFoc.idqMeas.real, 0);
+    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_IQ_REF, Ifx_Osci_DataType_Float32, &g_motorCtrl.pmsmFoc.idqRef.imag, 0);
+    Ifx_Osci_addSignal(osci, OSCI_SIGNAL_NAME_CURRENT_IQ_MEAS, Ifx_Osci_DataType_Float32, &g_motorCtrl.pmsmFoc.idqMeas.imag, 0);
 
 
 

@@ -80,16 +80,21 @@
 /** \brief Define the incremental encoder pulses per revolution value.*/
 /* WEDL5541-B14-KIT */
 #define USER_MOTOR_ENCODER_PULSES_PER_REVOLUTION	(1000U)
+#define USER_MOTOR_ENCODER_FOLD						(4U)
+#define USER_MOTOR_ENCODER_TOTALCNT					USER_MOTOR_ENCODER_PULSES_PER_REVOLUTION*USER_MOTOR_ENCODER_FOLD
+#define USER_MOTOR_ENCODER_GPT_BACK_TOTALCNT 		(65535U)
+#define USER_MOTOR_ENCODER_GPT_FOWARD_TOTALCNT 		USER_MOTOR_ENCODER_TOTALCNT-1
 
 #define USER_MOTOR_ENCODER_CAL_TOP_ZERO_AMPL_DELTA	(0.0005f)
 #define USER_MOTOR_ENCODER_CAL_TOP_ZERO_AMPL_MAX	(0.05f)
 #define USER_MOTOR_ENCODER_CAL_TOP_ZERO_ANGLE_DELTA	(45000U)
 #define USER_MOTOR_ENCODER_CAL_TOP_ZERO_COUNTS		(1000U)
+#define USER_MOTOR_ENCODER_CAL_TOP_ZERO_FOWARD_COUNTS USER_MOTOR_ENCODER_TOTALCNT/USER_MOTOR_POLE_PAIR
 
 #define USER_MOTOR_ENCODER_CAL_OFFSET_AMPL_DELTA	(0.00025f)
 #define USER_MOTOR_ENCODER_CAL_OFFSET_AMPL_MAX		(0.1f)
 #define USER_MOTOR_ENCODER_CAL_OFFSET_ANGLE_DELTA	(1000U)
-#define USER_MOTOR_ENCODER_CAL_OFFSET_COUNTS		(30000U)
+#define USER_MOTOR_ENCODER_CAL_OFFSET_COUNTS		(1000U)
 
 /** \brief Define the incremental encoder maximum speed value. */
 #define USER_MOTOR_ENCODER_MAX_RPM			        (6000.0f)
@@ -102,11 +107,12 @@
 /** \brief Define the D-axis current regulator Kp parameter adjustment value.  */
 #define USER_MOTOR_KPD_MULTI 						(0.50f)
 /** \brief Define the D-axis current regulator Ki parameter adjustment value.  */
-#define USER_MOTOR_KID_MULTI 						(1.0f)
+#define USER_MOTOR_KID_MULTI 						(0.001f)
 /** \brief Define the Q-axis current regulator Kp parameter adjustment value.  */
 #define USER_MOTOR_KPQ_MULTI 						(0.5f)
 /** \brief Define the Q-axis current regulator Ki parameter adjustment value.  */
-#define USER_MOTOR_KIQ_MULTI 						(1.0f)
+#define USER_MOTOR_KIQ_MULTI 						(0.001f)
+
 /** \brief Define the Bandwidth of the PI Controller [Hz]. */
 #define USER_MOTOR_CURRENT_PI_CONTROLLER_BANDWITH 	(1000.0f)
 /** \brief Define the stator time constant. */

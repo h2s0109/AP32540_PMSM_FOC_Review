@@ -99,7 +99,7 @@ typedef struct
     DcLinkVoltageSense      dcLinkVoltageSense;     /**< \brief PWM output object */
     BemfVoltageSense        bemfVoltageSense;       /**< \brief PWM output object */
     InverterStatus          status;                 /**< \brief Current fault status from inverter */
-}Inverter;
+}INVERTER_S ;
 /*********************************************************************************************************************/
 /*------------------------------------------------Function Prototypes------------------------------------------------*/
 /*********************************************************************************************************************/
@@ -128,7 +128,7 @@ typedef struct
  * /see
  * /ingroup
  */
-IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getPeriod(Inverter * const inverter);
+IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getPeriod(INVERTER_S * const inverter);
 /** /brief
  *
  * /param inverter Reference to structure that contains instance data members
@@ -137,18 +137,18 @@ IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getPeriod(Inverter * const inv
  * /see
  * /ingroup
  */
-IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getDeadTime(Inverter * const inverter);
+IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getDeadTime(INVERTER_S * const inverter);
 
 
 /******************************************************************************/
 /*---------------------Inline Function Implementations------------------------*/
 /******************************************************************************/
-IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getPeriod(Inverter * const inverter)
+IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getPeriod(INVERTER_S * const inverter)
 {
 	return inverter->pwm3PhaseOutput.pwm.timer->base.period;
 }
 
-IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getDeadTime(Inverter * const inverter)
+IFX_INLINE Ifx_TimerValue PmsmFoc_pwm3PhaseOutput_getDeadTime(INVERTER_S * const inverter)
 {
 	return inverter->pwm3PhaseOutput.pwm.base.deadtime;
 }

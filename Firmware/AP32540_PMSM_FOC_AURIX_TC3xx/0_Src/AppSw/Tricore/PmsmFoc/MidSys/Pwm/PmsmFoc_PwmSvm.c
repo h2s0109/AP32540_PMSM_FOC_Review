@@ -77,7 +77,7 @@ static void PmsmFoc_SvmPwmUpdate(Pwm3PhaseOutput* const pwmoutputi)
 #endif
 }
 
-void PmsmFoc_SvmStart(Inverter* const inverter, CplxStdReal modulationIndex)
+void PmsmFoc_SvmStart(INVERTER_S * const inverter, CplxStdReal modulationIndex)
 {
 
 	Ifx_TimerValue period;

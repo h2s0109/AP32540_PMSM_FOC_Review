@@ -69,13 +69,13 @@
 /******************************************************************************/
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
-extern DbgCtrls g_DbgCtrl;
+extern DBGCTRL_S g_DbgCtrl;
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/
-//void DbgCtrl_periodic(DbgCtrls *dbgctrl_arg);
-void DbgCtrl_periodic(DbgCtrls *dbgctrl_arg, MotorControl* const motorCtrl);
-void DbgCtrl_init(DbgCtrls *dbgctrl_arg);
+//void DbgCtrl_periodic(DBGCTRL_S *dbgArg);
+void DbgCtrl_periodic(DBGCTRL_S *dbgArg, MOTORCTRL_S* const motorCtrl);
+void DbgCtrl_init(DBGCTRL_S *dbgArg);
 /******************************************************************************/
 /*---------------------Inline Function Implementations------------------------*/
 /******************************************************************************/

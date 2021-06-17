@@ -55,7 +55,7 @@
 /******************************************************************************/
 /*-------------------------Function Implementations---------------------------*/
 /******************************************************************************/
-void PmsmFoc_initHardware(MotorControl* const motorCtrl)
+void PmsmFoc_initHardware(MOTORCTRL_S* const motorCtrl)
 {
 	/* Initialize SPI interfaces */
 	PmsmFoc_Qspi_init();

@@ -96,7 +96,7 @@ extern Adc_Evadc adcEvadc;
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Evadc_initEvadc(Inverter * const inverter);
+IFX_EXTERN void PmsmFoc_Evadc_initEvadc(INVERTER_S * const inverter);
 
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/

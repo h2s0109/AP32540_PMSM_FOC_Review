@@ -55,7 +55,7 @@ Ifx_LowPassPt1F32      lowPassFilter;
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
 
-void PmsmFoc_PositionAcquisition_init(PositionAcquisition* positionAcquisition, PositionAcquisition_SensorType sensorType)
+void PmsmFoc_PositionAcquisition_init(POSACQUIRE_S* positionAcquisition, POSACQUIRE_SENSORTYPE_E sensorType)
 {
 	positionAcquisition->statusOk = TRUE;
     switch(sensorType)
@@ -93,7 +93,7 @@ void PmsmFoc_PositionAcquisition_init(PositionAcquisition* positionAcquisition, 
     }
 }
 
-sint32 PmsmFoc_PositionAcquisition_updatePosition(PositionAcquisition* positionAcquisition)
+sint32 PmsmFoc_PositionAcquisition_updatePosition(POSACQUIRE_S* positionAcquisition)
 {
 	sint32 position = 0;
 	switch(positionAcquisition->sensorType)
@@ -135,7 +135,7 @@ sint32 PmsmFoc_PositionAcquisition_updatePosition(PositionAcquisition* positionA
 	return(position);
 }
 
-float32 PmsmFoc_PositionAcquisition_updateSpeed(PositionAcquisition* positionAcquisition)
+float32 PmsmFoc_PositionAcquisition_updateSpeed(POSACQUIRE_S* positionAcquisition)
 {
 	float32 speed = 0.0f;
 	switch(positionAcquisition->sensorType)

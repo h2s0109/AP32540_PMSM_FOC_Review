@@ -78,7 +78,7 @@
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Gtm_initGtm(Inverter* const inverter);
+IFX_EXTERN void PmsmFoc_Gtm_initGtm(INVERTER_S * const inverter);
 /** /brief
  *
  * /param inverter Reference to structure that contains instance data members
@@ -87,7 +87,7 @@ IFX_EXTERN void PmsmFoc_Gtm_initGtm(Inverter* const inverter);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Gtm_initTom(Inverter* const inverter);
+IFX_EXTERN void PmsmFoc_Gtm_initTom(INVERTER_S * const inverter);
 /** /brief
  *
  * /param inverter Reference to structure that contains instance data members
@@ -96,7 +96,7 @@ IFX_EXTERN void PmsmFoc_Gtm_initTom(Inverter* const inverter);
  * /see
  * /ingroup
  */
-IFX_EXTERN void PmsmFoc_Gtm_initAtom(Inverter* const inverter);
+IFX_EXTERN void PmsmFoc_Gtm_initAtom(INVERTER_S * const inverter);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

@@ -56,17 +56,20 @@
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
 
-void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl)
+void PmsmFoc_Interface_startMotor(MOTORCTRL_S* const motorCtrl)
 {
 	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
-	{
+	{	
+		uint16 angleback;
+		angleback = MODULE_GPT120.T3.B.T3;
+
 		/* Check the Calibration state */
-		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &
-				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done))
+		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &&
+(motorCtrl->positionSensor.encoder.calibrationStatus == ENC_CAL_DONE)&&!(angleback&0xf000))
 		{
 			motorCtrl->interface.CurrnetIfMode = RUNNING_MODE;
-			motorCtrl->controlParameters.state = StateMachine_focClosedLoop;
-			PmsmFoc_SpeedControl_enable(&motorCtrl->pmsmFoc.speedControl);
+			motorCtrl->CtrlParms.state = STATE_focClosedLoop;
+			PmsmFoc_speedcontrol_enable(&motorCtrl->pmsmFoc.speedControl);
 			PmsmFoc_Interface_setStartTargetSpeed(motorCtrl);
 			PmsmFoc_Gatedriver_Enable();
 		}
@@ -77,12 +80,12 @@ void PmsmFoc_Interface_startMotor(MotorControl* const motorCtrl)
 	}
 }
 
-void PmsmFoc_Interface_calMotor(MotorControl* const motorCtrl)
+void PmsmFoc_Interface_calMotor(MOTORCTRL_S* const motorCtrl)
 {
 	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
 	{
 		motorCtrl->interface.CurrnetIfMode = CAL_MODE;
-		motorCtrl->controlParameters.state = StateMachine_PhaseCalibration;
+		motorCtrl->CtrlParms.state = STATE_PhaseCalibration;
 		PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(&motorCtrl->inverter.phaseCurrentSense);
 	#if(POSITION_SENSOR_TYPE == ENCODER)
 		PmsmFoc_PositionAcquisition_init(&motorCtrl->positionSensor, PositionAcquisition_SensorType_Encoder);
@@ -91,12 +94,12 @@ void PmsmFoc_Interface_calMotor(MotorControl* const motorCtrl)
 	#else
 		/* For other position sensor */
 	#endif
-		PmsmFoc_SpeedControl_disable(&motorCtrl->pmsmFoc.speedControl);
+		PmsmFoc_speedcontrol_disable(&motorCtrl->pmsmFoc.speedControl);
 		PmsmFoc_Gatedriver_Enable();
 	}
 }
 
-void PmsmFoc_Interface_stopMotor(MotorControl* motorCtrl)
+void PmsmFoc_Interface_stopMotor(MOTORCTRL_S* motorCtrl)
 {
 	if((motorCtrl->interface.CurrnetIfMode == RUNNING_MODE)||(motorCtrl->interface.CurrnetIfMode == DEMO_MODE))
 	{
@@ -111,31 +114,44 @@ void PmsmFoc_Interface_stopMotor(MotorControl* motorCtrl)
 		/* measSpeed returns the wrong value even motor stopped */
 		motorCtrl->positionSensor.encoder.incrEncoder.speedFilterEnabled = 0;
 		#endif
+		uint16 angleback;
+		angleback = MODULE_GPT120.T3.B.T3;
+		if(angleback&0xf000)
+		{
+			motorCtrl->interface.CurrnetIfMode = STOP_MODE;
+			PmsmFoc_Interface_calMotor(motorCtrl);
+		}
 	}
 	else if(motorCtrl->pmsmFoc.speedControl.measSpeed == 0 && motorCtrl->interface.CurrnetIfMode == STOPPING_MODE)
 	{
 		motorCtrl->interface.CurrnetIfMode = STOP_MODE;
-		motorCtrl->controlParameters.state = StateMachine_motorStop;
+		motorCtrl->CtrlParms.state = STATE_motorStop;
 		Ifx_RampF32_setSlewRate(&motorCtrl->pmsmFoc.speedRamp,USER_MOTOR_SPEED_RAMP_SLEW_RATE,USER_MOTOR_SPEED_RAMP_PERIOD);
 		PmsmFoc_Gatedriver_Disable();
 		#if(POSITION_SENSOR_TYPE == ENCODER)
 		motorCtrl->positionSensor.encoder.incrEncoder.speedFilterEnabled = 1;
 		#endif
+		uint16 angleback;
+		angleback = MODULE_GPT120.T3.B.T3;
+		if(angleback&0xf000)
+		{
+			PmsmFoc_Interface_calMotor(motorCtrl);
+		}
 	}
 }
 
-void PmsmFoc_Interface_setDemo(MotorControl* const motorCtrl)
+void PmsmFoc_Interface_setDemo(MOTORCTRL_S* const motorCtrl)
 {
 	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
 	{
 		/* Check the Calibration state */
-		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &
-				(motorCtrl->positionSensor.encoder.calibrationStatus == Encoder_CalibrationStatus_done))
+		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &&
+				(motorCtrl->positionSensor.encoder.calibrationStatus == ENC_CAL_DONE))
 		{
 			motorCtrl->interface.CurrnetIfMode = DEMO_MODE;
-			motorCtrl->controlParameters.state = StateMachine_demo;
+			motorCtrl->CtrlParms.state = STATE_demo;
 			PmsmFoc_Interface_setMotorTargetSpeed(motorCtrl,demospeed[0][0]);
-			PmsmFoc_SpeedControl_enable(&motorCtrl->pmsmFoc.speedControl);
+			PmsmFoc_speedcontrol_enable(&motorCtrl->pmsmFoc.speedControl);
 			PmsmFoc_Gatedriver_Enable();
 		}
 		else
@@ -145,36 +161,36 @@ void PmsmFoc_Interface_setDemo(MotorControl* const motorCtrl)
 	}
 }
 
-void PmsmFoc_Interface_brakeMotor(MotorControl* const motorCtrl)
+void PmsmFoc_Interface_brakeMotor(MOTORCTRL_S* const motorCtrl)
 {
 
 }
 
-void PmsmFoc_Interface_vfOpenLoopRampup(MotorControl* const motorCtrl)
+void PmsmFoc_Interface_vfOpenLoopRampup(MOTORCTRL_S* const motorCtrl)
 {
 
 }
 
-void PmsmFoc_Interface_disableInverter(MotorControl* const motorCtrl)
+void PmsmFoc_Interface_disableInverter(MOTORCTRL_S* const motorCtrl)
 {
 
 }
 
-void PmsmFoc_Interface_enableInverter(MotorControl* const motorCtrl)
+void PmsmFoc_Interface_enableInverter(MOTORCTRL_S* const motorCtrl)
 {
 
 }
 
 
-void PmsmFoc_Interface_geVdcLink(MotorControl* const motorCtrl)
+void PmsmFoc_Interface_geVdcLink(MOTORCTRL_S* const motorCtrl)
 {
 
 }
 
-boolean PmsmFoc_Interface_setMotorTargetSpeed(MotorControl* motorCtrl, float32 motorTargetSpeed)
+boolean PmsmFoc_Interface_setMotorTargetSpeed(MOTORCTRL_S* motorCtrl, float32 motorTargetSpeed)
 {	
-	float32 maxSpeed = PmsmFoc_SpeedControl_getMaxSpeed(&motorCtrl->pmsmFoc.speedControl);
-	float32 minSpeed = PmsmFoc_SpeedControl_getMinSpeed(&motorCtrl->pmsmFoc.speedControl);
+	float32 maxSpeed = PmsmFoc_speedcontrol_getMaxSpeed(&motorCtrl->pmsmFoc.speedControl);
+	float32 minSpeed = PmsmFoc_speedcontrol_getMinSpeed(&motorCtrl->pmsmFoc.speedControl);
 
 	boolean result;
     if ((__absf(motorTargetSpeed)) > (maxSpeed))
@@ -195,13 +211,13 @@ boolean PmsmFoc_Interface_setMotorTargetSpeed(MotorControl* motorCtrl, float32 m
     return result;
 }
 
-boolean PmsmFoc_Interface_PlsMotorTargetSpeed(MotorControl* motorCtrl)
+boolean PmsmFoc_Interface_plsMotorTargetSpeed(MOTORCTRL_S* motorCtrl)
 {	
 	boolean result = FALSE;
 	if(motorCtrl->interface.CurrnetIfMode == RUNNING_MODE)
 	{
-		float32 maxSpeed = PmsmFoc_SpeedControl_getMaxSpeed(&motorCtrl->pmsmFoc.speedControl);
-		float32	refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
+		float32 maxSpeed = PmsmFoc_speedcontrol_getMaxSpeed(&motorCtrl->pmsmFoc.speedControl);
+		float32	refSpeed = PmsmFoc_speedcontrol_getRefSpeed(&g_motorCtrl.pmsmFoc.speedControl);
 		float32 motorTargetSpeed;
 		motorTargetSpeed = refSpeed +100.0f;
 
@@ -219,13 +235,13 @@ boolean PmsmFoc_Interface_PlsMotorTargetSpeed(MotorControl* motorCtrl)
     return result;
 }
 
-boolean PmsmFoc_Interface_MnsMotorTargetSpeed(MotorControl* motorCtrl)
+boolean PmsmFoc_Interface_mnsMotorTargetSpeed(MOTORCTRL_S* motorCtrl)
 {	
 	boolean result = FALSE;
 	if(motorCtrl->interface.CurrnetIfMode == RUNNING_MODE)
 	{
-		float32 minSpeed = PmsmFoc_SpeedControl_getMinSpeed(&motorCtrl->pmsmFoc.speedControl);
-		float32	refSpeed = PmsmFoc_SpeedControl_getRefSpeed(&g_motorControl.pmsmFoc.speedControl);
+		float32 minSpeed = PmsmFoc_speedcontrol_getMinSpeed(&motorCtrl->pmsmFoc.speedControl);
+		float32	refSpeed = PmsmFoc_speedcontrol_getRefSpeed(&g_motorCtrl.pmsmFoc.speedControl);
 		float32 motorTargetSpeed;
 		motorTargetSpeed = refSpeed - 100.0f;
 
@@ -243,16 +259,16 @@ boolean PmsmFoc_Interface_MnsMotorTargetSpeed(MotorControl* motorCtrl)
     return result;
 }
 
-boolean PmsmFoc_Interface_setStartTargetSpeed(MotorControl* motorCtrl)
+boolean PmsmFoc_Interface_setStartTargetSpeed(MOTORCTRL_S* motorCtrl)
 {	
-	float32 minSpeed = PmsmFoc_SpeedControl_getMinSpeed(&motorCtrl->pmsmFoc.speedControl);
+	float32 minSpeed = PmsmFoc_speedcontrol_getMinSpeed(&motorCtrl->pmsmFoc.speedControl);
 	boolean result;
 	motorCtrl->interface.motorTargetSpeed = minSpeed;
 	result = TRUE;
     return result;
 }
 
-boolean PmsmFoc_Interface_setStopMotorTargetSpeed(MotorControl* motorCtrl)
+boolean PmsmFoc_Interface_setStopMotorTargetSpeed(MOTORCTRL_S* motorCtrl)
 {
     boolean result;
 	motorCtrl->interface.motorTargetSpeed = 0;

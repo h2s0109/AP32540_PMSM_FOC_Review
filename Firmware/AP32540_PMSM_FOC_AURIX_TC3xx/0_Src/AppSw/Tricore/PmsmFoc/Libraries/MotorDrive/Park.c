@@ -80,7 +80,9 @@
 CplxStdReal Park(CplxStdReal *mab, CplxStdReal *cosSin)
 {
 	CplxStdReal result;
+    /* directAxis */
 	result.real = __maddms_rSR_iSR_iSR_iSR_iSR(mab->real, cosSin->real, mab->imag, cosSin->imag);
+    /* quadratureAxis */
     result.imag = __msubms_rSR_iSR_iSR_iSR_iSR(mab->imag, cosSin->real, mab->real, cosSin->imag);
     return result;
 }
@@ -117,7 +119,11 @@ CplxStdReal Park(CplxStdReal *mab, CplxStdReal *cosSin)
 CplxStdReal Park_Reverse(CplxStdReal *mdq, CplxStdReal *cosSin)
 {
 	CplxStdReal result;
+    /* alphaAxis */
+    /* d * cosAngle - q * sineAngle */
     result.real = __msubms_rSR_iSR_iSR_iSR_iSR(mdq->real, cosSin->real, mdq->imag, cosSin->imag);
+    /* betaAxis */
+    /* d * sineAngle + q * cosAngle */
 	result.imag = __maddms_rSR_iSR_iSR_iSR_iSR(mdq->real, cosSin->imag, mdq->imag, cosSin->real);
     return result;
 }

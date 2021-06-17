@@ -67,34 +67,71 @@
 #if(1)
 uint8 SpaceVectorModulation(CplxStdReal m, Ifx_TimerValue period, Ifx_TimerValue *  tOn)
 {
+    /* 
+    m.real = α
+    m.imag = β
+    */
     uint8 sector;
     StdReal x;
     Ifx_TimerValue tk, tk1;
     Ifx_TimerValue ts, tm, tb;
     Ifx_TimerValue halfPeriod;
-
-    // determination of the sector
+    /* determination of the sector */
     x = __mul_rSR_iSR_iSR(m.imag, (float32)OneOverSqrt3_SR);
+    /*  Voltage across  β axis > 0 */
     if (m.imag > 0)
-    {   // m.imag>0
+    {   
+        /*  Voltage across  α axis > 0 */
         if (m.real > 0)
         {   // Quadrant 1
-            if (x < m.real) {sector=0;} else    {sector=1;}
+            /* Check β > Sqrt(3)α */
+            if (x < m.real)
+            {
+                sector=0;
+            } 
+            else
+            {
+                sector=1;
+            }
         }
         else
         {   // Quadrant 2
-            if (x < __negs_rSR_iSR(m.real)) {sector=2;} else    {sector=1;}
+            /* Check β > -Sqrt(3)α */
+            if (x < __negs_rSR_iSR(m.real))
+            {
+                sector=2;
+            } else
+            {
+                sector=1;
+            }
         }
     }
     else
-    {   // m.imag<0
+    {   
+        /*  Voltage across  α axis < 0 */
         if (m.real < 0)
         {   // Quadrant 3
-            if (x < m.real) {sector=4;} else    {sector=3;}
+            /* Check β > Sqrt(3)α */
+            if (x < m.real) 
+            {
+                sector=4;
+            } 
+            else    
+            {
+                sector=3;
+            }
         }
         else
         {   // Quadrant 4
-            if (x < __negs_rSR_iSR(m.real)) {sector=4;} else    {sector=5;}
+            /* Check β > -Sqrt(3)α */
+            if (x < __negs_rSR_iSR(m.real))
+            {
+                sector=4;
+            }
+            else
+            {
+                sector=5;
+            }
         }
     }
     // Sector range is the Sector number minus 1 (from 0 to 5)

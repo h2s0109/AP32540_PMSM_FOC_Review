@@ -172,7 +172,7 @@ static __attribute__((__noreturn__)) void periodicExternalControlTask(void *arg)
 			#endif /* End of TFT_DISPLAYMODE */
 			#if(DBGCTRLMODE == ENABLED)
 			//DbgCtrl_periodic (&g_DbgCtrl);
-			DbgCtrl_periodic(&g_DbgCtrl, &g_motorControl);
+			DbgCtrl_periodic(&g_DbgCtrl, &g_motorCtrl);
 			#endif
 
 			/******************************************************************
@@ -201,7 +201,7 @@ static __attribute__((__noreturn__)) void periodicSpeedControlTask(void *arg)
 			 *                      SPEED CONTROL Task START                  *
 			 ******************************************************************/
 			/* Call user tasks here */
-			PmsmFoc_SpeedControl_do(&g_motorControl.pmsmFoc.speedControl);
+			PmsmFoc_speedcontrol_do(&g_motorCtrl.pmsmFoc.speedControl);
 			/******************************************************************
 			 *                       SPEED CONTROL Task END                   *
 			 ******************************************************************/
@@ -229,30 +229,30 @@ static __attribute__((__noreturn__)) void periodicSpeedRefRampTimeTask(void *arg
 			 *                   SPEED REFERENCE RAMP Task START              *
 			 ******************************************************************/
 			/* Call user tasks here */
-			if (g_motorControl.pmsmFoc.speedControl.enabled == TRUE)
+			if (g_motorCtrl.pmsmFoc.speedControl.enabled == TRUE)
 			{
 				/* set ik - target*/
-				PmsmFoc_setSpeedRefLinearRamp(&g_motorControl.pmsmFoc,
-						g_motorControl.interface.motorTargetSpeed);
+				PmsmFoc_setSpeedRefLinearRamp(&g_motorCtrl.pmsmFoc,
+						g_motorCtrl.interface.motorTargetSpeed);
 			}
 			else
 			{
-				PmsmFoc_setSpeedRefLinearRamp(&g_motorControl.pmsmFoc, 0);
+				PmsmFoc_setSpeedRefLinearRamp(&g_motorCtrl.pmsmFoc, 0);
 			}
 				/* calc uk - ref*/
-				PmsmFoc_doSpeedRefLinearRamp(&g_motorControl.pmsmFoc);
+				PmsmFoc_doSpeedRefLinearRamp(&g_motorCtrl.pmsmFoc);
 				/* get uk */
-				refSpeed = PmsmFoc_getSpeedRefLinearRamp(&g_motorControl.pmsmFoc);
+				refSpeed = PmsmFoc_getSpeedRefLinearRamp(&g_motorCtrl.pmsmFoc);
 			
-			if(g_motorControl.interface.CurrnetIfMode == RUNNING_MODE)
+			if(g_motorCtrl.interface.CurrnetIfMode == RUNNING_MODE)
 			{
 				/* set Ref */
-				PmsmFoc_SpeedControl_setRefSpeed(&g_motorControl.pmsmFoc.speedControl, refSpeed);
+				PmsmFoc_speedcontrol_setRefSpeed(&g_motorCtrl.pmsmFoc.speedControl, refSpeed);
 			}
 			else
 			{
 				/* set Ref */
-				PmsmFoc_SpeedControl_setStopRefSpeed(&g_motorControl.pmsmFoc.speedControl, refSpeed);
+				PmsmFoc_speedcontrol_setStopRefSpeed(&g_motorCtrl.pmsmFoc.speedControl, refSpeed);
 			}
 			/******************************************************************
 			 *                SPEED REFERENCE RAMP Task END                   *
@@ -280,17 +280,17 @@ static __attribute__((__noreturn__)) void periodicCurrentRampTimeTask(void *arg)
 			 *             CURRENT REFERENCE RAMP Task START                  *
 			 ******************************************************************/
 			/* Call user tasks here */
-			if (g_motorControl.controlParameters.controlScheme == ControlScheme_current)
+			if (g_motorCtrl.CtrlParms.controlScheme == ControlScheme_current)
 			{
 				CplxStdReal tempIdq ={0.0, 0.0};
 
-				if(g_motorControl.interface.CurrnetIfMode == RUNNING_MODE)
+				if(g_motorCtrl.interface.CurrnetIfMode == RUNNING_MODE)
 				{
-					tempIdq.real = g_motorControl.pmsmFoc.idqRefExternal.real;
-					tempIdq.imag = g_motorControl.pmsmFoc.idqRefExternal.imag;
+					tempIdq.real = g_motorCtrl.pmsmFoc.idqRefExternal.real;
+					tempIdq.imag = g_motorCtrl.pmsmFoc.idqRefExternal.imag;
 				}
-				PmsmFoc_setCurrentRefLinearRamp(&g_motorControl.pmsmFoc,tempIdq);
-				PmsmFoc_doCurrentRefLinearRamp(&g_motorControl.pmsmFoc);
+				PmsmFoc_setCurrentRefLinearRamp(&g_motorCtrl.pmsmFoc,tempIdq);
+				PmsmFoc_doCurrentRefLinearRamp(&g_motorCtrl.pmsmFoc);
 			}
 
 			/******************************************************************
@@ -329,7 +329,13 @@ static __attribute__((__noreturn__)) void periodicOneEyeBufferCopyTask(void *arg
 #endif /* End of ONE_EYEMODE*/
 
 volatile uint32 miscCount= 0UL;
-
+uint8 select;
+uint32 senddat[5] ={0x80BA02,0,0,0,0} ;
+/* 0xA39706 */ /* 7 */
+/* 0xA39805 */ /* 8 */
+/* 0xA39F00 */ /* F Max */
+uint32 calbit =0;
+#include "TLE9180.h"
 static __attribute__((__noreturn__)) void periodicMiscTask(void *arg)
 {
 	TickType_t xLastWakeTime;
@@ -341,12 +347,39 @@ static __attribute__((__noreturn__)) void periodicMiscTask(void *arg)
 		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_MISC_TASK_PERIOD_MS));
 		miscCount++;
 		{
+			#if 0
+			if (calbit == 1)
+			{
+				IfxTLE9180_read_write(senddat, 2);
+
+			}
+					if (calbit == 2)
+				{
+					uint32 senddat2[5];
+					uint32 num;
+					uint32 testss;
+					num =2;
+					senddat2[0] = 0x80BA02;
+					senddat2[1] = 0xA4E001;
+					IfxTLE9180_read_write(senddat2, num);
+
+
+					senddat2[0] = 0x240003;
+					IfxTLE9180_read_write(senddat2, 1);
+					testss = g_Qspi_TLE9180_Cpu.qspiBuffer.spiRxBuffer[1].B.DATA;
+					while (testss!=0x07)
+					{
+					IfxTLE9180_read_write(senddat2, 1);
+					testss = g_Qspi_TLE9180_Cpu.qspiBuffer.spiRxBuffer[1].B.DATA;
+					}
+				}
+			#endif
 			Display_update_timeElapsed();
 			/******************************************************************
 			 *                         MISC Task START                       *
 			 ******************************************************************/
 			#if(TFT_DISPLAYMODE == ENABLED)
-			if((g_motorControl.interface.CurrnetIfMode == STOPPING_MODE) && (touch_event.userctrl == TRUE))
+			if((g_motorCtrl.interface.CurrnetIfMode == STOPPING_MODE) && (touch_event.userctrl == TRUE))
 			{
 				Display_stopping();
 			}

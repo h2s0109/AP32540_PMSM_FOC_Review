@@ -94,7 +94,7 @@
  * /see
  * /ingroup
  */
-IFX_INLINE void PmsmFoc_Evadc_initDcLinkVoltageSenseChannels(Inverter * const inverter)
+IFX_INLINE void PmsmFoc_Evadc_initDcLinkVoltageSenseChannels(INVERTER_S * const inverter)
 {
     IfxEvadc_Adc_ChannelConfig adcChConfig;
 

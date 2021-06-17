@@ -68,7 +68,7 @@
  */
 IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 {
-	PmsmFoc_StateMacine_doControlLoop(&g_motorControl);
+	PmsmFoc_StateMacine_doControlLoop(&g_motorCtrl);
 #if(ONE_EYEMODE == ENABLED)
 	OneEye_osciStep();
 #endif /* End of ONE_EYEMODE*/
@@ -82,7 +82,7 @@ IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 	/* STEVE:INTERRUPT_PRIORITY_EVADC_HSCUR is not used */
 	IFX_INTERRUPT(PmsmFoc_Evadc_CurrentDCLinkSenseHs_Isr, 0, INTERRUPT_PRIORITY_EVADC_HSCUR)
 	{
-		PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(&g_motorControl.inverter.highSideCurrentSense);
+		PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(&g_motorCtrl.inverter.highSideCurrentSense);
 	}
 	#endif
 	#if(BEMF_MEASUREMENT == ENABLED)
@@ -92,7 +92,7 @@ IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 
 	IFX_INTERRUPT(PmsmFoc_Evadc_BemfVoltageSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_VBEMF)
 	{
-		PmsmFoc_BemfVoltageSense_getValue(&g_motorControl.inverter.bemfVoltageSense);
+		PmsmFoc_BemfVoltageSense_getValue(&g_motorCtrl.inverter.bemfVoltageSense);
 	}
 	#endif
 	#if(DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
@@ -101,7 +101,7 @@ IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 	 */
 	IFX_INTERRUPT(PmsmFoc_Evadc_DcLinkVoltageSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_VDCL)
 	{
-		PmsmFoc_DcLinkVoltageSense_getValue(&g_motorControl.inverter.dcLinkVoltageSense);
+		PmsmFoc_DcLinkVoltageSense_getValue(&g_motorCtrl.inverter.dcLinkVoltageSense);
 	}
 	#endif
 #endif /* End of (INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1) */
@@ -112,7 +112,7 @@ IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
  */
 IFX_INTERRUPT(PmsmFoc_Gpt12_Encoder_TzIsr, 0, INTERRUPT_PRIORITY_ENCODER_GPT12)
 {
-	IfxGpt12_IncrEnc_onZeroIrq(&g_motorControl.positionSensor.encoder.incrEncoder);
+	IfxGpt12_IncrEnc_onZeroIrq(&g_motorCtrl.positionSensor.encoder.incrEncoder);
 }
 #endif
 #if(TLF35584_DRIVER == ENABLED)

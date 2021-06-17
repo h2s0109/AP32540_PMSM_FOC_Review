@@ -72,7 +72,7 @@
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
-MotorControl g_motorControl;		/* Motor control structure  			  */
+MOTORCTRL_S g_motorCtrl;		/* Motor control structure  			  */
 float32 demospeed[8][8] = {{4000,500},{6000,2000},{3000,500},{200,1000},{6000,2000},{3000,2000},{5000,300},{2000,500}};
 uint8 scenarioCnt = 0;
 IFX_ALIGN(4)
@@ -95,8 +95,8 @@ void core0_main (void)
     IfxCpu_waitEvent(&cpuSyncEvent, 1);
 
 	/* Initialize motor control */
-    /* Go to StateMachine_PhaseCalibration */
-	PmsmFoc_initMotorControl(&g_motorControl);
+    /* Go toSTATE_PhaseCalibration */
+	PmsmFoc_initMotorControl(&g_motorCtrl);
 
 #if(TFT_DISPLAYMODE == ENABLED)
 	/* Initialize display */
@@ -109,7 +109,8 @@ void core0_main (void)
 #if(DBGCTRLMODE == ENABLED)
     DbgCtrl_init(&g_DbgCtrl);
 #endif
-
+    P02_IOCR0.B.PC3 = 0x10;
+    P02_OMCR.B.PCL3 = 0x1;
 	/* Initialize operating system tasks */
 	extern void OS_Tasks_init(void);
 	OS_Tasks_init();

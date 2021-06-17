@@ -73,10 +73,10 @@ static void DataStreaming_sendData(DataStreaming* dataStreaming)
 			dataStreaming->_bbClientMessagePayloadTx,
             sizeof(DataStreaming_Data_0)))
     {
-        m->refSpeed = g_motorControl.pmsmFoc.speedControl.refSpeed;
-        m->measSpeed = g_motorControl.pmsmFoc.speedControl.measSpeed;
-        m->idRef = g_motorControl.pmsmFoc.idqRef.imag;
-        m->idMeas = g_motorControl.pmsmFoc.idqMeas.imag;
+        m->refSpeed = g_motorCtrl.pmsmFoc.speedControl.refSpeed;
+        m->measSpeed = g_motorCtrl.pmsmFoc.speedControl.measSpeed;
+        m->idRef = g_motorCtrl.pmsmFoc.idqRef.imag;
+        m->idMeas = g_motorCtrl.pmsmFoc.idqMeas.imag;
         SyncProtocol_sendMessage(&dataStreaming->_bbClient);
     }
 }
