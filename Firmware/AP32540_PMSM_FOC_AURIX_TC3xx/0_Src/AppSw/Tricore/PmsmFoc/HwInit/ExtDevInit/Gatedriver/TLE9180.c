@@ -413,9 +413,9 @@ void IfxTLE9180_initSpi(void)
  */
 
 
-    #if 0
-    uint8 test;
-    #endif
+#if 0
+uint8 test;
+#endif
 boolean IfxTLE9180_init(IfxTLE9180_Pins *tle9180PinCtrl)
 {
     /* Initialize time constants for Time functions, see bsp.c */

@@ -75,29 +75,20 @@
 
 /** \brief Define the speed point when switching from one to another position sensing method value. */
 #define USER_MOTOR_SPEED_PULSE_COUNTING_RPM         (1200.0f)
-/** \brief Define the initial incremental encoder offset value. */
-#define USER_MOTOR_ENCODER_OFFSET					(-855)
 /** \brief Define the incremental encoder pulses per revolution value.*/
 /* WEDL5541-B14-KIT */
 #define USER_MOTOR_ENCODER_PULSES_PER_REVOLUTION	(1000U)
 #define USER_MOTOR_ENCODER_FOLD						(4U)
-#define USER_MOTOR_ENCODER_TOTALCNT					USER_MOTOR_ENCODER_PULSES_PER_REVOLUTION*USER_MOTOR_ENCODER_FOLD
-#define USER_MOTOR_ENCODER_GPT_BACK_TOTALCNT 		(65535U)
-#define USER_MOTOR_ENCODER_GPT_FOWARD_TOTALCNT 		USER_MOTOR_ENCODER_TOTALCNT-1
 
 #define USER_MOTOR_ENCODER_CAL_TOP_ZERO_AMPL_DELTA	(0.0005f)
 #define USER_MOTOR_ENCODER_CAL_TOP_ZERO_AMPL_MAX	(0.05f)
-#define USER_MOTOR_ENCODER_CAL_TOP_ZERO_ANGLE_DELTA	(45000U)
-#define USER_MOTOR_ENCODER_CAL_TOP_ZERO_COUNTS		(1000U)
-#define USER_MOTOR_ENCODER_CAL_TOP_ZERO_FOWARD_COUNTS USER_MOTOR_ENCODER_TOTALCNT/USER_MOTOR_POLE_PAIR
 
 #define USER_MOTOR_ENCODER_CAL_OFFSET_AMPL_DELTA	(0.00025f)
 #define USER_MOTOR_ENCODER_CAL_OFFSET_AMPL_MAX		(0.1f)
-#define USER_MOTOR_ENCODER_CAL_OFFSET_ANGLE_DELTA	(1000U)
 #define USER_MOTOR_ENCODER_CAL_OFFSET_COUNTS		(1000U)
 
 /** \brief Define the incremental encoder maximum speed value. */
-#define USER_MOTOR_ENCODER_MAX_RPM			        (6000.0f)
+#define USER_MOTOR_ENCODER_MAX_RPM			        (8000.0f)
 
 /** \brief Define the motor min speed limit value. */
 #define USER_MOTOR_SPEED_LOW_LIMIT_RPM              (1.0f)

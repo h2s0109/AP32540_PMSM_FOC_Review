@@ -347,33 +347,6 @@ static __attribute__((__noreturn__)) void periodicMiscTask(void *arg)
 		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_MISC_TASK_PERIOD_MS));
 		miscCount++;
 		{
-			#if 0
-			if (calbit == 1)
-			{
-				IfxTLE9180_read_write(senddat, 2);
-
-			}
-					if (calbit == 2)
-				{
-					uint32 senddat2[5];
-					uint32 num;
-					uint32 testss;
-					num =2;
-					senddat2[0] = 0x80BA02;
-					senddat2[1] = 0xA4E001;
-					IfxTLE9180_read_write(senddat2, num);
-
-
-					senddat2[0] = 0x240003;
-					IfxTLE9180_read_write(senddat2, 1);
-					testss = g_Qspi_TLE9180_Cpu.qspiBuffer.spiRxBuffer[1].B.DATA;
-					while (testss!=0x07)
-					{
-					IfxTLE9180_read_write(senddat2, 1);
-					testss = g_Qspi_TLE9180_Cpu.qspiBuffer.spiRxBuffer[1].B.DATA;
-					}
-				}
-			#endif
 			Display_update_timeElapsed();
 			/******************************************************************
 			 *                         MISC Task START                       *

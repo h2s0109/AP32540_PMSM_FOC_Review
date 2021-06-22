@@ -41,7 +41,7 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_PositionAndSpeedAcquisition.h"
-
+#include "Tables.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -112,7 +112,7 @@ sint32 PmsmFoc_PositionAcquisition_updatePosition(POSACQUIRE_S* positionAcquisit
 			/* calculate the position and speed */
 			IfxGpt12_IncrEnc_update(encoder);
 			rawPosition= IfxGpt12_IncrEnc_getRawPosition(encoder);
-			position= ((rawPosition * (uint32)USER_MOTOR_POLE_PAIR * 0x400U) / encoder->resolution) & 0x3FFU;
+			position= ((rawPosition * (uint32)USER_MOTOR_POLE_PAIR * (uint32)COSSIN_TABLE_SIZE) / encoder->resolution) & (uint32)(COSSIN_TABLE_SIZE-1);
 			break;
 		}
 		case PositionAcquisition_SensorType_Resolver:

@@ -62,67 +62,6 @@ static void DbgCtrl_CalibrateSel(void);
 /******************************************************************************/
 
 /* this functionis called  at periodicDebuggerTask */
-#if 0
-void DbgCtrl_periodic(DBGCTRL_S *dbgArg)
-{
-    if(g_motorCtrl.interface.CurrnetIfMode == STOP_MODE)
-    {
-        switch (dbgArg->Dbg_eUsrMode)
-        {
-/* 2 */ case DBG_START: 
-            DbgCtrl_StartSel();
-            break;
-/* 3 */ case DBG_CAL: 
-            DbgCtrl_CalibrateSel();
-            break;
-/* 6 */ case DBG_DEMO: 
-            DbgCtrl_DemoSel();
-            break;
-        default: 
-            break;
-        }
-        dbgArg->Dbg_eUsrMode  = DBG_READY;
-        dbgArg->Dbg_eCurMode = DBG_STOP;
-    }
-    else if(g_motorCtrl.interface.CurrnetIfMode == RUNNING_MODE)
-    {
-        switch (dbgArg->Dbg_eUsrMode)
-        {
-/* 1 */ case DBG_STOP: 
-            DbgCtrl_StopSel();
-            break;
-/* 4 */ case DBG_SPEEDAPPLY: 
-            DbgCtrl_SpeedSel(dbgArg->Dbg_TargetSpeed);
-            break;
-        default: 
-            break;
-        }
-        dbgArg->Dbg_eUsrMode  = DBG_READY;
-        dbgArg->Dbg_eCurMode = DBG_START;
-    }
-    else if(g_motorCtrl.interface.CurrnetIfMode == CAL_MODE)
-    {
-        dbgArg->Dbg_eUsrMode  = DBG_READY;
-        dbgArg->Dbg_eCurMode = DBG_CAL;
-    }
-    else if(g_motorCtrl.interface.CurrnetIfMode == DEMO_MODE)
-    {
-        if(dbgArg->Dbg_eUsrMode == DBG_STOP)
-        {
-            DbgCtrl_StopSel();            
-        }
-        dbgArg->Dbg_eUsrMode  = DBG_READY;
-        dbgArg->Dbg_eCurMode = DBG_DEMO;
-    }
-    else if(g_motorCtrl.interface.CurrnetIfMode == STOPPING_MODE)
-    {
-        DbgCtrl_StopSel();
-        dbgArg->Dbg_eUsrMode  = DBG_READY;
-        dbgArg->Dbg_eCurMode = DBG_STOPPING;
-    }
-}
-#endif
-#if 1
 void DbgCtrl_periodic(DBGCTRL_S *dbgArg, MOTORCTRL_S* const motorCtrl)
 {
     IFMODE_E CurrnetIfMode = motorCtrl->interface.CurrnetIfMode;
@@ -224,4 +163,3 @@ static void DbgCtrl_DemoSel(void)
 {
     PmsmFoc_Interface_setDemo(&g_motorCtrl);
 }
-#endif /* End of DBGCTRL*/

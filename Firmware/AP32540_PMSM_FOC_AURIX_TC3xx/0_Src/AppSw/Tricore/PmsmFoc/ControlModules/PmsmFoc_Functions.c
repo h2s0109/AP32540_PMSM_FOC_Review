@@ -236,10 +236,8 @@ void PmsmFoc_resetEncoderCalibrationStatus(MOTORCTRL_S* const motorCtrl)
 	motorCtrl->openLoop.amplitude                         = USER_MOTOR_ENCODER_CAL_TOP_ZERO_AMPL_MAX;
 	motorCtrl->openLoop.electricalAngleDelta              = 1;
 	motorCtrl->positionSensor.encoder.encOffsetCalCounter = 0;
-	motorCtrl->positionSensor.encoder.encFwdCnt           = 0;
 }
 
-#if 1
 void PmsmFoc_doEncoderCalibration(MOTORCTRL_S* const motorCtrl)
 {
 #if(EMOTOR_LIB == MC_EMOTOR)
@@ -249,17 +247,13 @@ void PmsmFoc_doEncoderCalibration(MOTORCTRL_S* const motorCtrl)
 
 	if(motorCtrl->positionSensor.encoder.calibrationStatus == ENC_FIND_INDEX)
 	{
-		if(motorCtrl->positionSensor.encoder.incrEncoder.turn == 1 && motorCtrl->positionSensor.encoder.encFwdCnt < USER_MOTOR_ENCODER_CAL_TOP_ZERO_FOWARD_COUNTS)
-		{
-			motorCtrl->positionSensor.encoder.encFwdCnt++;
-		}
-		else if(motorCtrl->positionSensor.encoder.incrEncoder.turn == 1 && motorCtrl->positionSensor.encoder.encFwdCnt == USER_MOTOR_ENCODER_CAL_TOP_ZERO_FOWARD_COUNTS)
+		if(motorCtrl->positionSensor.encoder.incrEncoder.turn == 1)
 		{
 			motorCtrl->positionSensor.encoder.calibrationStatus = ENC_FIND_OFFSET;
 			motorCtrl->openLoop.amplitude               = 0.0;
 			motorCtrl->openLoop.electricalAngle         = 0;
 			motorCtrl->openLoop.electricalAngleDelta    = 0;
-			motorCtrl->positionSensor.encoder.encFwdCnt = 0;
+			return;
 		}
 	#if(EMOTOR_LIB == MC_EMOTOR)
 		/* Update electrical angle and calculate modulation IndexY0 */
@@ -286,27 +280,15 @@ void PmsmFoc_doEncoderCalibration(MOTORCTRL_S* const motorCtrl)
 		}
 		else
 		{		
-			uint16 angleback;
-			uint16 angleback2;
-			uint16 anglefwd;
-			angleback = MODULE_GPT120.T3.B.T3;
-			if(angleback&0xf000)
-			{
-				angleback2 = USER_MOTOR_ENCODER_GPT_BACK_TOTALCNT - angleback;
-				anglefwd   = USER_MOTOR_ENCODER_GPT_FOWARD_TOTALCNT - angleback2;
-				motorCtrl->positionSensor.encoder.incrEncoder.offset = -anglefwd;
-				MODULE_GPT120.T3.B.T3 = anglefwd;
-				MODULE_GPT120.T3CON.B.T3CHDIR =0;
-			}
-			else
-			{
-				motorCtrl->positionSensor.encoder.incrEncoder.offset =
+			motorCtrl->positionSensor.encoder.incrEncoder.offset =
 					-motorCtrl->positionSensor.encoder.incrEncoder.rawPosition;
-			}
-			motorCtrl->openLoop.amplitude                         = 0.0;
-			motorCtrl->positionSensor.encoder.encOffsetCalCounter = 0;
-			motorCtrl->interface.CurrnetIfMode                    = STOP_MODE;
+			motorCtrl->openLoop.amplitude                         = USER_MOTOR_ENCODER_CAL_TOP_ZERO_AMPL_MAX;
+			motorCtrl->openLoop.electricalAngleDelta              = 1;
 			motorCtrl->positionSensor.encoder.calibrationStatus   = ENC_CAL_DONE;
+			motorCtrl->positionSensor.encoder.encOffsetCalCounter = 0;
+			motorCtrl->positionSensor.encoder.incrEncoder.turn    = 0;
+			motorCtrl->interface.CurrnetIfMode                    = STOP_MODE;
+			return;
 		}
 		#if(EMOTOR_LIB == MC_EMOTOR)
 			cossin = LookUp_CosinusSinus(0);
@@ -319,9 +301,8 @@ void PmsmFoc_doEncoderCalibration(MOTORCTRL_S* const motorCtrl)
 			motorCtrl->positionSensor.encoder.encOffsetCalCounter++;
 	}
 }
-#endif
 
-#if 1
+#if 0
 #define TOTAL_SINE_TABLE_ANGLE                 (2*(float)PI)
 #define TABLE_SIZE                              1024
 /* 0.00613592 */

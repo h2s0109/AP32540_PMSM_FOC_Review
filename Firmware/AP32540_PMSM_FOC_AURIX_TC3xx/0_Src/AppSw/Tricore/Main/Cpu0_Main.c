@@ -109,8 +109,6 @@ void core0_main (void)
 #if(DBGCTRLMODE == ENABLED)
     DbgCtrl_init(&g_DbgCtrl);
 #endif
-    P02_IOCR0.B.PC3 = 0x10;
-    P02_OMCR.B.PCL3 = 0x1;
 	/* Initialize operating system tasks */
 	extern void OS_Tasks_init(void);
 	OS_Tasks_init();

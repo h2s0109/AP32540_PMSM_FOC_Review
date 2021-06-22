@@ -99,47 +99,44 @@ void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
 
 // *INDENT-OFF*
 const TDISPLAYENTRY menulist[] = {
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22, 0, Menue_display, Menue_display, Menue_input,"PMSM_FOC_AURIX_TC3xx"},        //TFT Main Menue
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22, 1, Menue_display, Menue_display, Menue_input,"SW V1.0.2, HW V3.2"},        //TFT Main Menue
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22,  0, Menue_display, Menue_display, 		 	Menue_input,"PMSM_FOC_AURIX_TC3xx"},        //TFT Main Menue
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22,  1, Menue_display, Menue_display, 		 	Menue_input,"SW V1.0.2, HW V3.2"},        //TFT Main Menue
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22,  3, Menue_noAction, Menue_displayTime, 	 	Menue_input,"Time Elapsed 00:00:00"},
+		{DISP_BRN_WHT,	 SLCT_RED_BLUE, 29, 39,  3, Menue_ResetTimeSel, Menue_ResetTime, 	Menue_input,"Reset Time"},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 38,  5, Menue_noAction, Menue_display,       	Menue_input,{0xDA,0xC4, 'S', 't', 'a', 't', 'u', 's',0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1,  6, Menue_noAction, Menue_display,       	Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 2, 17,  6, Menue_noAction, Menue_displaySpeed,  	Menue_input,"Speed: 0 rpm"},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,21, 36,  6, Menue_noAction, Menue_displayPosition,  Menue_input,"Position: 0 deg"},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38,  6, Menue_noAction, Menue_display,          Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1,  7, Menue_noAction, Menue_display,          Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38,  7, Menue_noAction, Menue_display,          Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 2, 17,  8, Menue_noAction, Menue_displayRSpeed,    Menue_input,"Ref  : 0 rpm"},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,21, 38,  8, Menue_noAction, Menue_displayMode,      Menue_input,"State:"},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1,  8, Menue_noAction, Menue_display,          Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38,  8, Menue_noAction, Menue_display,          Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 38,  9, Menue_noAction, Menue_display,          Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 38, 10, Menue_noAction, Menue_display, 			Menue_input,{0xDA,0xC4, 'C', 'o', 'n', 't', 'r', 'o', 'l',0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1, 11, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38, 11, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1, 12, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38, 12, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1, 13, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38, 13, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1, 14, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38, 14, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1, 15, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38, 15, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1, 16, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38, 16, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,  1, 17, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW,38, 38, 17, Menue_noAction, Menue_display, 			Menue_input,{0xB3}},
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 38, 18, Menue_noAction, Menue_display, 			Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
 
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22, 3, Menue_noAction, Menue_displayTime, Menue_input,"Time Elapsed 00:00:00"},
-		{DISP_BRN_WHT, SLCT_RED_BLUE, 29,39, 3, Menue_ResetTimeSel, Menue_ResetTime, Menue_input,"Reset Time"},
-
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,38, 5, Menue_noAction, Menue_display,       Menue_input,{0xDA,0xC4, 'S', 't', 'a', 't', 'u', 's',0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 6, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 2,17, 6, Menue_noAction, Menue_displaySpeed,  Menue_input,"Speed: 0 rpm"},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,21,36, 6, Menue_noAction, Menue_displayPosition, Menue_input,"Position: 0 deg"},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 6, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 7, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 7, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 2,17, 8, Menue_noAction, Menue_displayRSpeed, Menue_input,"Ref  : 0 rpm"},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,21,38, 8, Menue_noAction, Menue_displayMode,   Menue_input,"State:"},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 8, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 8, Menue_noAction, Menue_display,       Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,38, 9, Menue_noAction, Menue_display,       Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
-
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,38, 10, Menue_noAction, Menue_display, Menue_input,{0xDA,0xC4, 'C', 'o', 'n', 't', 'r', 'o', 'l',0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 11, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 11, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 12, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 12, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 13, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 13, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 14, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 14, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 15, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 15, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 16, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 16, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 1, 17, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW,38,38, 17, Menue_noAction, Menue_display, Menue_input,{0xB3}},
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1,38, 18, Menue_noAction, Menue_display, Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
-
-		{DISP_BRN_WHT, SLCT_RED_BLUE, 3,12,11, Menue_CalibrateSel, Menue_display, Menue_input,{0xDA,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
-		{DISP_BRN_WHT, SLCT_RED_BLUE, 3, 3,12, Menue_CalibrateSel, Menue_display, Menue_input,{0xB3}},
-		{DISP_BRN_WHT, SLCT_RED_BLUE, 4,11,12, Menue_CalibrateSel, Menue_display, Menue_input,"  CAL   "},
-		{DISP_BRN_WHT, SLCT_RED_BLUE,12,12,12, Menue_CalibrateSel, Menue_display, Menue_input,{0xB3}},
-		{DISP_BRN_WHT, SLCT_RED_BLUE, 3,12,13, Menue_CalibrateSel, Menue_display, Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
+		{DISP_BRN_WHT, 	 SLCT_RED_BLUE,  3, 12, 11, Menue_CalibrateSel, Menue_display, Menue_input,{0xDA,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
+		{DISP_BRN_WHT, 	 SLCT_RED_BLUE,  3,  3, 12, Menue_CalibrateSel, Menue_display, Menue_input,{0xB3}},
+		{DISP_BRN_WHT, 	 SLCT_RED_BLUE,  4, 11, 12, Menue_CalibrateSel, Menue_display, Menue_input,"  CAL   "},
+		{DISP_BRN_WHT, 	 SLCT_RED_BLUE, 12, 12, 12, Menue_CalibrateSel, Menue_display, Menue_input,{0xB3}},
+		{DISP_BRN_WHT, 	 SLCT_RED_BLUE,  3, 12, 13, Menue_CalibrateSel, Menue_display, Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
 
 		{DISP_BRN_WHT, SLCT_RED_BLUE, 3,12,15, Menue_DemoSel,      Menue_display, Menue_input,{0xDA,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE, 3, 3,16, Menue_DemoSel,      Menue_display, Menue_input,{0xB3}},
@@ -153,20 +150,17 @@ const TDISPLAYENTRY menulist[] = {
 		{DISP_BRN_WHT, SLCT_RED_BLUE,22,24,12, Menue_SpeedPlsSel,  Menue_display, Menue_input,{0x18,0xFF,0xB3}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,14,24,13, Menue_SpeedPlsSel,  Menue_display, Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
 
-
 		{DISP_BRN_WHT, SLCT_RED_BLUE,14,24,15, Menue_SpeedMnsSel,  Menue_display, Menue_input,{0xDA,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,14,14,16, Menue_SpeedMnsSel,  Menue_display, Menue_input,{0xB3}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,15,21,16, Menue_SpeedMnsSel,  Menue_display, Menue_input," SPEED "},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,22,24,16, Menue_SpeedMnsSel,  Menue_display, Menue_input,{0x19,0xFF,0xB3}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,14,24,17, Menue_SpeedMnsSel,  Menue_display, Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
 
-
 		{DISP_BRN_WHT, SLCT_RED_BLUE,26,36,11, Menue_StartSel,     Menue_display, Menue_input,{0xDA,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,26,26,12, Menue_StartSel,     Menue_display, Menue_input,{0xB3}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,27,35,12, Menue_StartSel,     Menue_display, Menue_input,"  START  "},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,36,36,12, Menue_StartSel,     Menue_display, Menue_input,{0xB3}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,26,36,13, Menue_StartSel,     Menue_display, Menue_input,{0xC0,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xD9}},
-
 
 		{DISP_BRN_WHT, SLCT_RED_BLUE,26,36,15, Menue_StopSel,      Menue_display, Menue_input,{0xDA,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
 		{DISP_BRN_WHT, SLCT_RED_BLUE,26,26,16, Menue_StopSel,      Menue_display, Menue_input,{0xB3}},
@@ -256,22 +250,24 @@ void Menue_displaySpeed (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Speed: %4.0f rpm", PmsmFoc_speedcontrol_getSpeed(&g_motorCtrl.pmsmFoc.speedControl));
+	conio_ascii_printfxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Speed: %4.0f rpm", PmsmFoc_speedcontrol_getSpeed(&g_motorCtrl.pmsmFoc.speedControl));
 }
 
 void Menue_displayRSpeed (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Ref  : %4.0f rpm", PmsmFoc_speedcontrol_getRefSpeed(&g_motorCtrl.pmsmFoc.speedControl));
+	conio_ascii_printfxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Ref  : %4.0f rpm", PmsmFoc_speedcontrol_getRefSpeed(&g_motorCtrl.pmsmFoc.speedControl));
 }
 
 void Menue_displayPosition (sint32 ind, TDISPLAYENTRY * pdisplayentry)
 {
-	uint32 angle= (IfxGpt12_IncrEnc_getRawPosition(&g_motorCtrl.positionSensor.encoder.incrEncoder)*4*360/g_motorCtrl.positionSensor.encoder.incrEncoder.resolution)%360;
+	sint32 rawPosition = g_motorCtrl.positionSensor.encoder.incrEncoder.rawPosition;
+	sint32 resolution  = g_motorCtrl.positionSensor.encoder.incrEncoder.resolution;
+	uint32 angle       = (rawPosition*(uint32)USER_MOTOR_POLE_PAIR*360/resolution)%360;
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_select);
 	conio_ascii_textattr (DISPLAYMENU, pdisplayentry->color_display);
-	conio_ascii_printfxy(DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Position: %3d deg", angle);
+	conio_ascii_printfxy (DISPLAYMENU, pdisplayentry->xmin, pdisplayentry->y, (const uint8 *)"Position: %3d deg", angle);
 }
 uint8 currenttime,beforetime;
 void Menue_displayMode (sint32 ind, TDISPLAYENTRY * pdisplayentry)

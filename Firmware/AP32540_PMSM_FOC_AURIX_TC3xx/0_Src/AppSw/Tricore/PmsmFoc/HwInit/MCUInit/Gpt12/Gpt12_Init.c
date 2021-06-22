@@ -77,7 +77,6 @@ void PmsmFoc_Gpt12_initGpt12(IfxGpt12_IncrEnc* gpt12IncrEnc)
 		gpt12Config.base.minSpeed                  = ENCODER_BASE_MIN_SPEED;
 		gpt12Config.base.maxSpeed                  = ENCODER_BASE_MAX_SPEED;
 		gpt12Config.base.speedFilterEnabled 	   = TRUE;
-		//gpt12Config.base.speedFilerCutOffFrequency = 1000;
 
 		/* Configure Handler */
 		gpt12Config.base.updatePeriod              = ENCODER_UPDATE_PERIOD;
@@ -89,8 +88,13 @@ void PmsmFoc_Gpt12_initGpt12(IfxGpt12_IncrEnc* gpt12IncrEnc)
 		gpt12Config.pinB                           = ENCODER_GPT12_PIN_B;
 		gpt12Config.pinZ                           = ENCODER_GPT12_PIN_Z;
 		gpt12Config.pinDriver                      = IfxPort_PadDriver_cmosAutomotiveSpeed3;
-		
+
 		IfxGpt12_IncrEnc_init(gpt12IncrEnc, &gpt12Config);
+
+		sint32 resolution = gpt12IncrEnc->resolution - 1;
+		IfxGpt12_T2_setMode(&MODULE_GPT120,IfxGpt12_Mode_reload);
+		IfxGpt12_T2_setTimerValue(&MODULE_GPT120,resolution);
+		IfxGpt12_T2_setReloadInputMode(&MODULE_GPT120,IfxGpt12_ReloadInputMode_bothEdgesTxOTL);
 	}
 }
 

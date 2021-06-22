@@ -64,7 +64,6 @@
  */
 void Display_initDisplay(void)
 {
-	/* STEVE:disable? enable? */
 	IfxCpu_enableInterrupts();
 	/* Initialize TFT Display */
 	tft_appl_init();

@@ -79,7 +79,6 @@ IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 	/** \brief Interrupt service unit for EVADC, end of EVADC conversion call back
 	 *
 	*/
-	/* STEVE:INTERRUPT_PRIORITY_EVADC_HSCUR is not used */
 	IFX_INTERRUPT(PmsmFoc_Evadc_CurrentDCLinkSenseHs_Isr, 0, INTERRUPT_PRIORITY_EVADC_HSCUR)
 	{
 		PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(&g_motorCtrl.inverter.highSideCurrentSense);

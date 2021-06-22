@@ -59,24 +59,12 @@
 void PmsmFoc_Interface_startMotor(MOTORCTRL_S* const motorCtrl)
 {
 	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
-	{	
-		uint16 angleback;
-		angleback = MODULE_GPT120.T3.B.T3;
-
-		/* Check the Calibration state */
-		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &&
-(motorCtrl->positionSensor.encoder.calibrationStatus == ENC_CAL_DONE)&&!(angleback&0xf000))
-		{
-			motorCtrl->interface.CurrnetIfMode = RUNNING_MODE;
-			motorCtrl->CtrlParms.state = STATE_focClosedLoop;
-			PmsmFoc_speedcontrol_enable(&motorCtrl->pmsmFoc.speedControl);
-			PmsmFoc_Interface_setStartTargetSpeed(motorCtrl);
-			PmsmFoc_Gatedriver_Enable();
-		}
-		else
-		{
-			PmsmFoc_Interface_calMotor(motorCtrl);
-		}
+	{
+		motorCtrl->interface.CurrnetIfMode = RUNNING_MODE;
+		motorCtrl->CtrlParms.state = STATE_focClosedLoop;
+		PmsmFoc_speedcontrol_enable(&motorCtrl->pmsmFoc.speedControl);
+		PmsmFoc_Interface_setStartTargetSpeed(motorCtrl);
+		PmsmFoc_Gatedriver_Enable();
 	}
 }
 
@@ -114,13 +102,6 @@ void PmsmFoc_Interface_stopMotor(MOTORCTRL_S* motorCtrl)
 		/* measSpeed returns the wrong value even motor stopped */
 		motorCtrl->positionSensor.encoder.incrEncoder.speedFilterEnabled = 0;
 		#endif
-		uint16 angleback;
-		angleback = MODULE_GPT120.T3.B.T3;
-		if(angleback&0xf000)
-		{
-			motorCtrl->interface.CurrnetIfMode = STOP_MODE;
-			PmsmFoc_Interface_calMotor(motorCtrl);
-		}
 	}
 	else if(motorCtrl->pmsmFoc.speedControl.measSpeed == 0 && motorCtrl->interface.CurrnetIfMode == STOPPING_MODE)
 	{
@@ -131,12 +112,6 @@ void PmsmFoc_Interface_stopMotor(MOTORCTRL_S* motorCtrl)
 		#if(POSITION_SENSOR_TYPE == ENCODER)
 		motorCtrl->positionSensor.encoder.incrEncoder.speedFilterEnabled = 1;
 		#endif
-		uint16 angleback;
-		angleback = MODULE_GPT120.T3.B.T3;
-		if(angleback&0xf000)
-		{
-			PmsmFoc_Interface_calMotor(motorCtrl);
-		}
 	}
 }
 
@@ -144,20 +119,11 @@ void PmsmFoc_Interface_setDemo(MOTORCTRL_S* const motorCtrl)
 {
 	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
 	{
-		/* Check the Calibration state */
-		if((motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_done) &&
-				(motorCtrl->positionSensor.encoder.calibrationStatus == ENC_CAL_DONE))
-		{
-			motorCtrl->interface.CurrnetIfMode = DEMO_MODE;
-			motorCtrl->CtrlParms.state = STATE_demo;
-			PmsmFoc_Interface_setMotorTargetSpeed(motorCtrl,demospeed[0][0]);
-			PmsmFoc_speedcontrol_enable(&motorCtrl->pmsmFoc.speedControl);
-			PmsmFoc_Gatedriver_Enable();
-		}
-		else
-		{
-			PmsmFoc_Interface_calMotor(motorCtrl);
-		}
+		motorCtrl->interface.CurrnetIfMode = DEMO_MODE;
+		motorCtrl->CtrlParms.state = STATE_demo;
+		PmsmFoc_Interface_setMotorTargetSpeed(motorCtrl,demospeed[0][0]);
+		PmsmFoc_speedcontrol_enable(&motorCtrl->pmsmFoc.speedControl);
+		PmsmFoc_Gatedriver_Enable();
 	}
 }
 

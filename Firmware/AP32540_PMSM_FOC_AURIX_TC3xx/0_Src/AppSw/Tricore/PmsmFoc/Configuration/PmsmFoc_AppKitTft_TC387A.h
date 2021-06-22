@@ -84,10 +84,6 @@
 #define INTERRUPT_PRIORITY_EVADC_VDCL    (99)
 /** \brief Define the EVADC group conversion. */
 #define INTERRUPT_PRIORITY_EVADC_CUR     (100)
-/** \brief Define the OS Ticks INTERRUPT_PRIORITY priority must be lower than QSPIx priorities. */
-/* STEVE:What is the purpose of this priority? */
-#define ISR_PRIORITY_EOSTICKS            (101)
-
 /** \brief Define the ASC0 receive interrupt priority. */
 #define ISR_PRIORITY_ASC0_RX   			 (105)
 /** \brief Define the ASC0 transmit interrupt priority. */
@@ -138,8 +134,6 @@
 #define ENCODER_RESOLUTION      		USER_MOTOR_ENCODER_PULSES_PER_REVOLUTION
 /** \brief Define the encoder fold */
 #define ENCODER_FOLD    		        USER_MOTOR_ENCODER_FOLD
-/** \brief Define the default encoder offset. */
-#define ENCODER_OFFSET					USER_MOTOR_ENCODER_OFFSET
 /** \brief Define the encoder function update period. */
 #define ENCODER_UPDATE_PERIOD           (1/ ((float32)USER_INVERTER_PWM_FREQ_HZ))
 /** \brief Use pulse counting if there is less than user defined counting rpm (1200 rpm). */
@@ -175,7 +169,6 @@
 #define TLE9180_SAFEOFF_PIN				&IfxPort_P33_10
 /* TLE9180 QSPI define */
 /** \brief Define the QSPI slave select pin. */
-/*STEVE: define error TLE9180*/ 
 #define TLE9180_SPI_CS_PIN     			IfxQspi4_SLSO3_P22_2_OUT
 /** \brief Define the QSPI object */
 #define TLE9180_SPI_MODULE              MODULE_QSPI4
