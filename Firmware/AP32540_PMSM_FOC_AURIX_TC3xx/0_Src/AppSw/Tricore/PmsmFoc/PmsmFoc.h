@@ -76,6 +76,12 @@ typedef enum
 
 typedef enum
 {
+	INIT_IN_PRGRESS,
+	INIT_DONE
+}INIT_S;
+
+typedef enum
+{
 	ControlScheme_speed = 0,
 	ControlScheme_current,
 	ControlScheme_torque,
@@ -166,17 +172,17 @@ typedef struct
 
 typedef struct
 {
-	STATEMACHINE_S state; 						/**< \brief Motor state (e.g.: V/f, FOC) */
-	CTRLSCHEME_E controlScheme; 				/**< \brief Control scheme (e.g. speed control, current control) */
-	uint16 rotationDir; 						/**< \brief Rotation direction of motor (rotor angle increasing, or decreasing) */
-	uint16 inverterStatus;						/**< \brief 0 -> Inverter disabled, 1 -> Inverter enabled */
-	uint32 counter;								/**< \brief General purpose counter */
-	uint32 rampCounter; 						/**< \brief General purpose counter, or counter for motor speed ramp up/down. */
-	uint32 alignmentCounter; 					/**< \brief Counter for rotor initial positioning / alignment in V/f */
-	uint32 nonRealTimeCounter; 					/**< \brief Counter for tasks that don't need real-time computing */
-
-	uint32 tuneCurrentRegsCounter; 				/**< \brief  Counter for calibration */
-    boolean tuneCurrentRegs;					/**< \brief 1 = current regulator tuning is enabled. 0 = regulator tuning is disabled. */
+	INIT_S 			initState;
+	STATEMACHINE_S 	state; 						/**< \brief Motor state (e.g.: V/f, FOC) */
+	CTRLSCHEME_E 	controlScheme; 				/**< \brief Control scheme (e.g. speed control, current control) */
+	uint16 			rotationDir; 				/**< \brief Rotation direction of motor (rotor angle increasing, or decreasing) */
+	uint16 			inverterStatus;				/**< \brief 0 -> Inverter disabled, 1 -> Inverter enabled */
+	uint32 			counter;					/**< \brief General purpose counter */
+	uint32 			rampCounter; 				/**< \brief General purpose counter, or counter for motor speed ramp up/down. */
+	uint32 			alignmentCounter; 			/**< \brief Counter for rotor initial positioning / alignment in V/f */
+	uint32 			nonRealTimeCounter; 		/**< \brief Counter for tasks that don't need real-time computing */
+	uint32 			tuneCurrentRegsCounter; 	/**< \brief  Counter for calibration */
+    boolean 		tuneCurrentRegs;			/**< \brief 1 = current regulator tuning is enabled. 0 = regulator tuning is disabled. */
 
 } CTRLPRAMS_S;
 #if 0 
@@ -194,24 +200,29 @@ typedef struct
 #endif
 typedef struct
 {
+	uint8 			scenarioCnt; 				/**< \brief  Counter for calibration */
+    float32 		(*demospeed)[2];			/*demospeed[Scenario][SPEED,SLEWRATE]*/
+} DEMO_S;
+typedef struct
+{
 	INTERFACE_S		interface;				/**< \brief Interface parameters object */
-	CTRLPRAMS_S 	CtrlParms;		/**< \brief Control parameters object */
+	CTRLPRAMS_S 	CtrlParms;				/**< \brief Control parameters object */
 	#if 0
-	Diagnostic			diagnostic;				/**< \brief Diagnostic object */
+	Diagnostic		diagnostic;				/**< \brief Diagnostic object */
 	#endif
-	INVERTER_S   		inverter;				/**< \brief Inverter object */
-	PMSMFOC_S   		pmsmFoc;				/**< \brief FOC object */
-	OPENLOOP_S  			openLoop;     			/**< \brief Open loop object */
-	POSACQUIRE_S		positionSensor;			/**< \brief Position sensor object */
-	MOTROPRAMS_S		motor;					/**< \brief Motor parameters object */
+	INVERTER_S 		inverter;				/**< \brief Inverter object */
+	PMSMFOC_S   	pmsmFoc;				/**< \brief FOC object */
+	OPENLOOP_S  	openLoop;     			/**< \brief Open loop object */
+	POSACQUIRE_S	positionSensor;			/**< \brief Position sensor object */
+	MOTROPRAMS_S	motor;					/**< \brief Motor parameters object */
+	DEMO_S 			democontrol;
 } MOTORCTRL_S;
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 extern MOTORCTRL_S g_motorCtrl;
-extern float32 demospeed[8][8];
-extern uint8 scenarioCnt;
+
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/

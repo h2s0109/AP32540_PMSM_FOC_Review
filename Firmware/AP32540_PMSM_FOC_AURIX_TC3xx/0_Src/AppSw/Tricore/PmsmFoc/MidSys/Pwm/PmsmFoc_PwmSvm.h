@@ -85,6 +85,8 @@
  */
 
 IFX_EXTERN void PmsmFoc_SvmStart(INVERTER_S * const inverter, CplxStdReal modulationIndex);
+
+IFX_EXTERN void PmsmFoc_SvmStop(INVERTER_S * const inverter);
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

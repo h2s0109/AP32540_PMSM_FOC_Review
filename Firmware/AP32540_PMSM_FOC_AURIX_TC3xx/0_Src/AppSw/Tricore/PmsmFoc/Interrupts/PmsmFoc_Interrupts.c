@@ -106,60 +106,60 @@ IFX_INTERRUPT(PmsmFoc_Evadc_PhaseCurSense_Isr, 0, INTERRUPT_PRIORITY_EVADC_CUR)
 #endif /* End of (INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1) */
 
 #if(POSITION_SENSOR_TYPE == ENCODER)
-/** \brief Interrupt service unit for GPT12 Zero position event
- *
- */
-IFX_INTERRUPT(PmsmFoc_Gpt12_Encoder_TzIsr, 0, INTERRUPT_PRIORITY_ENCODER_GPT12)
-{
-	IfxGpt12_IncrEnc_onZeroIrq(&g_motorCtrl.positionSensor.encoder.incrEncoder);
-}
+	/** \brief Interrupt service unit for GPT12 Zero position event
+	 *
+	 */
+	IFX_INTERRUPT(PmsmFoc_Gpt12_Encoder_TzIsr, 0, INTERRUPT_PRIORITY_ENCODER_GPT12)
+	{
+		IfxGpt12_IncrEnc_onZeroIrq(&g_motorCtrl.positionSensor.encoder.incrEncoder);
+	}
 #endif
+
 #if(TLF35584_DRIVER == ENABLED)
-/** \brief Handle tlf_qspi_Tx interrupt.
- *
- * \isrProvider \ref CPU_WHICH_SERVICE_TLF
- * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
- *
- */
-IFX_INTERRUPT(ISR_tlf_qspi_Tx, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_TX)
-{
-    IfxCpu_enableInterrupts();
-#ifdef TLF_USE_DMA
-    IfxQspi_SpiMaster_isrDmaTransmit(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
-#else
-    IfxQspi_SpiMaster_isrTransmit(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
-#endif
+	/** \brief Handle tlf_qspi_Tx interrupt.
+	 *
+	 * \isrProvider \ref CPU_WHICH_SERVICE_TLF
+	 * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
+	 *
+	 */
+	IFX_INTERRUPT(ISR_tlf_qspi_Tx, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_TX)
+	{
+		IfxCpu_enableInterrupts();
+	#ifdef TLF_USE_DMA
+		IfxQspi_SpiMaster_isrDmaTransmit(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
+	#else
+		IfxQspi_SpiMaster_isrTransmit(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
+	#endif
 
-}
+	}
 
+	/** \brief Handle tlf_qspi_Rx interrupt.
+	 *
+	 * \isrProvider \ref CPU_WHICH_SERVICE_TLF
+	 * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
+	 *
+	 */
+	IFX_INTERRUPT(ISR_tlf_qspi_Rx, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_RX)
+	{
+		IfxCpu_enableInterrupts();
+	#ifdef TLF_USE_DMA
+		IfxQspi_SpiMaster_isrDmaReceive(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
+	#else
+		IfxQspi_SpiMaster_isrReceive(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
+	#endif
+	}
 
-/** \brief Handle tlf_qspi_Rx interrupt.
- *
- * \isrProvider \ref CPU_WHICH_SERVICE_TLF
- * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
- *
- */
-IFX_INTERRUPT(ISR_tlf_qspi_Rx, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_RX)
-{
-    IfxCpu_enableInterrupts();
-#ifdef TLF_USE_DMA
-    IfxQspi_SpiMaster_isrDmaReceive(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
-#else
-    IfxQspi_SpiMaster_isrReceive(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
-#endif
-}
-
-/** \brief Handle tlf_qspi_Er interrupt.
- *
- * \isrProvider \ref CPU_WHICH_SERVICE_TLF
- * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
- *
- */
-IFX_INTERRUPT(ISR_tlf_qspi_Er, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_ER)
-{
-    IfxCpu_enableInterrupts();
-    IfxQspi_SpiMaster_isrError(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
-}
+	/** \brief Handle tlf_qspi_Er interrupt.
+	 *
+	 * \isrProvider \ref CPU_WHICH_SERVICE_TLF
+	 * \isrPriority \ref ISR_PRIORITY_TLF_QSPI
+	 *
+	 */
+	IFX_INTERRUPT(ISR_tlf_qspi_Er, CPU_WHICH_SERVICE_TLF, ISR_PRIORITY_TLF_QSPI_ER)
+	{
+		IfxCpu_enableInterrupts();
+		IfxQspi_SpiMaster_isrError(&(g_Qspi_TLF_Cpu.drivers.spiMaster));
+	}
 #endif /* End of TLF35584_DRIVER */
 
 #if(TLE9180_DRIVER == ENABLED)

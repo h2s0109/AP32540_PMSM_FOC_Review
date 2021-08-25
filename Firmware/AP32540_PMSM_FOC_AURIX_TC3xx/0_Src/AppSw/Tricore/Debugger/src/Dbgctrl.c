@@ -52,11 +52,12 @@ DBGCTRL_S g_DbgCtrl;
 /*-------------------------Private Variables/Constants------------------------*/
 /******************************************************************************/
 
-static void DbgCtrl_StopSel(void);
+static void DbgCtrl_CalibrateSel(void);
 static void DbgCtrl_StartSel(void);
+static void DbgCtrl_StopSel(void);
 static void DbgCtrl_SpeedSel(float32 targetspeedArg);
 static void DbgCtrl_DemoSel(void);
-static void DbgCtrl_CalibrateSel(void);
+static void DbgCtrl_OpenloopSel(void);
 /******************************************************************************/
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
@@ -76,8 +77,11 @@ void DbgCtrl_periodic(DBGCTRL_S *dbgArg, MOTORCTRL_S* const motorCtrl)
 /* 3 */ case DBG_CAL: 
             DbgCtrl_CalibrateSel();
             break;
-/* 6 */ case DBG_DEMO: 
+/* 5 */ case DBG_DEMO: 
             DbgCtrl_DemoSel();
+            break;
+/* 6 */ case DBG_OPENLOOP: 
+            DbgCtrl_OpenloopSel();
             break;
         default: 
             break;
@@ -121,7 +125,7 @@ void DbgCtrl_periodic(DBGCTRL_S *dbgArg, MOTORCTRL_S* const motorCtrl)
         break;
     }
 }
-#endif
+
 void DbgCtrl_init(DBGCTRL_S *dbgArg)
 {
     /* Indicate the user select mode */
@@ -130,6 +134,7 @@ void DbgCtrl_init(DBGCTRL_S *dbgArg)
     dbgArg->Dbg_eDispMode[2] = D3_CAL;
     dbgArg->Dbg_eDispMode[3] = D4_SPEEDAPPLY;
     dbgArg->Dbg_eDispMode[4] = D5_DEMO;
+    dbgArg->Dbg_eDispMode[5] = D6_OPENLOOP;
 
     dbgArg->Dbg_eUsrMode    = DBG_READY;
     dbgArg->Dbg_eCurMode    = DBG_READY;
@@ -138,19 +143,19 @@ void DbgCtrl_init(DBGCTRL_S *dbgArg)
 
 static void DbgCtrl_CalibrateSel(void)
 {
-    /* Go toSTATE_PhaseCalibration */
+    /* Go to STATE_PhaseCalibration */
     PmsmFoc_Interface_calMotor(&g_motorCtrl);
 }
 
 static void DbgCtrl_StartSel(void)
 {
-    /* Go toSTATE_focClosedLoop orSTATE_PhaseCalibration */
+    /* Go to STATE_focClosedLoop or STATE_PhaseCalibration */
     PmsmFoc_Interface_startMotor(&g_motorCtrl);
 }
 
 static void DbgCtrl_StopSel(void)
 {
-    /* Go toSTATE_motorStop */
+    /* Go to STATE_motorStop */
     PmsmFoc_Interface_stopMotor(&g_motorCtrl);
 }
 
@@ -161,5 +166,14 @@ static void DbgCtrl_SpeedSel(float32 targetspeedArg)
 
 static void DbgCtrl_DemoSel(void)
 {
+    #if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
     PmsmFoc_Interface_setDemo(&g_motorCtrl);
+    #endif
 }
+
+static void DbgCtrl_OpenloopSel(void)
+{
+    /* Go to STATE_Openloop*/
+    PmsmFoc_Interface_setOpenlooptest(&g_motorCtrl);
+}
+#endif

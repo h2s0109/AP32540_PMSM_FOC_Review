@@ -35,10 +35,13 @@
  *
  */
 
-#ifndef PMSMFOC_TLF35584_INIT_H_
-#define PMSMFOC_TLF35584_INIT_H_
+#ifndef PMSMFOC_POWER_H_
+#define PMSMFOC_POWER_H_
+#include "PmsmFoc_UserConfig.h"
 
-#include "TLF3XX8X.h"
+#if(TLF35584_DRIVER == ENABLED)
+    #include "TLF3XX8X.h"
+#endif /* End of TLF35584_DRIVER */
 /******************************************************************************/
 /*-----------------------------------Macros-----------------------------------*/
 /******************************************************************************/
@@ -58,4 +61,4 @@
 extern void PmsmFoc_Power_Init(void);
 extern void PmsmFoc_Power_InitSpi(void);
 
-#endif /* PMSMFOC_TLF35584_INIT_H_ */
+#endif /* PMSMFOC_POWER_H_ */

@@ -223,12 +223,12 @@ IFX_INLINE boolean PmsmFoc_speedcontrol_setRefSpeed(SPDCTRL_S *speedControl, flo
 IFX_INLINE boolean PmsmFoc_speedcontrol_setStopRefSpeed(SPDCTRL_S *speedControl, float32 speed)
 {
     boolean result;
-    if ((__absf(speed)) > (speedControl->maxSpeed))
+    if (speed > (speedControl->maxSpeed))
     {
         speedControl->refSpeed = speedControl->maxSpeed;
         result = FALSE;
     }
-    else if ((__absf(speed)) < 0)
+    else if (speed< 0)
     {
         speedControl->refSpeed = 0;
         result = FALSE;

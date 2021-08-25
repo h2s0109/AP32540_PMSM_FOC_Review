@@ -92,6 +92,4 @@ void Misc_ModuleDebug_init(void)
     GTM_OCS.U = 0x12000000;
     STM0_OCS.U = 0x12000000;
     STM1_OCS.U = 0x12000000;
-    STM2_OCS.U = 0x12000000;
-    STM3_OCS.U = 0x12000000;
 }

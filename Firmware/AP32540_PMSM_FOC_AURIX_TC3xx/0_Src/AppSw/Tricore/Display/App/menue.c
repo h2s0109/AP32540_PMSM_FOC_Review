@@ -100,7 +100,7 @@ void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pdisplayentry);
 // *INDENT-OFF*
 const TDISPLAYENTRY menulist[] = {
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22,  0, Menue_display, Menue_display, 		 	Menue_input,"PMSM_FOC_AURIX_TC3xx"},        //TFT Main Menue
-		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22,  1, Menue_display, Menue_display, 		 	Menue_input,"SW V1.0.2, HW V3.2"},        //TFT Main Menue
+		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22,  1, Menue_display, Menue_display, 		 	Menue_input,"SW V2.0.0, HW V3.2"},        //TFT Main Menue
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 22,  3, Menue_noAction, Menue_displayTime, 	 	Menue_input,"Time Elapsed 00:00:00"},
 		{DISP_BRN_WHT,	 SLCT_RED_BLUE, 29, 39,  3, Menue_ResetTimeSel, Menue_ResetTime, 	Menue_input,"Reset Time"},
 		{DISP_BLUE_YELW, DISP_BLUE_YELW, 1, 38,  5, Menue_noAction, Menue_display,       	Menue_input,{0xDA,0xC4, 'S', 't', 'a', 't', 'u', 's',0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xC4,0xBF}},
@@ -319,7 +319,7 @@ void Menue_CalibrateSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		/* Go toSTATE_PhaseCalibration */
+		/* Go to STATE_PhaseCalibration */
 		PmsmFoc_Interface_calMotor(&g_motorCtrl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
@@ -332,7 +332,9 @@ void Menue_DemoSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
+		#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 		PmsmFoc_Interface_setDemo(&g_motorCtrl);
+		#endif
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
 }
@@ -368,7 +370,7 @@ void Menue_StartSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
 	if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
 	{
-		/* Go toSTATE_focClosedLoop orSTATE_PhaseCalibration */
+		/* Go to STATE_focClosedLoop orSTATE_PhaseCalibration */
 		PmsmFoc_Interface_startMotor(&g_motorCtrl);
 		touch_driver.touchmode &= ~MASK_TOUCH_UP;   //clear
 	}
@@ -381,7 +383,7 @@ void Menue_StopSel(sint32 ind, TDISPLAYENTRY * pdisplayentry)
 	conio_ascii_cputs (DISPLAYMENU, pdisplayentry->text);
     if ((touch_driver.touchmode & MASK_TOUCH_UP) != 0)
     {
-		/* Go toSTATE_motorStop */
+		/* Go to STATE_motorStop */
 		PmsmFoc_Interface_stopMotor(&g_motorCtrl);
 		if(g_motorCtrl.interface.CurrnetIfMode == STOPPING_MODE)
 		{
@@ -434,7 +436,7 @@ void showmenu (sint16 x, sint16 y, TDISPLAYENTRY * pmenulist)
 void showsdtou0 (void)
 {
   	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 0, (uint8 *)SW_NAME);
-	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 1, (uint8 *)"SW: V1.0.2, HW V3.2");
+	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 1, (uint8 *)"SW: V2.0.0, HW V3.2");
 	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 3, (uint8 *)"Speed Ref [rpm] = %.1f %c\n", g_motorCtrl.pmsmFoc.speedControl.refSpeed);
 	conio_ascii_printfxy (DISPLAYSTDOUT0, 0, 4, (uint8 *)"Speed Meas[rpm] = %.1f %c\n", g_motorCtrl.pmsmFoc.speedControl.measSpeed);
 

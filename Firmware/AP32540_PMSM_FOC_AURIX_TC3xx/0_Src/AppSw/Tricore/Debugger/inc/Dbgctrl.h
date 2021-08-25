@@ -68,6 +68,7 @@ typedef enum
     DBG_CAL,
     DBG_SPEEDAPPLY,
     DBG_DEMO,
+    DBG_OPENLOOP,
     DBG_STOPPING
 } DBG_MODE_E;
 typedef enum
@@ -77,9 +78,10 @@ typedef enum
     D2_START,
     D3_CAL,
     D4_SPEEDAPPLY,
-    D5_DEMO
+    D5_DEMO,
+    D6_OPENLOOP
 } DBG_DISPLAY_E;
-#define DBG_TOTALMODE 5
+#define DBG_TOTALMODE 6
 /******************************************************************************/
 /*-----------------------------Data Structures--------------------------------*/
 /******************************************************************************/

@@ -46,6 +46,7 @@
 /*-----------------------------------Includes---------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
+#if (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
 #include "Evadc_Init.h"
@@ -228,6 +229,5 @@ IFX_INLINE void PmsmFoc_Evadc_initGroup3Queue1(IfxEvadc_Adc_GroupConfig *adcGrou
 {
 	PmsmFoc_Evadc_initGroupXQueue1VoltageSenseDcLink(adcGroupConfig);
 }
-
-
+#endif /* End of (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED) */
 #endif /* EVADC_INITVOLTAGESENSEDCLINK_H_ */

@@ -35,7 +35,6 @@
  *
  */
 #include "PmsmFoc_Power.h"
-#include "PmsmFoc_UserConfig.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -44,23 +43,20 @@
 /*-------------------------Function Implementations---------------------------*/
 /******************************************************************************/
 
-#if(TLF35584_DRIVER == ENABLED)
-/** \brief Initialization for TLF35584
- *
- */
-
 void PmsmFoc_Power_Init(void)
 {
-    /* Disable Window Watchdog and ERR pin */
-    IfxTLF3XX8X_unprotect_register();
-    IfxTLF3XX8X_disable_window_watchdog();
-    IfxTLF3XX8X_disable_err_pin_monitor();
-    IfxTLF3XX8X_protect_register();
-	IfxTLF3XX8X_goto_normal_state();
+    #if(TLF35584_DRIVER == ENABLED)
+        /* Disable Window Watchdog and ERR pin */
+        IfxTLF3XX8X_unprotect_register();
+        IfxTLF3XX8X_disable_window_watchdog();
+        IfxTLF3XX8X_disable_err_pin_monitor();
+        IfxTLF3XX8X_protect_register();
+        IfxTLF3XX8X_goto_normal_state();
+    #endif /* End of TLF35584_DRIVER */
 }
 void PmsmFoc_Power_InitSpi(void)
 {
-    IfxTLF3XX8X_initSpi();
+    #if(TLF35584_DRIVER == ENABLED)
+        IfxTLF3XX8X_initSpi();
+    #endif /* End of TLF35584_DRIVER */
 }
-
-#endif /* End of TLF35584_DRIVER */

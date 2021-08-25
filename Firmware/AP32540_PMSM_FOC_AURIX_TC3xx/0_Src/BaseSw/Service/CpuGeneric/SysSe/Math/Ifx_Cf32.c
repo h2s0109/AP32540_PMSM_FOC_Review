@@ -43,7 +43,9 @@
 #include <float.h>
 #include <stdio.h>
 
-#define ENDL "\r\n"
+#ifndef ENDL
+    #define ENDL "\r\n"
+#endif
 
 void CplxVecRst_f32(cfloat32 *X, short nX)
 {

@@ -49,6 +49,7 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
+#if(TLF35584_DRIVER == ENABLED)
 #include MCUCARD_TYPE_PATH
 #include "IfxCpu_cfg.h"
 #include <Qspi/SpiMaster/IfxQspi_SpiMaster.h>
@@ -128,5 +129,5 @@ IFX_EXTERN uint32 IfxTLF3XX8X_read_write(uint32 send_data);
 #pragma section CODE
 #pragma section DATA RW
 #endif
-
+#endif /* End of TLF35584_DRIVER */
 #endif  // TLF3XX8X_H

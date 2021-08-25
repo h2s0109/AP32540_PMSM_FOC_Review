@@ -36,8 +36,11 @@
  */
 
 #include "PmsmFoc_Gatedriver.h"
-#include "TLE9180.h"
+#include "PmsmFoc_UserConfig.h"
  #if(TLE9180_DRIVER == ENABLED)
+	#include "TLE9180.h"
+#endif /* End of TLE9180_DRIVER */
+
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -49,48 +52,67 @@
 
 void PmsmFoc_Gatedriver_Init(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_init(&Tle9180PinCtrl);
+	#endif /* End of TLE9180_DRIVER */
+	
 }
 
 void PmsmFoc_Gatedriver_InitSpi(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_initSpi();
+	#endif /* End of TLE9180_DRIVER */
 }
 
 void PmsmFoc_Gatedriver_Enable(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_activateEnable(&Tle9180PinCtrl);
+	#endif /* End of TLE9180_DRIVER */
 }
 
 void PmsmFoc_Gatedriver_Disable(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_deactivateEnable(&Tle9180PinCtrl);
+	#endif /* End of TLE9180_DRIVER */
 }
 
 void PmsmFoc_Gatedriver_ActInhibit(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_activateInhibit(&Tle9180PinCtrl);
+	#endif /* End of TLE9180_DRIVER */
 }
 
 void PmsmFoc_Gatedriver_DeactInhibit(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_deactivateInhibit(&Tle9180PinCtrl);
+	#endif /* End of TLE9180_DRIVER */
 }
 
 void PmsmFoc_Gatedriver_ActSafeOff(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_activateInhibit(&Tle9180PinCtrl);
+	#endif /* End of TLE9180_DRIVER */
 }
 
 void PmsmFoc_Gatedriver_DeactSafeOff(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_deactivateInhibit(&Tle9180PinCtrl);
+	#endif /* End of TLE9180_DRIVER */
 }
 
 void PmsmFoc_Gatedriver_GetError(void)
 {
+	#if(TLE9180_DRIVER == ENABLED)
 	IfxTLE9180_getErrorState(&Tle9180PinCtrl);
+	#endif /* End of TLE9180_DRIVER */
 }
-#endif /* End of TLE9180_DRIVER */
+
 
 

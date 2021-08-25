@@ -95,3 +95,12 @@ void PmsmFoc_SvmStart(INVERTER_S * const inverter, CplxStdReal modulationIndex)
 	pwmoutput->sectorSVM = Sector;
 	PmsmFoc_SvmPwmUpdate(pwmoutput);
 }
+
+void PmsmFoc_SvmStop(INVERTER_S * const inverter)
+{
+	inverter->pwm3PhaseOutput.pwmOnTimes[0] = 0;
+	inverter->pwm3PhaseOutput.pwmOnTimes[1] = 0;
+	inverter->pwm3PhaseOutput.pwmOnTimes[2] = 0;
+	IfxGtm_Tom_PwmHl_setOnTime(&inverter->pwm3PhaseOutput.pwm,inverter->pwm3PhaseOutput.pwmOnTimes);
+	IfxGtm_Tom_Timer_applyUpdate(&inverter->pwm3PhaseOutput.timer);
+}

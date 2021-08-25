@@ -47,18 +47,18 @@
 /******************************************************************************/
 const PmsmFoc_SensorAdc_Config current =
 {
-		.gain= USER_INVERTER_PHASECURSENSE_I_GAIN,
-		.offset= USER_INVERTER_PHASECURSENSE_I_OFFSET,
-		.maxLimit= USER_INVERTER_PHASECURSENSE_I_MAX,
-		.minLimit= USER_INVERTER_PHASECURSENSE_I_MIN
+		.gain     = USER_INVERTER_PHASECURSENSE_I_GAIN,
+		.offset   = USER_INVERTER_PHASECURSENSE_I_OFFSET,
+		.maxLimit = USER_INVERTER_PHASECURSENSE_I_MAX,
+		.minLimit = USER_INVERTER_PHASECURSENSE_I_MIN
 };
 
 const PmsmFoc_SensorAdc_Config voltage =
 {
-		.gain= USER_INVERTER_PHASECURSENSE_V_GAIN,
-		.offset= USER_INVERTER_PHASECURSENSE_V_OFFSET,
-		.maxLimit= 0,
-		.minLimit= 0
+		.gain     = USER_INVERTER_PHASECURSENSE_V_GAIN,
+		.offset   = USER_INVERTER_PHASECURSENSE_V_OFFSET,
+		.maxLimit = 0,
+		.minLimit = 0
 };
 /******************************************************************************/
 /*-------------------------Private Variables/Constants------------------------*/
@@ -68,43 +68,45 @@ static void PmsmFoc_PhaseCurrentSense_init(PhaseCurrentSense * const phaseCurren
 {
 	//TODO: actually this code could be removed and moved to reset cal status function
 
-	phaseCurrentSense->curVO1.gain= USER_INVERTER_PHASECURSENSE_I_GAIN;
-	phaseCurrentSense->curVO1.offset= USER_INVERTER_PHASECURSENSE_I_OFFSET;
-	phaseCurrentSense->curVO1.limits.max= USER_INVERTER_PHASECURSENSE_I_MAX;
-	phaseCurrentSense->curVO1.limits.min= USER_INVERTER_PHASECURSENSE_I_MIN;
-	phaseCurrentSense->curVO1.limits.object= NULL_PTR;
-	phaseCurrentSense->curVO1.limits.onOutOfRange= NULL_PTR;
-	phaseCurrentSense->curVO1.limits.status= PmsmFoc_SensorAdc_LimitsStatus_ok;
-	phaseCurrentSense->curVO1.rawvalue= 0U;
-	phaseCurrentSense->curVO1.value= 0.0;
+	phaseCurrentSense->curVO1.gain                = USER_INVERTER_PHASECURSENSE_I_GAIN;
+	phaseCurrentSense->curVO1.offset              = USER_INVERTER_PHASECURSENSE_I_OFFSET;
+	phaseCurrentSense->curVO1.limits.max          = USER_INVERTER_PHASECURSENSE_I_MAX;
+	phaseCurrentSense->curVO1.limits.min          = USER_INVERTER_PHASECURSENSE_I_MIN;
+	phaseCurrentSense->curVO1.limits.object       = NULL_PTR;
+	phaseCurrentSense->curVO1.limits.onOutOfRange = NULL_PTR;
+	phaseCurrentSense->curVO1.limits.status       = PmsmFoc_SensorAdc_LimitsStatus_ok;
+	phaseCurrentSense->curVO1.rawvalue            = 0U;
+	phaseCurrentSense->curVO1.value               = 0.0;
 
-	phaseCurrentSense->curVO2.gain= USER_INVERTER_PHASECURSENSE_I_GAIN;
-	phaseCurrentSense->curVO2.offset= USER_INVERTER_PHASECURSENSE_I_OFFSET;
-	phaseCurrentSense->curVO2.limits.max= USER_INVERTER_PHASECURSENSE_I_MAX;
-	phaseCurrentSense->curVO2.limits.min= USER_INVERTER_PHASECURSENSE_I_MIN;
-	phaseCurrentSense->curVO2.limits.object= NULL_PTR;
-	phaseCurrentSense->curVO2.limits.onOutOfRange= NULL_PTR;
-	phaseCurrentSense->curVO2.limits.status= PmsmFoc_SensorAdc_LimitsStatus_ok;
-	phaseCurrentSense->curVO2.rawvalue= 0U;
-	phaseCurrentSense->curVO2.value= 0.0;
+	phaseCurrentSense->curVO2.gain                = USER_INVERTER_PHASECURSENSE_I_GAIN;
+	phaseCurrentSense->curVO2.offset              = USER_INVERTER_PHASECURSENSE_I_OFFSET;
+	phaseCurrentSense->curVO2.limits.max          = USER_INVERTER_PHASECURSENSE_I_MAX;
+	phaseCurrentSense->curVO2.limits.min          = USER_INVERTER_PHASECURSENSE_I_MIN;
+	phaseCurrentSense->curVO2.limits.object       = NULL_PTR;
+	phaseCurrentSense->curVO2.limits.onOutOfRange = NULL_PTR;
+	phaseCurrentSense->curVO2.limits.status       = PmsmFoc_SensorAdc_LimitsStatus_ok;
+	phaseCurrentSense->curVO2.rawvalue            = 0U;
+	phaseCurrentSense->curVO2.value               = 0.0;
 
-	phaseCurrentSense->curVO3.gain= USER_INVERTER_PHASECURSENSE_I_GAIN;
-	phaseCurrentSense->curVO3.offset= USER_INVERTER_PHASECURSENSE_I_OFFSET;
-	phaseCurrentSense->curVO3.limits.max= USER_INVERTER_PHASECURSENSE_I_MAX;
-	phaseCurrentSense->curVO3.limits.min= USER_INVERTER_PHASECURSENSE_I_MIN;
-	phaseCurrentSense->curVO3.limits.object= NULL_PTR;
-	phaseCurrentSense->curVO3.limits.onOutOfRange= NULL_PTR;
-	phaseCurrentSense->curVO3.limits.status= PmsmFoc_SensorAdc_LimitsStatus_ok;
-	phaseCurrentSense->curVO3.rawvalue= 0U;
-	phaseCurrentSense->curVO3.value= 0.0;
+	#if(PHASE_CURRENT_RECONSTRUCTION != USER_LOWSIDE_TWO_SHUNT_MONITORING)
+	phaseCurrentSense->curVO3.gain                = USER_INVERTER_PHASECURSENSE_I_GAIN;
+	phaseCurrentSense->curVO3.offset              = USER_INVERTER_PHASECURSENSE_I_OFFSET;
+	phaseCurrentSense->curVO3.limits.max          = USER_INVERTER_PHASECURSENSE_I_MAX;
+	phaseCurrentSense->curVO3.limits.min          = USER_INVERTER_PHASECURSENSE_I_MIN;
+	phaseCurrentSense->curVO3.limits.object       = NULL_PTR;
+	phaseCurrentSense->curVO3.limits.onOutOfRange = NULL_PTR;
+	phaseCurrentSense->curVO3.limits.status       = PmsmFoc_SensorAdc_LimitsStatus_ok;
+	phaseCurrentSense->curVO3.rawvalue            = 0U;
+	phaseCurrentSense->curVO3.value               = 0.0;
 
-	phaseCurrentSense->curVRO.gain= USER_INVERTER_PHASECURSENSE_V_GAIN;
-	phaseCurrentSense->curVRO.offset= USER_INVERTER_PHASECURSENSE_V_OFFSET;
-	phaseCurrentSense->curVRO.limits.object= NULL_PTR;
-	phaseCurrentSense->curVRO.limits.onOutOfRange= NULL_PTR;
-	phaseCurrentSense->curVRO.limits.status= PmsmFoc_SensorAdc_LimitsStatus_ok;
-	phaseCurrentSense->curVRO.rawvalue= 0U;
-	phaseCurrentSense->curVRO.value= 0.0;
+	phaseCurrentSense->curVRO.gain                = USER_INVERTER_PHASECURSENSE_V_GAIN;
+	phaseCurrentSense->curVRO.offset              = USER_INVERTER_PHASECURSENSE_V_OFFSET;
+	phaseCurrentSense->curVRO.limits.object       = NULL_PTR;
+	phaseCurrentSense->curVRO.limits.onOutOfRange = NULL_PTR;
+	phaseCurrentSense->curVRO.limits.status       = PmsmFoc_SensorAdc_LimitsStatus_ok;
+	phaseCurrentSense->curVRO.rawvalue            = 0U;
+	phaseCurrentSense->curVRO.value               = 0.0;
+	#endif /* End of USER_LOWSIDE_TWO_SHUNT_MONITORING */
 }
 
 
@@ -112,35 +114,38 @@ static void PmsmFoc_PhaseCurrentSense_init(PhaseCurrentSense * const phaseCurren
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
 
+
 void PmsmFoc_PhaseCurrentSense_doCalibration(PhaseCurrentSense * const phaseCurrentSense)
 {
-	sint32 temp;
-
-	temp = USER_INVERTER_PHASECURSENSE_CALIBRATION_COUNT - 20;
-	/* MAKE THE ROTOR IS NOT MOVING WHILE THE SENSOR IS CALIBRATING AND THAT THE INVERTER IS ON with m=0 */
-	/* Calibrate the current sensors offset */
-
-	phaseCurrentSense->calibration.count--;
-
-	if(phaseCurrentSense->calibration.count < temp)
-	{
+		/* MAKE THE ROTOR IS NOT MOVING WHILE THE SENSOR IS CALIBRATING AND THAT THE INVERTER IS ON with m=0 */
+		/* Calibrate the current sensors offset */
+		phaseCurrentSense->calibration.count--;
+		#if(PHASE_CURRENT_RECONSTRUCTION != USER_LOWSIDE_TWO_SHUNT_MONITORING)
 		phaseCurrentSense->calibration.offset +=  (sint32)phaseCurrentSense->curVRO.rawvalue;
+		#endif
 		phaseCurrentSense->calibration.curVO1 +=  (sint32)phaseCurrentSense->curVO1.rawvalue;
-		phaseCurrentSense->calibration.curVO2 += (sint32)phaseCurrentSense->curVO2.rawvalue;
+		phaseCurrentSense->calibration.curVO2 +=  (sint32)phaseCurrentSense->curVO2.rawvalue;
+		#if(PHASE_CURRENT_RECONSTRUCTION != USER_LOWSIDE_TWO_SHUNT_MONITORING)
 		phaseCurrentSense->calibration.curVO3 +=  (sint32)phaseCurrentSense->curVO3.rawvalue;
+		#endif
 
 		if (phaseCurrentSense->calibration.count == 0)
 		{
+			uint32 temp = USER_INVERTER_PHASECURSENSE_CALIBRATION_COUNT;
+			#if(PHASE_CURRENT_RECONSTRUCTION != USER_LOWSIDE_TWO_SHUNT_MONITORING)
 			sint32 offsetU, offsetV, offsetW, lcl_offset;
 			sint32 tempdif0,tempdif1,tempdif2;
+			#else
+			sint32 offsetU, offsetV;
+			#endif
 
 			/* End of calibration */
-			offsetU = phaseCurrentSense->calibration.curVO1 / temp;
-			offsetV = phaseCurrentSense->calibration.curVO2 / temp;
-			offsetW = phaseCurrentSense->calibration.curVO3 / temp;
+			offsetU    = phaseCurrentSense->calibration.curVO1 / temp;
+			offsetV    = phaseCurrentSense->calibration.curVO2 / temp;
+			#if(PHASE_CURRENT_RECONSTRUCTION != USER_LOWSIDE_TWO_SHUNT_MONITORING)
+			offsetW    = phaseCurrentSense->calibration.curVO3 / temp;
 			lcl_offset = phaseCurrentSense->calibration.offset / temp;
-
-			tempdif0 = lcl_offset - USER_INVERTER_PHASECURSENSE_V_OFFSET_NOM;
+			tempdif0   = lcl_offset - USER_INVERTER_PHASECURSENSE_V_OFFSET_NOM;
 			if (tempdif0 < 0)
 			{
 				tempdif0 *= (-1);
@@ -155,29 +160,39 @@ void PmsmFoc_PhaseCurrentSense_doCalibration(PhaseCurrentSense * const phaseCurr
 			{
 				tempdif2 *= (-1);
 			}
-
+			#if 0
 			if(tempdif0 > 150 || tempdif1 > 100 || tempdif2 > 100) // 120mV at 5V and 12bit  */
 			{
-			phaseCurrentSense->calibration.count = USER_INVERTER_PHASECURSENSE_CALIBRATION_COUNT;
-			phaseCurrentSense->calibration.curVO1 = 0;
-			phaseCurrentSense->calibration.curVO2 = 0;
-			phaseCurrentSense->calibration.curVO3 = 0;
-			phaseCurrentSense->calibration.offset = 0;
+				phaseCurrentSense->calibration.count  = USER_INVERTER_PHASECURSENSE_CALIBRATION_COUNT;
+				phaseCurrentSense->calibration.curVO1 = 0;
+				phaseCurrentSense->calibration.curVO2 = 0;
+				phaseCurrentSense->calibration.curVO3 = 0;
+				phaseCurrentSense->calibration.offset = 0;
 			// setHadEmergency();
 			}
 			else
+			#endif
 			{
-				phaseCurrentSense->curVO1.offset = -phaseCurrentSense->curVO1.gain * offsetU;
-				phaseCurrentSense->curVO2.offset = -phaseCurrentSense->curVO2.gain * offsetV;
-				phaseCurrentSense->curVO3.offset = -phaseCurrentSense->curVO3.gain * offsetW;
+				phaseCurrentSense->curVO1.offset      = offsetU;
+				phaseCurrentSense->curVO2.offset      = offsetV;
+				phaseCurrentSense->curVO3.offset      = offsetW;
+				phaseCurrentSense->curVRO.offset      = lcl_offset;
+				phaseCurrentSense->calibration.status = PmsmFoc_SensorAdc_CalibrationStatus_done;
+
+				phaseCurrentSense->calibration.offsetV01 = offsetU;
+				phaseCurrentSense->calibration.offsetV02 = offsetV;
+				phaseCurrentSense->calibration.offsetV03 = offsetW;
 			}
-
-			phaseCurrentSense->calibration.status= PmsmFoc_SensorAdc_CalibrationStatus_done;
+			#else
+			{
+				phaseCurrentSense->curVO1.offset      = offsetU;
+				phaseCurrentSense->curVO2.offset      = offsetV;
+				phaseCurrentSense->calibration.status = PmsmFoc_SensorAdc_CalibrationStatus_done;
+				phaseCurrentSense->calibration.offsetV01 = offsetU;
+				phaseCurrentSense->calibration.offsetV02 = offsetV;
+			}
+			#endif /* End of USER_LOWSIDE_TWO_SHUNT_MONITORING */
 		}
-
-	}
-
-
 }
 
 float32 PmsmFoc_PhaseCurrentSense_limitsExecute(PmsmFoc_SensorAdc_Limits* limits, float32 in)
@@ -215,7 +230,7 @@ float32 PmsmFoc_PhaseCurrentSense_updateAnalogInputDRC(PmsmFoc_SensorAdc * const
 	//rawValue = rawValue / 4;  /*  DRC used, count=4;  */
 
 	/*  Scale Input  */
-	value = (phaseCurrentCh->gain * 0.25f * rawValue + phaseCurrentCh->offset);
+	value = (-phaseCurrentCh->gain * ((0.25f * rawValue) - phaseCurrentCh->offset));
 	/* Check limits */
 	value = PmsmFoc_PhaseCurrentSense_limitsExecute(&phaseCurrentCh->limits, value);
 
@@ -232,7 +247,7 @@ float32 PmsmFoc_PhaseCurrentSense_updateAnalogInput(PmsmFoc_SensorAdc * const ph
 	rawValue = IfxEvadc_Adc_getResult(&phaseCurrentCh->adcChannel).B.RESULT;
 
 	/* Scale Input */
-	value = (rawValue * phaseCurrentCh->gain + phaseCurrentCh->offset);
+	value = (phaseCurrentCh->gain*(rawValue-phaseCurrentCh->offset));
 
 	/* Check limits */
 	value = PmsmFoc_PhaseCurrentSense_limitsExecute(&phaseCurrentCh->limits, value);
@@ -244,17 +259,29 @@ float32 PmsmFoc_PhaseCurrentSense_updateAnalogInput(PmsmFoc_SensorAdc * const ph
 
 void PmsmFoc_PhaseCurrentSense_getRawPhaseCurrentValues(PhaseCurrentSense* const phaseCurrentSense)
 {
+	#if(PHASE_CURRENT_RECONSTRUCTION != USER_LOWSIDE_TWO_SHUNT_MONITORING)
 	PmsmFoc_PhaseCurrentSense_updateAnalogInput(&phaseCurrentSense->curVRO);
+	#endif
 	PmsmFoc_PhaseCurrentSense_updateAnalogInputDRC(&phaseCurrentSense->curVO1);  /* Raw Current U value */
 	PmsmFoc_PhaseCurrentSense_updateAnalogInputDRC(&phaseCurrentSense->curVO2);  /* Raw Current V value */
+	#if(PHASE_CURRENT_RECONSTRUCTION != USER_LOWSIDE_TWO_SHUNT_MONITORING)
 	PmsmFoc_PhaseCurrentSense_updateAnalogInputDRC(&phaseCurrentSense->curVO3);  /* Raw Current W value */
+	#endif
 }
 
 void PmsmFoc_PhaseCurrentSense_resetCalibrationStatus(PhaseCurrentSense* const phaseCurrentSense)
 {
 	PmsmFoc_PhaseCurrentSense_init(phaseCurrentSense);
-	phaseCurrentSense->calibration.count= USER_INVERTER_PHASECURSENSE_CALIBRATION_COUNT;
-	phaseCurrentSense->calibration.status= PmsmFoc_SensorAdc_CalibrationStatus_notDone;
+	phaseCurrentSense->calibration.count   = USER_INVERTER_PHASECURSENSE_CALIBRATION_COUNT;
+	phaseCurrentSense->calibration.status  = PmsmFoc_SensorAdc_CalibrationStatus_notDone;
+	phaseCurrentSense->calibration.calwait = 0;
+	phaseCurrentSense->calibration.curVO1  = 0;
+	phaseCurrentSense->calibration.curVO2  = 0;
+	phaseCurrentSense->calibration.curVO3  = 0;
+	phaseCurrentSense->calibration.offset  = 0;
+	phaseCurrentSense->calibration.offsetV01 = 0;
+	phaseCurrentSense->calibration.offsetV02 = 0;
+	phaseCurrentSense->calibration.offsetV03 = 0;
 }
 
 PmsmFoc_SensorAdc_CalibrationStatus PmsmFoc_PhaseCurrentSense_getCalibrationStatus(PhaseCurrentSense* const phaseCurrentSense)

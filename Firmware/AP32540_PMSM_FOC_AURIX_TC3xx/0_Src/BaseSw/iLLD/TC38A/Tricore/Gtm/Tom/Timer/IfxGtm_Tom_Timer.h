@@ -132,7 +132,7 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
-
+#include "PmsmFoc_UserConfig.h"
 #include "_PinMap/IfxGtm_PinMap.h"
 #include "Gtm/Std/IfxGtm_Tom.h"
 #include "Gtm/Std/IfxGtm_Cmu.h"
@@ -187,6 +187,9 @@ typedef struct
     IfxGtm_Tom             tom;                  /**< \brief Index of the TOM object used */
     IfxGtm_Tom_Ch          timerChannel;         /**< \brief TOM channel used for the timer */
     IfxGtm_Tom_ToutMap    *triggerOut;           /**< \brief TOM channel used for the trigger output, can be identical to the timer channel */
+    #if OUTPUTTEST
+    IfxGtm_Tom_ToutMap    *refout;           /**< \brief TOM channel used for the trigger output, can be identical to the timer channel */
+    #endif
     IfxGtm_Tom_Ch_ClkSrc   clock;                /**< \brief Timer input clock */
     IfxGtm_IrqMode         irqModeTimer;         /**< \brief Interrupt mode for the timer */
     IfxGtm_IrqMode         irqModeTrigger;       /**< \brief Interrupt mode for the trigger */

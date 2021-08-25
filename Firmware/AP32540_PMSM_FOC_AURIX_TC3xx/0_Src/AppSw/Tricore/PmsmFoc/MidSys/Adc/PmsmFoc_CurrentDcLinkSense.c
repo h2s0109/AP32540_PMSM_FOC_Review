@@ -41,6 +41,7 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_CurrentDcLinkSense.h"
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 #include "IfxPort_PinMap.h"
 #include INVERTERCARD_TYPE_PATH
 /******************************************************************************/
@@ -57,8 +58,6 @@
 
 static boolean PmsmFoc_CurrentDCLinkSenseHs_init(HighSideCurrentSense *highSideCurrentSense, const HighSideCurrentSense_Config* config);
 static float32 PmsmFoc_CurrentDCLinkSenseHs_limitsExecute(PmsmFoc_SensorAdc_Limits* limits, float32 in);
-
-#if(INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1)
 
 static boolean PmsmFoc_CurrentDCLinkSenseHs_init(HighSideCurrentSense *highSideCurrentSense, const HighSideCurrentSense_Config* config)
 {
@@ -90,7 +89,6 @@ void PmsmFoc_CurrentDCLinkSenseHs_doCalibration(HighSideCurrentSense* const high
 
 void PmsmFoc_CurrentDCLinkSenseHs_setGain(HighSideCurrentSense* const highSideCurrentSense, HighSideCurrentSense_Gain gain)
 {
-
 
 	Ifx_P * portGain0= highSideCurrentSense->pins.gainSelelct0->port;
 	uint8 pinIndexGain0= highSideCurrentSense->pins.gainSelelct0->pinIndex;
@@ -132,7 +130,6 @@ void PmsmFoc_CurrentDCLinkSenseHs_setGain(HighSideCurrentSense* const highSideCu
 
 
 }
-
 void PmsmFoc_CurrentDCLinkSenseHs_resetCalibrationStatus(HighSideCurrentSense* const highSideCurrentSense)
 {
 	HighSideCurrentSense_Config hsCurrentConfig;
@@ -143,6 +140,7 @@ void PmsmFoc_CurrentDCLinkSenseHs_resetCalibrationStatus(HighSideCurrentSense* c
 	PmsmFoc_CurrentDCLinkSenseHs_init(highSideCurrentSense, &hsCurrentConfig);
 	highSideCurrentSense->calibration.status= PmsmFoc_SensorAdc_CalibrationStatus_notDone;
 }
+
 
 PmsmFoc_SensorAdc_CalibrationStatus PmsmFoc_CurrentDCLinkSenseHs_getCalibrationStatus(HighSideCurrentSense* const highSideCurrentSense)
 {
@@ -196,5 +194,4 @@ void PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(HighSideCurrentSense* const
 {
 	PmsmFoc_CurrentDCLinkSenseHs_updateAnalogInput(&highSideCurrentSense->input);
 }
-
-#endif /* End of (INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1) */
+#endif /* End of (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING) */

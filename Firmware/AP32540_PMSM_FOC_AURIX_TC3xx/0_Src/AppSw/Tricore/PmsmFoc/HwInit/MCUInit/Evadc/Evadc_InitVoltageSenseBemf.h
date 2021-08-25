@@ -46,6 +46,7 @@
 /*-----------------------------------Includes---------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
+#if (BEMF_MEASUREMENT == ENABLED)
 #include INVERTERCARD_TYPE_PATH
 #include "Evadc_Init.h"
 
@@ -220,5 +221,5 @@ IFX_INLINE void PmsmFoc_Evadc_initGroup3Queue2(IfxEvadc_Adc_GroupConfig *adcGrou
 
 	PmsmFoc_Evadc_initGroupXQueue2VoltageSenseBemf(adcGroupConfig);
 }
-
+#endif /* End of (BEMF_MEASUREMENT == ENABLED) */
 #endif /* EVADC_INITVOLTAGESENSEBEMF_H_ */

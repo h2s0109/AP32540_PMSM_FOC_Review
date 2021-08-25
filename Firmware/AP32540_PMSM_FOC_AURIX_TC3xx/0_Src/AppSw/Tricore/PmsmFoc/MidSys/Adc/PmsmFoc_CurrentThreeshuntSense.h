@@ -112,6 +112,7 @@ typedef struct
     sint32 offsetV03;                   /**< \brief Offset if BridgeDriver has a seperate Offset output like: TLE9180;*/
     sint32 count;                       /**< \brief Calibration index */
     PmsmFoc_SensorAdc_CalibrationStatus status;
+    uint8                            calwait;
 } PhaseCurrentSense_Calibration;
 
 typedef struct

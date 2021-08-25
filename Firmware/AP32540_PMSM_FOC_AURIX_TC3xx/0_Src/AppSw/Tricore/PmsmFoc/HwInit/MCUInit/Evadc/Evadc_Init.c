@@ -45,6 +45,8 @@
 #include "Evadc_InitCurSenseLsTriShuntHsMon.h"
 #elif (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT)
 #include "Evadc_InitCurSenseLsSingleShunt.h"
+#elif (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_TWO_SHUNT_MONITORING)
+#include "Evadc_InitCurSenseLsTwoShunt.h"
 #endif
 
 #if (BEMF_MEASUREMENT == ENABLED)
@@ -89,6 +91,13 @@ Adc_Evadc adcEvadc;
 #define EVADC_INIT_INIT_GROUP0_QUEUE0(grpConfig) PmsmFoc_Evadc_initGroup0Queue0(grpConfig)
 #define EVADC_INIT_INIT_GROUP1_QUEUE0(grpConfig) PmsmFoc_Evadc_initGroup1Queue0(grpConfig)
 #define EVADC_INIT_INIT_GROUP2_QUEUE0(grpConfig) PmsmFoc_Evadc_initGroup2Queue0(grpConfig)
+#define EVADC_INIT_INIT_GROUP3_QUEUE0(grpConfig) PmsmFoc_Evadc_initGroup3Queue0(grpConfig)
+#endif
+
+#if (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_TWO_SHUNT_MONITORING)
+#undef EVADC_INIT_INIT_GROUP0_QUEUE0
+#undef EVADC_INIT_INIT_GROUP3_QUEUE0
+#define EVADC_INIT_INIT_GROUP0_QUEUE0(grpConfig) PmsmFoc_Evadc_initGroup0Queue0(grpConfig)
 #define EVADC_INIT_INIT_GROUP3_QUEUE0(grpConfig) PmsmFoc_Evadc_initGroup3Queue0(grpConfig)
 #endif
 

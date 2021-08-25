@@ -35,9 +35,8 @@
  *
  */
 
-#ifndef _TLE9180_INIT_H_
-#define _TLE9180_INIT_H_
-#include "PmsmFoc_UserConfig.h"
+#ifndef _PMSMFOC_GATEDRIVER_H_
+#define _PMSMFOC_GATEDRIVER_H_
 #include "Ifx_Types.h"
 /******************************************************************************/
 /*-----------------------------------Macros-----------------------------------*/
@@ -63,4 +62,4 @@ IFX_EXTERN void PmsmFoc_Gatedriver_DeactInhibit(void);
 IFX_EXTERN void PmsmFoc_Gatedriver_ActSafeOff(void);
 IFX_EXTERN void PmsmFoc_Gatedriver_DeactSafeOff(void);
 IFX_EXTERN void PmsmFoc_Gatedriver_GetError(void);
-#endif /* _TLE9180_INIT_H_ */
+#endif /* _PMSMFOC_GATEDRIVER_H_ */

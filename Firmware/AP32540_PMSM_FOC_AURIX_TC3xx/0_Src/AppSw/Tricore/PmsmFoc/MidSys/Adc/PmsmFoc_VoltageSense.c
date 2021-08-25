@@ -40,6 +40,7 @@
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
+#include "PmsmFoc_UserConfig.h"
 #include "PmsmFoc_VoltageSense.h"
 #include INVERTERCARD_TYPE_PATH
 /******************************************************************************/
@@ -54,7 +55,7 @@
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
 #if(INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1)
-
+#if (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
 static void PmsmFoc_DcLinkVoltageSense_init(DcLinkVoltageSense * const dcLinkVoltageSense)
 {
 	dcLinkVoltageSense->input.gain = USER_INVERTER_DCLINVOLTAGESENSE_GAIN;
@@ -93,7 +94,8 @@ void PmsmFoc_DcLinkVoltageSense_resetCalibrationStatus(DcLinkVoltageSense* const
 {
 	PmsmFoc_DcLinkVoltageSense_init(dcLinkVoltageSense);
 }
-
+#endif /* End of (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED) */
+#if (BEMF_MEASUREMENT == ENABLED)
 static void PmsmFoc_BemfVoltageSense_init(BemfVoltageSense * const bemfVoltageSense)
 {
 	bemfVoltageSense->inputU.gain = USER_INVERTER_BEMFSENSE_GAIN;
@@ -151,5 +153,5 @@ void PmsmFoc_BemfVoltageSense_resetCalibrationStatus(BemfVoltageSense* const bem
 {
 	PmsmFoc_BemfVoltageSense_init(bemfVoltageSense);
 }
-
+#endif /* End of (BEMF_MEASUREMENT == ENABLED) */
 #endif /* End of (INVERTERCARD_TYPE == EMOTOR_DRIVE_V_3_1) */

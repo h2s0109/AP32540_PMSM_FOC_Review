@@ -309,6 +309,17 @@ IFX_EXTERN void PmsmFoc_tuneCurrentRegulator(MOTORCTRL_S* const motorCtrl);
  * /ingroup
  */
 IFX_EXTERN void PmsmFoc_doPeriodicRoutine (MOTORCTRL_S* const motorCtrl);
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
+/** /brief
+ *
+ * /param motorCtrl Reference to structure that contains instance data members
+ * /return
+ * /note
+ * /see
+ * /ingroup
+ */
+IFX_EXTERN void PmsmFoc_doDemo(MOTORCTRL_S* const motorCtrl);
+#endif
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

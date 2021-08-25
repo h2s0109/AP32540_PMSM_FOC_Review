@@ -68,13 +68,16 @@
 /** \brief Structure for DC link voltage sensing configuration and handling
  */
 
+
+#if (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
 typedef struct
 {
 	PmsmFoc_SensorAdc       input;
 	IfxEvadc_Adc_Channel    dummy0;
     IfxEvadc_Adc_Channel    dummy1;
 } DcLinkVoltageSense;
-
+#endif
+#if (BEMF_MEASUREMENT == ENABLED)
 /** \brief Structure for three phase voltage sensing configuration and handling
  */
 typedef struct
@@ -83,6 +86,7 @@ typedef struct
 	PmsmFoc_SensorAdc   inputV;
 	PmsmFoc_SensorAdc   inputW;
 } BemfVoltageSense;
+#endif
 
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
@@ -91,6 +95,7 @@ typedef struct
 /******************************************************************************/
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
+#if (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
 /** /brief
  *
  * /param dcLinkVoltageSense Reference to structure that contains instance data members
@@ -118,6 +123,8 @@ IFX_EXTERN float32 PmsmFoc_DcLinkVoltageSense_updateAnalogInput(PmsmFoc_SensorAd
  * /ingroup
  */
 IFX_EXTERN void PmsmFoc_DcLinkVoltageSense_resetCalibrationStatus(DcLinkVoltageSense* const dcLinkVoltageSense);
+#endif /* End of (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED) */
+#if (BEMF_MEASUREMENT == ENABLED)
 /** /brief
  *
  * /param bemfVoltageSense Reference to structure that contains instance data members
@@ -145,6 +152,7 @@ IFX_EXTERN float32 PmsmFoc_BemfVoltageSense_updateAnalogInput(PmsmFoc_SensorAdc 
  * /ingroup
  */
 IFX_EXTERN void PmsmFoc_BemfVoltageSense_resetCalibrationStatus(BemfVoltageSense* const bemfVoltageSense);
+#endif /* End of (BEMF_MEASUREMENT == ENABLED) */
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

@@ -62,8 +62,10 @@ void PmsmFoc_Interface_startMotor(MOTORCTRL_S* const motorCtrl)
 	{
 		motorCtrl->interface.CurrnetIfMode = RUNNING_MODE;
 		motorCtrl->CtrlParms.state = STATE_focClosedLoop;
+		#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 		PmsmFoc_speedcontrol_enable(&motorCtrl->pmsmFoc.speedControl);
 		PmsmFoc_Interface_setStartTargetSpeed(motorCtrl);
+		#endif
 		PmsmFoc_Gatedriver_Enable();
 	}
 }
@@ -82,7 +84,9 @@ void PmsmFoc_Interface_calMotor(MOTORCTRL_S* const motorCtrl)
 	#else
 		/* For other position sensor */
 	#endif
+		#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 		PmsmFoc_speedcontrol_disable(&motorCtrl->pmsmFoc.speedControl);
+		#endif
 		PmsmFoc_Gatedriver_Enable();
 	}
 }
@@ -95,9 +99,11 @@ void PmsmFoc_Interface_stopMotor(MOTORCTRL_S* motorCtrl)
 		motorCtrl->pmsmFoc.modulationIndex.real = 0;
 		motorCtrl->pmsmFoc.modulationIndex.imag = 0;
 		PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
+		#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 		/* For the fast stop response */
 		Ifx_RampF32_setSlewRate(&motorCtrl->pmsmFoc.speedRamp,USER_MOTOR_SPEED_RAMP_SLEW_RATE*4,USER_MOTOR_SPEED_RAMP_PERIOD);
 		PmsmFoc_Interface_setStopMotorTargetSpeed(motorCtrl);
+		#endif
 		#if(POSITION_SENSOR_TYPE == ENCODER)
 		/* measSpeed returns the wrong value even motor stopped */
 		motorCtrl->positionSensor.encoder.incrEncoder.speedFilterEnabled = 0;
@@ -107,22 +113,42 @@ void PmsmFoc_Interface_stopMotor(MOTORCTRL_S* motorCtrl)
 	{
 		motorCtrl->interface.CurrnetIfMode = STOP_MODE;
 		motorCtrl->CtrlParms.state = STATE_motorStop;
+		#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 		Ifx_RampF32_setSlewRate(&motorCtrl->pmsmFoc.speedRamp,USER_MOTOR_SPEED_RAMP_SLEW_RATE,USER_MOTOR_SPEED_RAMP_PERIOD);
+		#endif
+		PmsmFoc_SvmStop(&motorCtrl->inverter);
 		PmsmFoc_Gatedriver_Disable();
 		#if(POSITION_SENSOR_TYPE == ENCODER)
 		motorCtrl->positionSensor.encoder.incrEncoder.speedFilterEnabled = 1;
 		#endif
 	}
 }
-
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 void PmsmFoc_Interface_setDemo(MOTORCTRL_S* const motorCtrl)
 {
 	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
 	{
+		uint16 democnt;
 		motorCtrl->interface.CurrnetIfMode = DEMO_MODE;
-		motorCtrl->CtrlParms.state = STATE_demo;
-		PmsmFoc_Interface_setMotorTargetSpeed(motorCtrl,demospeed[0][0]);
+		motorCtrl->CtrlParms.state         = STATE_demo;
+		democnt                            = motorCtrl->democontrol.scenarioCnt;
+		PmsmFoc_Interface_setMotorTargetSpeed(motorCtrl,motorCtrl->democontrol.demospeed[democnt][0]);
 		PmsmFoc_speedcontrol_enable(&motorCtrl->pmsmFoc.speedControl);
+		PmsmFoc_Gatedriver_Enable();
+	}
+}
+#endif
+void PmsmFoc_Interface_setOpenlooptest(MOTORCTRL_S* const motorCtrl)
+{
+	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
+	{
+		motorCtrl->interface.CurrnetIfMode       = RUNNING_MODE;
+		motorCtrl->CtrlParms.state               = STATE_vfOpenLoop;
+		motorCtrl->openLoop.electricalAngle      = 0;
+		motorCtrl->openLoop.electricalAngleDelta = 1;
+		motorCtrl->openLoop.modulationIndex.real = 0;
+		motorCtrl->openLoop.modulationIndex.imag = 0;
+		motorCtrl->openLoop.amplitude            = USER_MOTOR_ENCODER_CAL_TOP_ZERO_AMPL_MAX;
 		PmsmFoc_Gatedriver_Enable();
 	}
 }

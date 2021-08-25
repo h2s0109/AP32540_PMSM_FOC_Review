@@ -64,19 +64,26 @@ void PmsmFoc_StateMacine_doControlLoop(MOTORCTRL_S* const motorCtrl)
 	switch (motorCtrl->CtrlParms.state)
 	{
 	case STATE_PhaseCalibration:
-		if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
+		/* As soon as Adc initialization, ADC triggers the StateMacine */
+		/* Calibration can progress when initializing process is complete and after the gate driver or motor is stabilized */
+		if(motorCtrl->CtrlParms.initState == INIT_DONE && motorCtrl->inverter.phaseCurrentSense.calibration.calwait>20)
 		{
-			PmsmFoc_PhaseCurrentSense_getRawPhaseCurrentValues(&motorCtrl->inverter.phaseCurrentSense);
-			PmsmFoc_PhaseCurrentSense_doCalibration(&motorCtrl->inverter.phaseCurrentSense);
-		}
-		else
-		{
-#if(POSITION_SENSOR_TYPE == ENCODER)
-			motorCtrl->CtrlParms.state = STATE_PositionCalibration;
-#else
-			motorCtrl->CtrlParms.state = STATE_motorStop;
-			PmsmFoc_Gatedriver_Disable();
-#endif
+			if(motorCtrl->inverter.phaseCurrentSense.calibration.status == PmsmFoc_SensorAdc_CalibrationStatus_notDone)
+			{
+				PmsmFoc_PhaseCurrentSense_getRawPhaseCurrentValues(&motorCtrl->inverter.phaseCurrentSense);
+				PmsmFoc_PhaseCurrentSense_doCalibration(&motorCtrl->inverter.phaseCurrentSense);
+			}
+			else
+			{
+			#if(POSITION_SENSOR_TYPE == ENCODER)
+				motorCtrl->CtrlParms.state = STATE_PositionCalibration;
+			#else
+				motorCtrl->CtrlParms.state = STATE_motorStop;
+				PmsmFoc_SvmStop(&motorCtrl->inverter);
+				PmsmFoc_Gatedriver_Disable();
+			#endif
+			}
+
 		}
 		break;
 	case STATE_PositionCalibration:
@@ -84,6 +91,7 @@ void PmsmFoc_StateMacine_doControlLoop(MOTORCTRL_S* const motorCtrl)
 		if(motorCtrl->positionSensor.encoder.calibrationStatus == ENC_CAL_DONE)
 		{
 			motorCtrl->CtrlParms.state = STATE_motorStop;
+			PmsmFoc_SvmStop(&motorCtrl->inverter);
 			PmsmFoc_Gatedriver_Disable();
 		}
 		break;
@@ -98,6 +106,7 @@ void PmsmFoc_StateMacine_doControlLoop(MOTORCTRL_S* const motorCtrl)
 		/* Not used*/
 		break;
 	case STATE_motorStop:
+		PmsmFoc_PhaseCurrentSense_getRawPhaseCurrentValues(&motorCtrl->inverter.phaseCurrentSense);
 	/* To avoid the backward roatation measSpeed value*/
 	/* Update electrical position and measSpeed*/
 	motorCtrl->pmsmFoc.electricalAngle =
@@ -107,39 +116,15 @@ void PmsmFoc_StateMacine_doControlLoop(MOTORCTRL_S* const motorCtrl)
 		/* Not used*/
 		break;
 	case STATE_vfOpenLoop:
-		/* Not used*/
 		PmsmFoc_doVfControl(motorCtrl);
 		break;
 	case STATE_enableInverter:
 		/* Not used*/
 		break;
 	case STATE_demo:
-		if(motorCtrl->interface.CurrnetIfMode == DEMO_MODE)
-		{
-			upspeed = g_motorCtrl.interface.motorTargetSpeed+50;
-			downspeed = g_motorCtrl.interface.motorTargetSpeed-50;
-			if(g_motorCtrl.pmsmFoc.speedControl.measSpeed<upspeed && g_motorCtrl.pmsmFoc.speedControl.measSpeed>downspeed)
-			{
-				if (scenarioCnt<7)
-				{
-					scenarioCnt++;
-					Ifx_RampF32_setSlewRate(&motorCtrl->pmsmFoc.speedRamp,demospeed[scenarioCnt][1],USER_MOTOR_SPEED_RAMP_PERIOD);
-					PmsmFoc_Interface_setMotorTargetSpeed(&g_motorCtrl,demospeed[scenarioCnt][0]);
-				}
-				else
-				{
-					scenarioCnt = 0;
-					PmsmFoc_Interface_stopMotor(&g_motorCtrl);
-				}
-			}
-			PmsmFoc_doFieldOrientedControl(motorCtrl);
-		}
-		else
-		{	
-			scenarioCnt = 0;
-			PmsmFoc_doFieldOrientedControl(motorCtrl);
-			PmsmFoc_Interface_stopMotor(&g_motorCtrl);
-		}
+	#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
+		PmsmFoc_doDemo(motorCtrl);
+	#endif
 		break;
 	default:
 		break;

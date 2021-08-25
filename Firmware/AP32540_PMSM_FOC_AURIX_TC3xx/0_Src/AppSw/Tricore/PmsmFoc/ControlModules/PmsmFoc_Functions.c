@@ -48,7 +48,7 @@
 #include "HW_Init.h"
 #include "PmsmFoc_CurrentDcLinkSense.h"
 #include "PmsmFoc_Gatedriver.h"
-
+#include "PmsmFoc_Interface.h"
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
@@ -60,7 +60,7 @@
 /******************************************************************************/
 /*--------------------------Function Implementations--------------------------*/
 /******************************************************************************/
-
+float32 demospeedcfg[8][2]= {{4000,500},{6000,2000},{3000,500},{200,1000},{6000,2000},{3000,2000},{5000,300},{2000,500}};
 void PmsmFoc_initMotorControl(MOTORCTRL_S* const motorCtrl)
 {
 	/* Initialize the control variables */
@@ -105,23 +105,27 @@ void PmsmFoc_initControlVariables(MOTORCTRL_S* const motorCtrl)
 	LookUp_Init();
 	g_motorCtrl.interface.CurrnetIfMode = CAL_MODE;
 	/* Initialization of speed and current reference ramps */
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 	Ifx_RampF32_init(&motorCtrl->pmsmFoc.speedRamp,
 			USER_MOTOR_SPEED_RAMP_SLEW_RATE,
 			USER_MOTOR_SPEED_RAMP_PERIOD);
+#elif(FOC_CONTROL_SCHEME == CURRENT_CONTROL)
 	Ifx_RampF32_init(&motorCtrl->pmsmFoc.iqRefExternalRamp,
 			USER_MOTOR_CURRENT_Q_RAMP_SLEW_RATE,
 			USER_MOTOR_CURRENT_Q_RAMP_PERIOD);
 	Ifx_RampF32_init(&motorCtrl->pmsmFoc.idRefExternalRamp,
 			USER_MOTOR_CURRENT_D_RAMP_SLEW_RATE,
 			USER_MOTOR_CURRENT_D_RAMP_PERIOD);
+#endif
+	motorCtrl->CtrlParms.initState = INIT_IN_PRGRESS;
 	/* Control parameters object initialization */
 	motorCtrl->CtrlParms.state = STATE_PhaseCalibration;
-	motorCtrl->CtrlParms.alignmentCounter = 0;
-	motorCtrl->CtrlParms.counter = 0;
-	motorCtrl->CtrlParms.inverterStatus = 0;
+	motorCtrl->CtrlParms.alignmentCounter   = 0;
+	motorCtrl->CtrlParms.counter            = 0;
+	motorCtrl->CtrlParms.inverterStatus     = 0;
 	motorCtrl->CtrlParms.nonRealTimeCounter = 0;
-	motorCtrl->CtrlParms.rampCounter = 0;
-	motorCtrl->CtrlParms.rotationDir = 0;
+	motorCtrl->CtrlParms.rampCounter        = 0;
+	motorCtrl->CtrlParms.rotationDir        = 0;
 #if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
 	motorCtrl->CtrlParms.controlScheme = ControlScheme_speed;
 #elif(FOC_CONTROL_SCHEME == CURRENT_CONTROL)
@@ -131,35 +135,38 @@ void PmsmFoc_initControlVariables(MOTORCTRL_S* const motorCtrl)
 	motorCtrl->inverter.status = 0;
 
 	/* Motor parameters object initialization */
-	motorCtrl->motor.rs = USER_MOTOR_RESISTANCE_PER_PHASE;
-	motorCtrl->motor.ls = USER_MOTOR_INDUCTANCE_PER_PHASE;
+	motorCtrl->motor.rs        = USER_MOTOR_RESISTANCE_PER_PHASE;
+	motorCtrl->motor.ls        = USER_MOTOR_INDUCTANCE_PER_PHASE;
 	motorCtrl->motor.polePairs = USER_MOTOR_POLE_PAIR;
 
 	/* Open loop object initialization */
-	motorCtrl->openLoop.amplitude = 0.0;
+	motorCtrl->openLoop.amplitude            = 0.0;
 	motorCtrl->openLoop.electricalAngleDelta = 0.0;
-	motorCtrl->openLoop.electricalAngle = 0.0;
+	motorCtrl->openLoop.electricalAngle      = 0.0;
 #if(EMOTOR_LIB == MC_EMOTOR)
 	motorCtrl->openLoop.modulationIndex = (CplxStdReal) {0.0, 0.0 };
 #endif
 
 	/* Position sensor object initialization */
 #if(POSITION_SENSOR_TYPE == ENCODER)
-	motorCtrl->positionSensor.sensorType = PositionAcquisition_SensorType_Encoder;
+	motorCtrl->positionSensor.sensorType                = PositionAcquisition_SensorType_Encoder;
 	motorCtrl->positionSensor.encoder.calibrationStatus = ENC_FIND_INDEX;
 #endif
+	motorCtrl->democontrol.demospeed = demospeedcfg;
+	motorCtrl->democontrol.scenarioCnt = 0;
+
 	/* Initialization of speed regulators */
 	PmsmFoc_speedcontrol_init(&motorCtrl->pmsmFoc.speedControl);
 	PmsmFoc_speedcontrol_setMaxSpeed(&motorCtrl->pmsmFoc.speedControl,
 			USER_MOTOR_SPEED_CONTROL_MAX_RPM);
 	PmsmFoc_speedcontrol_setMinSpeed(&motorCtrl->pmsmFoc.speedControl,
 			USER_MOTOR_SPEED_CONTROL_MIN_RPM);			
-	/* Set the PI controller kp and ki parameter (for fixed point calculation). */
+	/* Set the Speed controller kp and ki parameter (for fixed point calculation). */
 	PmsmFoc_speedcontrol_setKpKi(&motorCtrl->pmsmFoc.speedControl,
 			USER_MOTOR_SPEED_CONTROL_KP,
 			USER_MOTOR_SPEED_CONTROL_KI,
 			USER_MOTOR_SPEED_CONTROL_PERIOD);
-	/* Set the PI controller limits. */
+	/* Set the Speed controller limits. */
 	PmsmFoc_speedcontrol_setLimit(&motorCtrl->pmsmFoc.speedControl,
 			USER_MOTOR_SPEED_CONTROL_MIN,
 			USER_MOTOR_SPEED_CONTROL_MAX);
@@ -172,7 +179,6 @@ void PmsmFoc_initControlVariables(MOTORCTRL_S* const motorCtrl)
 			USER_MOTOR_PI_ID_KP,
 			USER_MOTOR_PI_ID_KI,
 			USER_MOTOR_PI_ID_CONTROL_PERIOD);
-	/* Set the PI controller limits. */
 	Ifx_PicF32_setKpKi(&motorCtrl->pmsmFoc.piIq,
 			USER_MOTOR_PI_IQ_KP,
 			USER_MOTOR_PI_IQ_KI,
@@ -302,311 +308,6 @@ void PmsmFoc_doEncoderCalibration(MOTORCTRL_S* const motorCtrl)
 	}
 }
 
-#if 0
-#define TOTAL_SINE_TABLE_ANGLE                 (2*(float)PI)
-#define TABLE_SIZE                              1024
-/* 0.00613592 */
-#define ANGLE_STEP                             (TOTAL_SINE_TABLE_ANGLE/(float)TABLE_SIZE)
-#define ONE_BY_ANGLE_STEP                      (1/ANGLE_STEP)
-#define FAST_LOOP_TIME_SEC              (float)(1/(float)USER_INVERTER_PWM_FREQ_HZ) /* Always runs in sync with PWM */
-#define LOCK_TIME_IN_SEC                (2)   /* Startup - Rotor alignment time */
-#define LOCK_COUNT_FOR_LOCK_TIME      (uint32)((float)LOCK_TIME_IN_SEC/(float)FAST_LOOP_TIME_SEC)
-#define PI_2                                     (float)1.5707963267948966192313216916398
-uint32 startupLockCount = 0;
-uint32 lockTimeCount = 1000;
-CplxStdReal PmsmFoc_CosinusSinus(float32 const rotor_angle)
-{
-    CplxStdReal result;
-    float32 angle = rotor_angle;
-    uint16 IndexY0;
-    uint16 IndexY1;
-    float32 x0, y0, y1, x_interpol;
-    /*
-		Since Rad angle is using "float", to get a precise value It needs to do linear interpolation.
-		Equation: 
-		y = y0 + (y1 - y0)*((x - x0)/(x1 - x0))
-	*/
-
-    /* Range check 0 <= Angle < 2*PI */
-    if( angle <  0 )
-    {
-        angle = angle + TOTAL_SINE_TABLE_ANGLE;
-    }
-	else if( angle >= TOTAL_SINE_TABLE_ANGLE  )
-    {
-        angle = angle - TOTAL_SINE_TABLE_ANGLE;
-    }
-
-    IndexY0 = (uint16)(angle / ANGLE_STEP);
-    IndexY1 = IndexY0 + 1;
-
-    if(IndexY1 >= TABLE_SIZE )
-    {
-        IndexY1 = 0;
-    }
-
-    x0 = (IndexY0 * ANGLE_STEP);
-
-	/* x_interpol = (x-x0)/(x1-x0) */
-    x_interpol = ((angle - x0) * ONE_BY_ANGLE_STEP);
-
-    y0          = sinCosTable[IndexY0];
-    y1          = sinCosTable[IndexY1];
-    result.imag = y0 + ((y1 - y0) * x_interpol);
-
-    y0          = cosTable[IndexY0];
-    y1          = cosTable[IndexY1];
-    result.real = y0 + ((y1 - y0) * x_interpol);
-    return result;
-}
-#if 0
-uint8 kkks;
-uint8 calmode;
-uint8 calmode2;
-uint32 angles;
-uint32 anglesdelta;
-uint32 addicnt;
-float amps;
-uint8 amps2=0;
-CplxStdReal cossin;
-uint32 cnttt =0;
-void PmsmFoc_doEncoderCalibration(MOTORCTRL_S* const motorCtrl)
-{
-	float32 Anglerad;
-	PMSMFOC_S* foc = &motorCtrl->pmsmFoc;
-#if(EMOTOR_LIB == MC_EMOTOR)
-#endif
-	/* Update electrical position*/
-	motorCtrl->pmsmFoc.electricalAngle =
-			(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
-	/* Current reconstruction */
-	PmsmFoc_reconstructCurrent(motorCtrl);
-		foc->idqRef.real = 0.4;
-		foc->idqRef.imag = 0.0;
-	#if 0
-	/* if(startupLockCount<(0.5*lockTimeCount)) */
-	{
-		
-		switch (kkks)
-		{
-		case 0:
-			Anglerad = PI_2;
-			break;
-		case 1:
-			Anglerad = PI;
-			break;
-		case 2:
-			Anglerad = PI_2*3;
-			break;
-		case 3:
-			Anglerad = PI*2;
-			break;
-		case 4:
-			Anglerad = 0;
-			break;
-		default:
-			break;
-		}
-		
-		/* inverse */
-		PmsmFoc_doClarkeTransform(foc);
-		foc->VoltageAngleCosSin = PmsmFoc_CosinusSinus(Anglerad);
-		foc->idqMeas = Park(&foc->iab, &foc->VoltageAngleCosSin);
-		/* PI Controller #1 -  Iq PI controller of FOC */
-		PmsmFoc_doIqControl(foc);
-		/* PI Controller #2 -  Id PI controller of FOC */
-		PmsmFoc_doIdControl(foc);
-		foc->vabRef = Park_Reverse(&foc->vdqRef, &foc->VoltageAngleCosSin);
-		foc->modulationIndex = foc->vabRef;
-		startupLockCount++;
-			PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
-	}
-	#endif
-	#if 0
-	if(startupLockCount<(0.5*lockTimeCount))
-	{
-		
-		switch (kkks)
-		{
-		case 0:
-			Anglerad = PI_2;
-			break;
-		case 1:
-			Anglerad = PI;
-			break;
-		case 2:
-			Anglerad = PI_2*3;
-			break;
-		case 3:
-			Anglerad = PI*2;
-			break;
-		case 4:
-			Anglerad = 0;
-			break;
-		default:
-			break;
-		}
-		
-		/* inverse */
-		PmsmFoc_doClarkeTransform(foc);
-		foc->VoltageAngleCosSin = PmsmFoc_CosinusSinus(Anglerad);
-		foc->idqMeas = Park(&foc->iab, &foc->VoltageAngleCosSin);
-		/* PI Controller #1 -  Iq PI controller of FOC */
-		PmsmFoc_doIqControl(foc);
-		/* PI Controller #2 -  Id PI controller of FOC */
-		PmsmFoc_doIdControl(foc);
-			foc->vdqRef.imag =0;
-		foc->vdqRef.real =0.5;
-		foc->vabRef = Park_Reverse(&foc->vdqRef, &foc->VoltageAngleCosSin);
-		foc->modulationIndex = foc->vabRef;
-		foc->modulationIndex = foc->VoltageAngleCosSin;
-				foc->modulationIndex.imag = foc->VoltageAngleCosSin.imag;
-		foc->modulationIndex.real = foc->VoltageAngleCosSin.real;
-
-		startupLockCount++;
-			//PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
-	
-	cossin = LookUp_CosinusSinus(0);
-	motorCtrl->openLoop.modulationIndex.real = cossin.real * 0.1;
-	motorCtrl->openLoop.modulationIndex.imag = cossin.imag * 0.1;
-	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);			
-	}
-	else if(startupLockCount<(lockTimeCount))
-	{
-		Anglerad = 0;
-				/* inverse */
-		PmsmFoc_doClarkeTransform(foc);
-		foc->VoltageAngleCosSin = PmsmFoc_CosinusSinus(Anglerad);
-		foc->idqMeas = Park(&foc->iab, &foc->VoltageAngleCosSin);
-		/* PI Controller #1 -  Iq PI controller of FOC */
-		PmsmFoc_doIqControl(foc);
-		/* PI Controller #2 -  Id PI controller of FOC */
-		PmsmFoc_doIdControl(foc);
-		foc->vdqRef.imag =0;
-		foc->vdqRef.real =0.5;
-		foc->vabRef = Park_Reverse(&foc->vdqRef, &foc->VoltageAngleCosSin);
-		foc->modulationIndex = foc->vabRef;
-		foc->modulationIndex.imag = foc->VoltageAngleCosSin.imag;
-		foc->modulationIndex.real = foc->VoltageAngleCosSin.real;
-
-		startupLockCount++;
-			//PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
-
-	cossin = LookUp_CosinusSinus(0);
-	motorCtrl->openLoop.modulationIndex.real = cossin.real * 0.1;
-	motorCtrl->openLoop.modulationIndex.imag = cossin.imag * 0.1;
-
-	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
-	}
-	#endif 
-	#if 1
-	//if(calmode ==0)
-	if(amps2 ==0)
-	{
-
-		if (amps >=0.1)
-		{
-			cnttt++;
-			if (cnttt >50000)
-			{
-
-			amps = 0;
-			amps2 =1;
-			cnttt = 0;
-			}
-		}
-		else
-		{
-			amps+=0.00025;
-		}
-			cossin = LookUp_CosinusSinus(angles);
-			motorCtrl->openLoop.modulationIndex.real = cossin.real * amps;
-			motorCtrl->openLoop.modulationIndex.imag = cossin.imag * amps;
-
-		// 	cossin = LookUp_CosinusSinus(electricAngle);
-		// motorCtrl->openLoop.modulationIndex.real = cossin.real * motorCtrl->openLoop.amplitude;
-		// motorCtrl->openLoop.modulationIndex.imag = cossin.imag * motorCtrl->openLoop.amplitude;
-		//PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
-		PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
-
-	}
-	else if (calmode2 == 0)
-	{
-
-			anglesdelta = 1;
-		angles = angles +anglesdelta;
-		if (angles>1024)
-		{
-		angles = 0;
-		}
-		if(g_motorCtrl.positionSensor.encoder.incrEncoder.turn==8)
-		{
-			angles = 300;
-			calmode2 =1;
-		}
-		
-		cossin = LookUp_CosinusSinus(angles);
-		motorCtrl->openLoop.modulationIndex.real = cossin.real * 0.05;
-		motorCtrl->openLoop.modulationIndex.imag = cossin.imag * 0.05;
-
-	// 	cossin = LookUp_CosinusSinus(electricAngle);
-	// motorCtrl->openLoop.modulationIndex.real = cossin.real * motorCtrl->openLoop.amplitude;
-	// motorCtrl->openLoop.modulationIndex.imag = cossin.imag * motorCtrl->openLoop.amplitude;
-		//PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->pmsmFoc.modulationIndex);
-		PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
-	}
-	else if (calmode2 ==1&&addicnt<3000 )
-	{
-
-
-	cossin = LookUp_CosinusSinus(0);
-	motorCtrl->openLoop.modulationIndex.real = cossin.real * amps;
-	motorCtrl->openLoop.modulationIndex.imag = 0;
-	if (amps >=0.1)
-	{
-	addicnt++;
-	amps=0.1;
-	}
-	else
-	{
-		amps+=0.00025;
-	}
-	
-
-	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
-	}
-	else if (addicnt==3000)
-	{
-		amps2=0;
-		angles =0;
-		addicnt =0;
-		calmode2 = 0;
-		startupLockCount = 0;
-			motorCtrl->positionSensor.encoder.incrEncoder.offset =
-					-motorCtrl->positionSensor.encoder.incrEncoder.rawPosition;
-			motorCtrl->openLoop.amplitude = 0.0;
-			motorCtrl->positionSensor.encoder.encOffsetCal = FALSE;
-			motorCtrl->interface.CurrnetIfMode = STOP_MODE;
-			motorCtrl->positionSensor.encoder.encOffsetCalCounter = 0;
-			motorCtrl->positionSensor.encoder.calibrationStatus = ENC_CAL_DONE;
-	}
-	#endif
-	if(kkks == 8)
-	{
-		startupLockCount = 0;
-			motorCtrl->positionSensor.encoder.incrEncoder.offset =
-					-motorCtrl->positionSensor.encoder.incrEncoder.rawPosition;
-			motorCtrl->openLoop.amplitude = 0.0;
-			motorCtrl->positionSensor.encoder.encOffsetCal = FALSE;
-			motorCtrl->interface.CurrnetIfMode = STOP_MODE;
-			motorCtrl->positionSensor.encoder.encOffsetCalCounter = 0;
-			motorCtrl->positionSensor.encoder.calibrationStatus = ENC_CAL_DONE;
-	}
-		
-
-}
-#endif
-#endif
 /* static */
 void PmsmFoc_reconstructCurrent(MOTORCTRL_S* const motorCtrl)
 {
@@ -615,7 +316,7 @@ void PmsmFoc_reconstructCurrent(MOTORCTRL_S* const motorCtrl)
 
 	motorCtrl->pmsmFoc.iPhaseMeas.u = motorCtrl->inverter.phaseCurrentSense.curVO1.value;
 	motorCtrl->pmsmFoc.iPhaseMeas.v = motorCtrl->inverter.phaseCurrentSense.curVO2.value;
-	motorCtrl->pmsmFoc.iPhaseMeas.w = motorCtrl->inverter.phaseCurrentSense.curVO2.value;
+	motorCtrl->pmsmFoc.iPhaseMeas.w = - motorCtrl->pmsmFoc.iPhaseMeas.u - motorCtrl->pmsmFoc.iPhaseMeas.v;
 	//motorCtrl->pmsmFoc.iPhaseMeas.w = 1.83*(motorCtrl->inverter.phaseCurrentSense.curVO3.value);
 #if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 	PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(&motorCtrl->inverter.highSideCurrentSense);
@@ -785,43 +486,62 @@ void PmsmFoc_doDqDecoupling(PMSMFOC_S* const foc)
 
 void PmsmFoc_doVfControl(MOTORCTRL_S* const motorCtrl)
 {
-#if(EMOTOR_LIB == MC_EMOTOR)
-	CplxStdReal cossin;
-#endif
 	/* Update electrical position and measSpeed*/
 	motorCtrl->pmsmFoc.electricalAngle =
 			(sint16) PmsmFoc_PositionAcquisition_updatePosition(&motorCtrl->positionSensor);
 	motorCtrl->pmsmFoc.speedControl.measSpeed = IfxStdIf_Pos_radsToRpm(
 			PmsmFoc_PositionAcquisition_updateSpeed(&motorCtrl->positionSensor));
-
-	/* Current reconstruction */
-	PmsmFoc_reconstructCurrent(motorCtrl);
 	if(motorCtrl->interface.CurrnetIfMode == RUNNING_MODE)
 	{
-		PmsmFoc_Gatedriver_Enable();
+	#if(EMOTOR_LIB == MC_EMOTOR)
+		CplxStdReal cossin;
+	#endif
+
+		/* Current reconstruction */
+		PmsmFoc_reconstructCurrent(motorCtrl);
+		#if(EMOTOR_LIB == MC_EMOTOR)
 		/* Update electrical angle and calculate modulation IndexY0 */
-#if(EMOTOR_LIB == MC_EMOTOR)
-		sint16 electricAngle;
 		motorCtrl->openLoop.electricalAngle += motorCtrl->openLoop.electricalAngleDelta;
-		electricAngle= (motorCtrl->openLoop.electricalAngle >> 16) & (COSSIN_TABLE_SIZE - 1);
-		cossin = LookUp_CosinusSinus(electricAngle);
-#endif
+		if(motorCtrl->openLoop.electricalAngle > (COSSIN_TABLE_SIZE - 1))
+		{
+			motorCtrl->openLoop.electricalAngle = 0;
+		}
+		cossin = LookUp_CosinusSinus(motorCtrl->openLoop.electricalAngle);
+		#endif
 		motorCtrl->openLoop.modulationIndex.real = cossin.real * motorCtrl->openLoop.amplitude;
 		motorCtrl->openLoop.modulationIndex.imag = cossin.imag * motorCtrl->openLoop.amplitude;
+		PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
 	}
-	
-	if(motorCtrl->interface.CurrnetIfMode == STOP_MODE)
-	{
-		motorCtrl->openLoop.electricalAngle = 0;
-		motorCtrl->openLoop.electricalAngleDelta = 0;
-		motorCtrl->openLoop.amplitude = 0.0;
-		motorCtrl->openLoop.modulationIndex.real = 0;
-		motorCtrl->openLoop.modulationIndex.imag = 0;
-		PmsmFoc_Gatedriver_Disable();
-	}
-
-	PmsmFoc_SvmStart(&motorCtrl->inverter, motorCtrl->openLoop.modulationIndex);
 }
+#if(FOC_CONTROL_SCHEME == SPEED_CONTROL)
+void PmsmFoc_doDemo(MOTORCTRL_S* const motorCtrl)
+{
+	if(motorCtrl->interface.CurrnetIfMode == DEMO_MODE)
+	{
+		uint8 *democnt;
+		float32 demoslewrate;
+		float32 demoTargetSpeed;
+		democnt         = &(motorCtrl->democontrol.scenarioCnt);
+		demoTargetSpeed = motorCtrl->interface.motorTargetSpeed;
+		if((demoTargetSpeed-50)<motorCtrl->pmsmFoc.speedControl.measSpeed && motorCtrl->pmsmFoc.speedControl.measSpeed<(demoTargetSpeed+50))
+		{
+			if (*democnt<7)
+			{
+				(*democnt)++;
+				PmsmFoc_Interface_setMotorTargetSpeed(motorCtrl,motorCtrl->democontrol.demospeed[*democnt][0]);
+				demoslewrate = motorCtrl->democontrol.demospeed[*democnt][1];
+				Ifx_RampF32_setSlewRate(&motorCtrl->pmsmFoc.speedRamp,demoslewrate,USER_MOTOR_SPEED_RAMP_PERIOD);
+			}
+			else
+			{
+				*democnt = 0;
+				PmsmFoc_Interface_stopMotor(motorCtrl);
+			}
+		}
+	}
+	PmsmFoc_doFieldOrientedControl(motorCtrl);
+}
+#endif
 /* Not used */
 void PmsmFoc_doMiscWorks(MOTORCTRL_S* const motorCtrl)
 {

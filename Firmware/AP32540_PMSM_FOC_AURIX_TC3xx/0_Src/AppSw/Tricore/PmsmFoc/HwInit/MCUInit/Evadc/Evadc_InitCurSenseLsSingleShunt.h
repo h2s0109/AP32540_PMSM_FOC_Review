@@ -46,6 +46,7 @@
 /*-----------------------------------Includes---------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT)
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
 #include "Evadc_Init.h"
@@ -82,7 +83,7 @@
  * with below topology
  * Three phase current sense with low-side single shunt resistor.
  * AN0   EVADCG0.CH0   Queue0  VO1 (IDC_LS)
- * AN8   EVADCG1.CH0   Queue0  VRO
+ * AN8   EVADCG1.CH0   Queue0  VRO (OFFSET)
  *
  * /param encoder Reference to structure that contains instance data members
  * /return
@@ -183,5 +184,6 @@ IFX_INLINE void PmsmFoc_Evadc_initGroup1Queue0(IfxEvadc_Adc_GroupConfig *adcGrou
 {
 	PmsmFoc_Evadc_initGroupXQueue0CurrentSenseTriShuntHsMon(adcGroupConfig);
 }
+#endif /* End of (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT) */
 
 #endif /* EVADC_INITCURSENSELSSINGLESHUNT_H_ */

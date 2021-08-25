@@ -82,7 +82,7 @@
 /** \brief Define the maximum phase current value. */
 #define USER_INVERTER_PHASECURSENSE_I_MAX        			(USER_INVERTER_I_MAX_A)
 /** \brief Define the phase current sense gain value. */
-#define USER_INVERTER_PHASECURSENSE_I_GAIN       			(-(USER_INVERTER_MAX_ADC_VDD_V/(4096 \
+#define USER_INVERTER_PHASECURSENSE_I_GAIN       			((USER_INVERTER_MAX_ADC_VDD_V/(4096 \
 															* USER_INVERTER_PHASECURSENSE_AMPLIFIER_GAIN \
 															* USER_INVERTER_THREE_PHASE_SHUNT_OHM)))
 /** \brief Define the the phase current sense offset value. */

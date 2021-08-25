@@ -61,10 +61,7 @@
  */
 void PmsmFoc_Qspi_init(void)
 {
-#if(TLF35584_DRIVER == ENABLED)
 	PmsmFoc_Power_InitSpi();
-#endif /* End of TLF35584_DRIVER */
-
 	PmsmFoc_Gatedriver_InitSpi();
 }
 

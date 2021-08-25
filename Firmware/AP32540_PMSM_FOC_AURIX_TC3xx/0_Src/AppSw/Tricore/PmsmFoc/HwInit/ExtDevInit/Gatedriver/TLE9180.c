@@ -1,5 +1,5 @@
 /**
- * \file TLF3xx8x.c
+ * \file TLE9180.c
  * \brief Source file of TLF3xx8x communication and initialization
  *
  * \copyright Copyright (c) 2019 Infineon Technologies AG. All rights reserved.
@@ -46,6 +46,7 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "TLE9180.h"
+#if(TLE9180_DRIVER == ENABLED)
 #include "bsp.h"
 /******************************************************************************/
 /*-----------------------------------Macros-----------------------------------*/
@@ -448,7 +449,7 @@ boolean IfxTLE9180_init(IfxTLE9180_Pins *tle9180PinCtrl)
 
     IfxTLE9180_readRegister();
     
-    IfxTLE9180_read_write(IfxTLE9180_ofs_finetunning, 2);
+    IfxTLE9180_read_write((uint32 *)IfxTLE9180_ofs_finetunning, 2);
 
     #if 0
     /* Calibration test */
@@ -567,3 +568,4 @@ static void IfxTLE9180_initBuffer(void)
 #pragma ghs section bss=default
 #pragma ghs section rodata=default
 #endif
+#endif /* End of TLE9180_DRIVER */

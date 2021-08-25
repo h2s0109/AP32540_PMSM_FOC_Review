@@ -166,6 +166,10 @@ static __attribute__((__noreturn__)) void periodicExternalControlTask(void *arg)
 			/******************************************************************
 			 *                      TOUCH CONTROL Task START                  *
 			 ******************************************************************/
+			if(g_motorCtrl.CtrlParms.state == STATE_PhaseCalibration)
+			{
+				g_motorCtrl.inverter.phaseCurrentSense.calibration.calwait++;
+			}
 			/* Call user tasks here */
 			#if(TFT_DISPLAYMODE == ENABLED)
 			touch_periodic ();
@@ -329,13 +333,7 @@ static __attribute__((__noreturn__)) void periodicOneEyeBufferCopyTask(void *arg
 #endif /* End of ONE_EYEMODE*/
 
 volatile uint32 miscCount= 0UL;
-uint8 select;
-uint32 senddat[5] ={0x80BA02,0,0,0,0} ;
-/* 0xA39706 */ /* 7 */
-/* 0xA39805 */ /* 8 */
-/* 0xA39F00 */ /* F Max */
-uint32 calbit =0;
-#include "TLE9180.h"
+
 static __attribute__((__noreturn__)) void periodicMiscTask(void *arg)
 {
 	TickType_t xLastWakeTime;
@@ -347,11 +345,11 @@ static __attribute__((__noreturn__)) void periodicMiscTask(void *arg)
 		vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(OS_MISC_TASK_PERIOD_MS));
 		miscCount++;
 		{
-			Display_update_timeElapsed();
 			/******************************************************************
 			 *                         MISC Task START                       *
 			 ******************************************************************/
 			#if(TFT_DISPLAYMODE == ENABLED)
+			Display_update_timeElapsed();
 			if((g_motorCtrl.interface.CurrnetIfMode == STOPPING_MODE) && (touch_event.userctrl == TRUE))
 			{
 				Display_stopping();
@@ -412,8 +410,6 @@ static __attribute__((__noreturn__)) void periodicDisplayTimeTask(void *arg)
 			/******************************************************************
 			 *                      DISPLAY TIME Task START                   *
 			 ******************************************************************/
-
-//			Display_update_timeElapsed();
 
 			/******************************************************************
 			 *                      DISPLAY TIME Task END                     *

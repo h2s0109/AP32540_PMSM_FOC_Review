@@ -49,9 +49,14 @@
 /*--------------------------------Macros--------------------------------------*/
 /******************************************************************************/
 
-
-
 #define PMSM_FOC_HARDWARE_KIT				KIT_A2G_TC387_MOTORCTRL
+#define TFT_DISPLAYMODE                 	ENABLED
+#define ONE_EYEMODE                     	ENABLED
+#define TLF35584_DRIVER                 	ENABLED
+#define TLE9180_DRIVER                  	ENABLED
+#define DBGCTRLMODE                     	ENABLED
+#define OUTPUTTEST 							DISABLED
+
 											/*
 											 * 1. KIT_A2G_TC387_MOTORCTRL
 											 * 2. CUSTOM_KIT (not implemented)
@@ -150,7 +155,6 @@
 #define INVERTERCARD_TYPE_PATH                            "PmsmFoc_EMotorDrive_v_3_1.h"
 #define MOTOR_TYPE                                        NANOTEC_MOTOR_DB42S02
 #define MOTOR_TYPE_PATH                                   "PmsmFoc_Motor_Nanotec_DB42S02.h"
-
 #elif(PMSM_FOC_HARDWARE_KIT == CUSTOM_KIT)
 #define MCUCARD_TYPE                                      CUSTOM_MCU
 #define MCUCARD_TYPE_PATH                                 "PmsmFoc_CUSTOM_MCU.h" 		/* Shall be added by user */
@@ -163,13 +167,7 @@
 
 
 #define SW_NAME 			"PMSM_FOC_AURIX_TC3xx"
-#define SW_REVISION         (0x00010002)            		/**< \brief Software version and revision 0x00vvrrpp, with vv the version number and rr the revision number, pp the patch number. even rr are public release */
-
-#define TFT_DISPLAYMODE                 ENABLED
-#define ONE_EYEMODE                     ENABLED
-#define TLF35584_DRIVER                 ENABLED
-#define TLE9180_DRIVER                  ENABLED
-#define DBGCTRLMODE                     ENABLED
+#define SW_REVISION         (0x00020000)            		/**< \brief Software version and revision 0x00vvrrpp, with vv the version number and rr the revision number, pp the patch number. even rr are public release */
 
 /******************************************************************************/
 /*------------------------------Global variables------------------------------*/

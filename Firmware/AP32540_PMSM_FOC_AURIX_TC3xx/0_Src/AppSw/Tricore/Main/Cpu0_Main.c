@@ -46,7 +46,7 @@
  * \abstract Field Oriented Control (FOC) algorithm used for PMSM control.
  * \description Configurable PMSM FOC.
  * \name AP32540_PMSM_FOC_AURIX_TC3xx
- * \version V1.0.2
+ * \version V2.0.0
  * \board APPLICATION KIT TC3X7 V2.0
  * \keywords PMSM, FOC, AURIX, Motor Control
  * \documents https://www.infineon.com
@@ -73,8 +73,7 @@
 /*------------------------------Global variables------------------------------*/
 /******************************************************************************/
 MOTORCTRL_S g_motorCtrl;		/* Motor control structure  			  */
-float32 demospeed[8][8] = {{4000,500},{6000,2000},{3000,500},{200,1000},{6000,2000},{3000,2000},{5000,300},{2000,500}};
-uint8 scenarioCnt = 0;
+
 IFX_ALIGN(4)
 IfxCpu_syncEvent cpuSyncEvent= 0;
 
@@ -95,7 +94,7 @@ void core0_main (void)
     IfxCpu_waitEvent(&cpuSyncEvent, 1);
 
 	/* Initialize motor control */
-    /* Go toSTATE_PhaseCalibration */
+    /* Go to STATE_PhaseCalibration */
 	PmsmFoc_initMotorControl(&g_motorCtrl);
 
 #if(TFT_DISPLAYMODE == ENABLED)
@@ -109,6 +108,11 @@ void core0_main (void)
 #if(DBGCTRLMODE == ENABLED)
     DbgCtrl_init(&g_DbgCtrl);
 #endif
+    g_motorCtrl.CtrlParms.initState = INIT_DONE;
+    #if OUTPUTTEST
+    #include "PmsmFoc_Interface.h"
+    PmsmFoc_Interface_setOpenlooptest(&g_motorCtrl);
+	#endif
 	/* Initialize operating system tasks */
 	extern void OS_Tasks_init(void);
 	OS_Tasks_init();

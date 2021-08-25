@@ -295,7 +295,9 @@ boolean IfxGtm_Tom_Timer_init(IfxGtm_Tom_Timer *driver, const IfxGtm_Tom_Timer_C
         }
         else
         {}
-
+        #if OUTPUTTEST
+        triggerChannelMask +=1;
+        #endif
         /* Signal must go out of the GTM even if the port outpout is not enabled */
         IfxGtm_Tom_Tgc_enableChannelsOutput(driver->tgc[0], triggerChannelMask, 0, FALSE);
 
@@ -303,6 +305,9 @@ boolean IfxGtm_Tom_Timer_init(IfxGtm_Tom_Timer *driver, const IfxGtm_Tom_Timer_C
         {
             /* Initialize the port */
             IfxGtm_PinMap_setTomTout(config->triggerOut, config->base.trigger.outputMode, config->base.trigger.outputDriver);
+            #if OUTPUTTEST
+            IfxGtm_PinMap_setTomTout(config->refout, config->base.trigger.outputMode, config->base.trigger.outputDriver);
+            #endif
         }
         else
         {}
@@ -400,7 +405,9 @@ void IfxGtm_Tom_Timer_run(IfxGtm_Tom_Timer *driver)
 boolean IfxGtm_Tom_Timer_setFrequency(IfxGtm_Tom_Timer *driver, float32 frequency)
 {
     Ifx_TimerValue period = IfxStdIf_Timer_sToTick(driver->base.clockFreq, 1.0 / frequency);
-
+    #if OUTPUTTEST
+    IfxGtm_Tom_Ch_setCompareOneShadow(driver->tom, driver->timerChannel, period/2+1);
+    #endif
     return IfxGtm_Tom_Timer_setPeriod(driver, period);
 }
 

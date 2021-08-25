@@ -106,6 +106,7 @@ IFX_EXTERN void PmsmFoc_Interface_calMotor(MOTORCTRL_S* const motorCtrl);
  * /ingroup
  */
 IFX_EXTERN void PmsmFoc_Interface_stopMotor(MOTORCTRL_S* const motorCtrl);
+
 /** /brief
  *
  * /param motorCtrl Reference to structure that contains instance data members
@@ -115,6 +116,16 @@ IFX_EXTERN void PmsmFoc_Interface_stopMotor(MOTORCTRL_S* const motorCtrl);
  * /ingroup
  */
 IFX_EXTERN void PmsmFoc_Interface_setDemo(MOTORCTRL_S* const motorCtrl);
+
+/** /brief
+ *
+ * /param motorCtrl Reference to structure that contains instance data members
+ * /return
+ * /note
+ * /see
+ * /ingroup
+ */
+IFX_EXTERN void PmsmFoc_Interface_setOpenlooptest(MOTORCTRL_S* const motorCtrl);
 
 /** /brief
  *

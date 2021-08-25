@@ -37,14 +37,14 @@
 #ifndef _TLE9180_H_
 #define _TLE9180_H_
 
-#include "IfxPort.h"
-#include "Cpu/Std/IfxCpu_Intrinsics.h"
-
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
+#if(TLE9180_DRIVER == ENABLED)
 #include MCUCARD_TYPE_PATH
+#include "IfxPort.h"
+#include "Cpu/Std/IfxCpu_Intrinsics.h"
 #include <Qspi/SpiMaster/IfxQspi_SpiMaster.h>
 
 /******************************************************************************/
@@ -114,17 +114,6 @@ typedef struct
 	IfxPort_Pin	   *safeOff;                /**< \brief Output pin SafetyOff */
 	IfxPort_Pin	   *error;                  /**< \brief Input pin Error */
 }IfxTLE9180_Pins;
-
-typedef struct
-{
-	IfxTLE9180_Pins     pins;
-}IfxTLE9180_Config;
-
-typedef struct
-{
-	// uint32	            size;
-	IfxTLE9180_Pins     pins;
-}IfxTLE9180;
 
 typedef struct
 {
@@ -203,22 +192,22 @@ IFX_INLINE boolean IfxTLE9180_getErrorState(IfxTLE9180_Pins* handle)
 }
 
 #if defined(__DCC__)
-    #if CPU_WHICH_SERVICE_TLF == 0
+    #if CPU_WHICH_SERVICE_TLE9180 == 0
 	#pragma section DATA ".data_cpu0" ".bss_cpu0" far-absolute RW
     #pragma section CODE ".text_cpu0"
-    #elif ((CPU_WHICH_SERVICE_TLF == 1) && (CPU_WHICH_SERVICE_TLF < IFXCPU_NUM_MODULES))
+    #elif ((CPU_WHICH_SERVICE_TLE9180 == 1) && (CPU_WHICH_SERVICE_TLE9180 < IFXCPU_NUM_MODULES))
 	#pragma section DATA ".data_cpu1" ".bss_cpu1" far-absolute RW
     #pragma section CODE ".text_cpu1"
-    #elif ((CPU_WHICH_SERVICE_TLF == 2) && (CPU_WHICH_SERVICE_TLF < IFXCPU_NUM_MODULES))
+    #elif ((CPU_WHICH_SERVICE_TLE9180 == 2) && (CPU_WHICH_SERVICE_TLE9180 < IFXCPU_NUM_MODULES))
 	#pragma section DATA ".data_cpu2" ".bss_cpu2" far-absolute RW
     #pragma section CODE ".text_cpu2"
-    #elif ((CPU_WHICH_SERVICE_TLF == 3) && (CPU_WHICH_SERVICE_TLF < IFXCPU_NUM_MODULES))
+    #elif ((CPU_WHICH_SERVICE_TLE9180 == 3) && (CPU_WHICH_SERVICE_TLE9180 < IFXCPU_NUM_MODULES))
 	#pragma section DATA ".data_cpu3" ".bss_cpu3" far-absolute RW
     #pragma section CODE ".text_cpu3"
-    #elif ((CPU_WHICH_SERVICE_TLF == 4) && (CPU_WHICH_SERVICE_TLF < IFXCPU_NUM_MODULES))
+    #elif ((CPU_WHICH_SERVICE_TLE9180 == 4) && (CPU_WHICH_SERVICE_TLE9180 < IFXCPU_NUM_MODULES))
 	#pragma section DATA ".data_cpu4" ".bss_cpu4" far-absolute RW
     #pragma section CODE ".text_cpu4"
-    #elif ((CPU_WHICH_SERVICE_TLF == 5) && (CPU_WHICH_SERVICE_TLF < IFXCPU_NUM_MODULES))
+    #elif ((CPU_WHICH_SERVICE_TLE9180 == 5) && (CPU_WHICH_SERVICE_TLE9180 < IFXCPU_NUM_MODULES))
 	#pragma section DATA ".data_cpu5" ".bss_cpu5" far-absolute RW
     #pragma section CODE ".text_cpu5"
     #endif
@@ -249,5 +238,5 @@ extern IfxTLE9180_Pins Tle9180PinCtrl;
 #pragma section CODE
 #pragma section DATA RW
 #endif
-
+#endif /* End of TLE9180_DRIVER */
 #endif  // _TLE9180_H_

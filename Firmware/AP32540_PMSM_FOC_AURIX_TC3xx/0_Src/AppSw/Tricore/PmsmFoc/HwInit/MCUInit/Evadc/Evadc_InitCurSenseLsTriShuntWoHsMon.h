@@ -46,6 +46,7 @@
 /*-----------------------------------Includes---------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITHOUT_HIGHSIDE_MONITORING)
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
 #include "Evadc_Init.h"
@@ -83,7 +84,7 @@
  * AN0   EVADCG0.CH0   Queue0  VO1 (I_U)
  * AN24  EVADCG3.CH0   Queue0  VO2 (I_V)
  * AN16  EVADCG2.CH0   Queue0  VO3 (I_W)
- * AN8   EVADCG1.CH0   Queue0  VRO
+ * AN8   EVADCG1.CH0   Queue0  VRO (OFFSET)
  *
  * /param inverter Reference to structure that contains instance data members
  * /return
@@ -146,7 +147,7 @@ IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(INVERTER_S * const invert
 			USER_INVERTER_PHASECURSENSE_REFILL_TRIG);
     }
 
-    {   /* Initialize the channel AN16 (G2.CH0) for Phase Current Sense V (V02) */
+    {   /* Initialize the channel AN24 (G3.CH0) for Phase Current Sense V (V02) */
         IfxEvadc_Adc_initChannelConfig (&adcChConfig, &adcEvadc.adcGroup3);
         adcChConfig.channelId = IfxEvadc_ChannelId_0;
         adcChConfig.resultRegister = IfxEvadc_ChannelResult_0;
@@ -179,7 +180,7 @@ IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(INVERTER_S * const invert
         }
     }
 
-    {   /* Initialize the channel AN24 (G3.CH0) for Phase Current Sense W (V03) */
+    {   /* Initialize the channel AN16 (G2.CH0) for Phase Current Sense W (V03) */
         IfxEvadc_Adc_initChannelConfig (&adcChConfig, &adcEvadc.adcGroup2);
         adcChConfig.channelId = IfxEvadc_ChannelId_0;
         adcChConfig.resultRegister = IfxEvadc_ChannelResult_0;
@@ -211,12 +212,13 @@ IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(INVERTER_S * const invert
             adcGroupSFRs->RCR[0].B.DMM = 0;   /* Standard data reduction */
         }
     }
+
 }
 
 /** /brief
  * This function initialize Queue0 for the ADC current measurements
  *
- * /param encoder Reference to structure that contains instance data members
+* /param adcGroupConfig Reference to structure that contains instance data members
  * /return
  * /note
  * /see
@@ -246,7 +248,7 @@ IFX_INLINE void PmsmFoc_Evadc_initGroupXQueue0CurrentSenseTriShuntHsMon(IfxEvadc
  * Three phase current sense with (per phase) low-side shunt resistors.
  * G0.Queue0    Priority-Highest    Triggered by TOM1-CH7 (GTM ADC trigger 1)
  *
- * /param encoder Reference to structure that contains instance data members
+* /param adcGroupConfig Reference to structure that contains instance data members
  * /return
  * /note
  * /see
@@ -310,5 +312,5 @@ IFX_INLINE void PmsmFoc_Evadc_initGroup3Queue0(IfxEvadc_Adc_GroupConfig *adcGrou
 {
 	PmsmFoc_Evadc_initGroupXQueue0CurrentSenseTriShuntHsMon(adcGroupConfig);
 }
-
+#endif /* End of USER_LOWSIDE_THREE_SHUNT_WITHOUT_HIGHSIDE_MONITORING */
 #endif /* EVADC_INITCURSENSELSTRISHUNTWOHSMON_H_ */

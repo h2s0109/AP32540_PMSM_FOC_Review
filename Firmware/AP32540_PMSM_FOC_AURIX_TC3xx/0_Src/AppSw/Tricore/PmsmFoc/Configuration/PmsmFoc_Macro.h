@@ -71,6 +71,7 @@
 #define USER_LOWSIDE_THREE_SHUNT_WITHOUT_HIGHSIDE_MONITORING 	(2U)
 #define USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING    	(3U)
 #define USER_HIGHSIDE_SINGLE_SHUNT                           	(4U)
+#define USER_LOWSIDE_TWO_SHUNT_MONITORING                       (5U)
 
 /** \brief FOC Control Scheme  */
 #define SPEED_CONTROL											(1U)

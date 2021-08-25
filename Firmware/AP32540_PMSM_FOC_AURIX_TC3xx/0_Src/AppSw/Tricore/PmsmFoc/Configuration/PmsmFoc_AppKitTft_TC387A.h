@@ -44,7 +44,7 @@
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
-
+#if(PMSM_FOC_HARDWARE_KIT == KIT_A2G_TC387_MOTORCTRL)
 #include "IfxGtm_PinMap.h"
 #include "IfxGpt12_PinMap.h"
 #include "IfxPort_PinMap.h"
@@ -93,6 +93,10 @@
 
 /* GTM GPIO Resources Configuration */
 #if(GTM_USED == GTM_TOM_WITHOUT_DTM_USED)
+/** \brief Define the GTM TOM module   */
+#define PWM_MODULE         				IfxGtm_Tom_1
+/** \brief Define the Reference channel   */
+#define REF_CHANNEL                     IfxGtm_Tom_Ch_0
 /** \brief Define the phase U high-side PWM output.   */
 #define PHASE_U_HS         				&IfxGtm_TOM1_2_TOUT12_P00_3_OUT
 /** \brief Define the phase U low-side PWM output.  */
@@ -105,6 +109,11 @@
 #define PHASE_W_HS        				&IfxGtm_TOM1_6_TOUT16_P00_7_OUT
 /** \brief Define the phase W low-side PWM output.  */
 #define PHASE_W_LS         				&IfxGtm_TOM1_5_TOUT15_P00_6_OUT
+/** \brief Define the ADC trigger channel   */
+#define ADC_TRIGGER_CHANNEL             &IfxGtm_TOM1_7_TOUT15_P00_6_OUT
+
+#define REF_TESTOUPUT_CHANNEL           &IfxGtm_TOM1_0_TOUT18_P00_9_OUT
+
 #elif(GTM_USED == GTM_ATOM_WITH_DTM_USED)
 /** \brief Define the phase U high-side PWM output.  */
 #define PHASE_U_HS         				&IfxGtm_ATOM0_2_TOUT12_P00_3_OUT
@@ -155,7 +164,6 @@
 
 /* TLE9180 GPIO and QSPI define */
 /** \brief Define the DMA channel no for the QSPI receive */
-#if(PMSM_FOC_HARDWARE_KIT == KIT_A2G_TC387_MOTORCTRL)
 /* TLE9180 GPIO and QSPI define */
 #define CPU_WHICH_SERVICE_TLE9180        0     /**< \brief Define the CPU which service the Tlf3xx8x and where functions/variables are located.  */
 /* TLE9180 GPIO define */
@@ -186,7 +194,6 @@
 #define TLE9180_SPI_TX_DMA_CH           IfxDma_ChannelId_none
 /** \brief Define the DMA channel no for the QSPI receive */
 #define TLE9180_SPI_RX_DMA_CH           IfxDma_ChannelId_none
-#endif
 
 /* TLF35584 GPIO and QSPI define */
 #define CPU_WHICH_SERVICE_TLF          0     /**< \brief Define the CPU which service the Tlf3xx8x and where functions/variables are located.  */
@@ -241,5 +248,6 @@
 /******************************************************************************/
 /*---------------------Inline Function Implementations------------------------*/
 /******************************************************************************/
+#endif /* End of KIT_A2G_TC387_MOTORCTRL */
 
 #endif /* PMSM_FOC_APPKIT_TFT_TC397B_PARAMETERS_H_ */

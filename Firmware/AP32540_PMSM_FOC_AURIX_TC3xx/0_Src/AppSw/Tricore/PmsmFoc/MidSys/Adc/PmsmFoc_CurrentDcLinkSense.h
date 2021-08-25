@@ -62,6 +62,7 @@
 /******************************************************************************/
 /*--------------------------------Enumerations--------------------------------*/
 /******************************************************************************/
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 typedef enum
 {
 	HighSideCurrentSense_Gain_25VperV = 0,
@@ -69,9 +70,11 @@ typedef enum
 	HighSideCurrentSense_Gain_100VperV = 2,
 	HighSideCurrentSense_Gain_200VperV = 3
 }HighSideCurrentSense_Gain;
+#endif /* End of (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING) */
 /******************************************************************************/
 /*-----------------------------Data Structures--------------------------------*/
 /******************************************************************************/
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 typedef struct
 {
 	IfxPort_Pin	   *gainSelelct0;             /**< \brief Output pin gain select 0 */
@@ -83,22 +86,29 @@ typedef struct
 	HighSideCurrentSense_Pins     pins;
 }HighSideCurrentSense_Config;
 
+typedef struct
+{
+    sint32 inputSum;                      /**< \brief Current phase A raw sum */
+    sint32 count;                         /**< \brief Calibration index */
+    PmsmFoc_SensorAdc_CalibrationStatus status;
+} HighSideCurrentSense_Calibration;
 
+typedef struct
+{
+	PmsmFoc_SensorAdc       input;
+	HighSideCurrentSense_Calibration    calibration;
+	HighSideCurrentSense_Pins pins;
+	sint16				selectedGain;
+} HighSideCurrentSense;
+#endif /* End of (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING) */
+
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT)
 typedef struct
 {
     sint32 inputSum;                      /**< \brief Current phase A raw sum */
     sint32 count;                         /**< \brief Calibration index */
     PmsmFoc_SensorAdc_CalibrationStatus status;
 } LowSideCurrentSense_Calibration;
-
-typedef struct
-{
-    sint32 inputSum;                      /**< \brief Current phase A raw sum */
-    sint32 count;                         /**< \brief Calibration index */
-
-    PmsmFoc_SensorAdc_CalibrationStatus status;
-} HighSideCurrentSense_Calibration;
-
 
 /** \brief Structure for high side current measurement configuration and handling
  */
@@ -108,16 +118,7 @@ typedef struct
 	PmsmFoc_SensorAdc       refInput;
 	LowSideCurrentSense_Calibration    calibration;
 } LowSideCurrentSense;
-
-typedef struct
-{
-	PmsmFoc_SensorAdc       input;
-	HighSideCurrentSense_Calibration    calibration;
-	HighSideCurrentSense_Pins pins;
-	sint16				selectedGain;
-} HighSideCurrentSense;
-
-
+#endif  /* End of USER_LOWSIDE_SINGLE_SHUNT */
 /******************************************************************************/
 /*------------------------Private Variables/Constants-------------------------*/
 /******************************************************************************/
@@ -125,7 +126,7 @@ typedef struct
 /******************************************************************************/
 /*-------------------------Global Function Prototypes-------------------------*/
 /******************************************************************************/
-
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 /** /brief
  *
  * /param highSideCurrentSense Reference to structure that contains instance data members
@@ -197,6 +198,7 @@ IFX_EXTERN void PmsmFoc_CurrentDCLinkSenseHs_getRawCurrentValue(HighSideCurrentS
  * /ingroup
  */
 IFX_EXTERN float32 PmsmFoc_CurrentDCLinkSenseHs_updateAnalogInput(PmsmFoc_SensorAdc* const highSideCurrentSenseCh);
+#endif /* End of (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING) */
 /******************************************************************************/
 /*-------------------------Inline Function Prototypes-------------------------*/
 /******************************************************************************/

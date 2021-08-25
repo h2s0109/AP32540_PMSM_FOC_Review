@@ -41,7 +41,8 @@
 
 #ifndef EVADC_INITCURSENSEHSSINGLESHUNT_H_
 #define EVADC_INITCURSENSEHSSINGLESHUNT_H_
-
+#include "PmsmFoc_UserConfig.h"
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_HIGHSIDE_SINGLE_SHUNT)
 /******************************************************************************/
 /*-----------------------------------Includes---------------------------------*/
 /******************************************************************************/
@@ -73,6 +74,5 @@
 /******************************************************************************/
 /*------------------------Inline Function Implementations---------------------*/
 /******************************************************************************/
-
-
+#endif /* End of (PHASE_CURRENT_RECONSTRUCTION == USER_HIGHSIDE_SINGLE_SHUNT) */
 #endif /* EVADC_INITCURSENSEHSSINGLESHUNT_H_ */

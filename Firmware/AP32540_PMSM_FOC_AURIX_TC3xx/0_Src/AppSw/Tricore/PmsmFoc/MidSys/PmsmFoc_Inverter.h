@@ -92,12 +92,20 @@ typedef struct
     Pwm3PhaseOutput         pwm3PhaseOutput;        /**< \brief PWM output object */
     /* #include "PmsmFoc_CurrentThreeshuntSense.h" */
     PhaseCurrentSense       phaseCurrentSense;      /**< \brief Phase current sense object */
+    #if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
     /* #include "PmsmFoc_CurrentDcLinkSense.h" */
     HighSideCurrentSense    highSideCurrentSense;   /**< \brief High-side DC-Link Current sense object */
+    #endif
+    #if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT)
     LowSideCurrentSense     lowSideCurrentSense;    /**< \brief PWM output object */
+    #endif
     /* #include "PmsmFoc_VoltageSense.h" */
+    #if (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)
     DcLinkVoltageSense      dcLinkVoltageSense;     /**< \brief PWM output object */
+    #endif
+    #if (BEMF_MEASUREMENT == ENABLED)
     BemfVoltageSense        bemfVoltageSense;       /**< \brief PWM output object */
+    #endif
     InverterStatus          status;                 /**< \brief Current fault status from inverter */
 }INVERTER_S ;
 /*********************************************************************************************************************/

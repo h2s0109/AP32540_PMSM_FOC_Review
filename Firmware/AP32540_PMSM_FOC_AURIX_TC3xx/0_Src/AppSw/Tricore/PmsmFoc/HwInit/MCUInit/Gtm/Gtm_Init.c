@@ -111,6 +111,16 @@ IFX_INLINE void PmsmFoc_Gtm_initTrigToEvadcCurSense(void)
                         IfxGtm_Trig_AdcTrigSource_tom1,
                         IfxGtm_Trig_AdcTrigChannel_7); /* ADC G3 Triggered by GTM TOM1 CH7 */
 }
+#elif (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_TWO_SHUNT_MONITORING)
+IFX_INLINE void PmsmFoc_Gtm_initTrigToEvadcCurSense(void)
+{
+    IfxGtm_Trig_toEVadc(&MODULE_GTM, ADCTRIG_U_GROUP, ADCTRIG_U_LINE,
+                        ADCTRIGSOURCE,
+                        ADCTRIGCHANNEL); /* ADC G0 Triggered by GTM TOM0 CH15 */
+    IfxGtm_Trig_toEVadc(&MODULE_GTM, ADCTRIG_V_GROUP, ADCTRIG_V_LINE,
+                        ADCTRIGSOURCE,
+                        ADCTRIGCHANNEL); /* ADC G3 Triggered by GTM TOM0 TOM0 */
+}
 #elif (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT)
 IFX_INLINE void PmsmFoc_Gtm_initTrigToEvadcCurSense(void)
 {
@@ -138,11 +148,11 @@ IFX_INLINE void PmsmFoc_Gtm_initTrigToEvadcCurSense(void)
 }
 #endif
 
-IFX_INLINE void PmsmFoc_Gtm_initTrigToEvadcVoltageSense(void)
-{
 #if ((BEMF_MEASUREMENT == ENABLED) || \
      (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)) && \
     (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT)
+IFX_INLINE void PmsmFoc_Gtm_initTrigToEvadcVoltageSense(void)
+{
     IfxGtm_Trig_toEVadc(&MODULE_GTM, IfxGtm_Trig_AdcGroup_1, IfxGtm_Trig_AdcTrig_1,
                         IfxGtm_Trig_AdcTrigSource_tom1,
                         IfxGtm_Trig_AdcTrigChannel_7); /* ADC G1 Triggered by GTM TOM1 CH7 */
@@ -152,8 +162,8 @@ IFX_INLINE void PmsmFoc_Gtm_initTrigToEvadcVoltageSense(void)
     IfxGtm_Trig_toEVadc(&MODULE_GTM, IfxGtm_Trig_AdcGroup_3, IfxGtm_Trig_AdcTrig_1,
                         IfxGtm_Trig_AdcTrigSource_tom1,
                         IfxGtm_Trig_AdcTrigChannel_7); /* ADC G3 Triggered by GTM TOM1 CH7 */
-#endif
 }
+#endif
 
 /******************************************************************************/
 /*---------------------------Function Implementations-------------------------*/
@@ -164,37 +174,35 @@ void PmsmFoc_Gtm_initGtm(INVERTER_S * const inverter)
     Ifx_GTM *gtm= &MODULE_GTM;
 
     interruptState= IfxCpu_disableInterrupts();   /*  disable interrupts */
-
     /* Enable the GTM Module */
     IfxGtm_enable(gtm);
 
     IfxGtm_Cmu_setGclkFrequency(gtm, IfxGtm_Cmu_getModuleFrequency(gtm));
-    IfxGtm_Cmu_setClkFrequency(gtm, IfxGtm_Cmu_Clk_0,
-                               IfxGtm_Cmu_getGclkFrequency(gtm));
-    IfxGtm_Cmu_enableClocks(gtm, IFXGTM_CMU_CLKEN_FXCLK);
-
+    IfxGtm_Cmu_setClkFrequency(gtm, IfxGtm_Cmu_Clk_0,IfxGtm_Cmu_getGclkFrequency(gtm));
     /* Initialize the PWM Channels */
 #if(GTM_USED == GTM_ATOM_WITHOUT_DTM_USED)
     PmsmFoc_Gtm_initAtom(inverter);	/* ATOM with DTM */
     inverter->pwm3PhaseOutput.timerFreq= IfxGtm_Tom_Ch_getClockFrequency(inverter->pwm3PhaseOutput.timer.gtm, inverter->pwm3PhaseOutput.timer.tom, inverter->pwm3PhaseOutput.timer.timerChannel);
-    /* enable interrupts again */
-    IfxCpu_restoreInterrupts(interruptState);
     IfxGtm_Trig_toEVadc(gtm, IfxGtm_Trig_AdcGroup_0, IfxGtm_Trig_AdcTrig_1, IfxGtm_Trig_AdcTrigSource_atom1, IfxGtm_Trig_AdcTrigChannel_7); //ADC G0 Triggered by GTM TOM1 CH7
     IfxGtm_Trig_toEVadc(gtm, IfxGtm_Trig_AdcGroup_1, IfxGtm_Trig_AdcTrig_1, IfxGtm_Trig_AdcTrigSource_atom1, IfxGtm_Trig_AdcTrigChannel_7);//ADC G1 Triggered by GTM TOM1 CH7
     IfxGtm_Trig_toEVadc(gtm, IfxGtm_Trig_AdcGroup_2, IfxGtm_Trig_AdcTrig_1, IfxGtm_Trig_AdcTrigSource_atom1, IfxGtm_Trig_AdcTrigChannel_7);//ADC G1 Triggered by GTM TOM1 CH7
     IfxGtm_Trig_toEVadc(gtm, IfxGtm_Trig_AdcGroup_3, IfxGtm_Trig_AdcTrig_1, IfxGtm_Trig_AdcTrigSource_atom1, IfxGtm_Trig_AdcTrigChannel_7);//ADC G0 Triggered by GTM TOM1 CH7
-
 #elif(GTM_USED == GTM_TOM_WITHOUT_DTM_USED)
     PmsmFoc_Gtm_initTom(inverter);	/* TOM without DTM, two Channel per phase */
     inverter->pwm3PhaseOutput.timerFreq= IfxGtm_Tom_Ch_getClockFrequency(
         inverter->pwm3PhaseOutput.timer.gtm,
         inverter->pwm3PhaseOutput.timer.tom,
         inverter->pwm3PhaseOutput.timer.timerChannel);
+    PmsmFoc_Gtm_initTrigToEvadcCurSense();
+    #if ((BEMF_MEASUREMENT == ENABLED) || \
+    (DC_LINK_VOLTAGE_MEASUREMENT == ENABLED)) && \
+    (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_SINGLE_SHUNT)
+    PmsmFoc_Gtm_initTrigToEvadcVoltageSense();
+    #endif
+    IfxGtm_Cmu_enableClocks(gtm, IFXGTM_CMU_CLKEN_FXCLK);
+#endif
     /* enable interrupts again */
     IfxCpu_restoreInterrupts(interruptState);
-    PmsmFoc_Gtm_initTrigToEvadcCurSense();
-    PmsmFoc_Gtm_initTrigToEvadcVoltageSense();
-#endif
 }
 
 void PmsmFoc_Gtm_initAtom(INVERTER_S * const inverter)
@@ -207,27 +215,26 @@ void PmsmFoc_Gtm_initTom(INVERTER_S * const inverter)
     /* GTM TOM configuration */
     IfxGtm_Tom_Timer_Config timerConfig;
     {
-        const IfxGtm_Tom_ToutMap triggerOut=
-            {
-            .tom= IfxGtm_Tom_1, .channel= IfxGtm_Tom_Ch_7
-            };  /* Pin configuration not required */
         IfxGtm_Tom_Timer_initConfig(&timerConfig, &MODULE_GTM);
 
-        timerConfig.base.frequency= USER_INVERTER_PWM_FREQ_HZ / 2;
-        timerConfig.base.isrPriority= 0; /* No interrupts required for the PWM generation */
-        timerConfig.base.isrProvider= IfxSrc_Tos_cpu0;
-        timerConfig.base.minResolution= 0.1e-6; //(1.0 / timerConfig.base.frequency) / 1000;
-        timerConfig.base.trigger.enabled= TRUE;
-        timerConfig.base.trigger.outputEnabled= FALSE;
-        timerConfig.base.trigger.risingEdgeAtPeriod= FALSE;
-        timerConfig.base.trigger.triggerPoint= (Ifx_TimerValue)(0.5
-            * (50.0e6 / USER_INVERTER_PWM_FREQ_HZ));
-        timerConfig.clock= IfxGtm_Tom_Ch_ClkSrc_cmuFxclk0;
-        timerConfig.timerChannel= IfxGtm_Tom_Ch_0;
-        timerConfig.tom= IfxGtm_Tom_1;
-
-        timerConfig.triggerOut= &triggerOut;
-        //        timerConfig.triggerOut                      = &IfxGtm_TOM1_7_TOUT12_P00_3_OUT;
+        timerConfig.base.frequency                  = USER_INVERTER_PWM_FREQ_HZ / 2;
+        timerConfig.base.isrPriority                = 0;
+        timerConfig.base.isrProvider                = IfxSrc_Tos_cpu0;
+        timerConfig.base.minResolution              = 0.1e-6;                                                      //(1.0 / timerConfig.base.frequency) / 1000;
+        timerConfig.base.trigger.enabled            = TRUE;
+        timerConfig.base.trigger.outputEnabled      = FALSE;
+        #if OUTPUTTEST
+        timerConfig.base.trigger.outputEnabled      = TRUE;
+        #endif
+        timerConfig.base.trigger.risingEdgeAtPeriod = FALSE;
+        timerConfig.base.trigger.triggerPoint       = (Ifx_TimerValue)(0.5*(50.0e6 / USER_INVERTER_PWM_FREQ_HZ));
+        timerConfig.clock                           = IfxGtm_Tom_Ch_ClkSrc_cmuFxclk0;
+        timerConfig.timerChannel                    = REF_CHANNEL;
+        timerConfig.tom                             = PWM_MODULE;
+        timerConfig.triggerOut                      = ADC_TRIGGER_CHANNEL;
+        #if OUTPUTTEST
+        timerConfig.refout                          = REF_TESTOUPUT_CHANNEL;
+        #endif
 
         IfxGtm_Tom_Timer_init(&inverter->pwm3PhaseOutput.timer, &timerConfig);
     }
@@ -254,8 +261,10 @@ void PmsmFoc_Gtm_initTom(INVERTER_S * const inverter)
         pwmHlConfig.base.minPulse= 1.0e-6;
         pwmHlConfig.base.outputMode= IfxPort_OutputMode_pushPull;
         pwmHlConfig.base.outputDriver= IfxPort_PadDriver_cmosAutomotiveSpeed2;
+    #if(TLE9180_DRIVER == ENABLED)
         pwmHlConfig.base.ccxActiveState= Ifx_ActiveState_low;
         pwmHlConfig.base.coutxActiveState= Ifx_ActiveState_high;
+    #endif /* End of TLE9180_DRIVER */
 
         pwmHlConfig.ccx= ccx;
         pwmHlConfig.coutx= coutx;
@@ -263,9 +272,7 @@ void PmsmFoc_Gtm_initTom(INVERTER_S * const inverter)
         pwmHlConfig.tom= timerConfig.tom;
 
         IfxGtm_Tom_PwmHl_init(&inverter->pwm3PhaseOutput.pwm, &pwmHlConfig);
-        IfxGtm_Tom_PwmHl_setMode(&inverter->pwm3PhaseOutput.pwm,
-                                 Ifx_Pwm_Mode_centerAligned);
-
+        IfxGtm_Tom_PwmHl_setMode(&inverter->pwm3PhaseOutput.pwm,Ifx_Pwm_Mode_centerAligned);
         IfxGtm_Tom_Timer_updateInputFrequency(&inverter->pwm3PhaseOutput.timer);
     }
     IfxGtm_Tom_Timer_run(&inverter->pwm3PhaseOutput.timer);

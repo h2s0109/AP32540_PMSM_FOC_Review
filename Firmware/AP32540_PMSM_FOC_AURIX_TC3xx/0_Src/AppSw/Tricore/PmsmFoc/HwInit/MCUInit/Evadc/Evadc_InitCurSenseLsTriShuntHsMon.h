@@ -46,6 +46,7 @@
 /*-----------------------------------Includes---------------------------------*/
 /******************************************************************************/
 #include "PmsmFoc_UserConfig.h"
+#if(PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING)
 #include MCUCARD_TYPE_PATH
 #include INVERTERCARD_TYPE_PATH
 #include "Evadc_Init.h"
@@ -84,7 +85,7 @@
  * AN0   EVADCG0.CH0   Queue0  VO1 (I_U)
  * AN24  EVADCG3.CH0   Queue0  VO2 (I_V)
  * AN16  EVADCG2.CH0   Queue0  VO3 (I_W)
- * AN8   EVADCG1.CH0   Queue0  VRO
+ * AN8   EVADCG1.CH0   Queue0  VRO (OFFSET)
  *
  * DC link current monitoring with a high-side shunt resistor.
  * AN18  EVADCG2.CH2   Queue1  IDC_HS*
@@ -148,7 +149,7 @@ IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(INVERTER_S * const invert
 				USER_INVERTER_PHASECURSENSE_REFILL_TRIG);
 	}
 
-	{   /* Initialize the channel AN16 (G2.CH0) for Phase Current Sense V (V02) */
+	{   /* Initialize the channel AN24 (G3.CH0) for Phase Current Sense V (V02) */
 		IfxEvadc_Adc_initChannelConfig (&adcChConfig, &adcEvadc.adcGroup3);
 		adcChConfig.channelId = IfxEvadc_ChannelId_0;
 		adcChConfig.resultRegister = IfxEvadc_ChannelResult_0;
@@ -181,7 +182,7 @@ IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(INVERTER_S * const invert
 		}
 	}
 
-	{   /* Initialize the channel AN24 (G3.CH0) for Phase Current Sense W (V03) */
+	{  /* Initialize the channel AN16 (G2.CH0) for Phase Current Sense W (V03) */
 		IfxEvadc_Adc_initChannelConfig (&adcChConfig, &adcEvadc.adcGroup2);
 		adcChConfig.channelId = IfxEvadc_ChannelId_0;
 		adcChConfig.resultRegister = IfxEvadc_ChannelResult_0;
@@ -191,8 +192,8 @@ IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(INVERTER_S * const invert
 
 		/* Add Over-sampling for current measurement */
 		IfxEvadc_Adc_addToQueue (&inverter->phaseCurrentSense.curVO3.adcChannel,
-				IfxEvadc_RequestSource_queue0,
-				USER_INVERTER_PHASECURSENSE_REFILL_TRIG);
+			IfxEvadc_RequestSource_queue0,
+			USER_INVERTER_PHASECURSENSE_REFILL_TRIG);
 		IfxEvadc_Adc_addToQueue (&inverter->phaseCurrentSense.curVO3.adcChannel,
 				IfxEvadc_RequestSource_queue0,
 				IFXEVADC_QUEUE_REFILL);
@@ -239,20 +240,20 @@ IFX_INLINE void PmsmFoc_Evadc_initCurrentSenseChannels(INVERTER_S * const invert
  */
 IFX_INLINE void PmsmFoc_Evadc_initGroupXQueue0CurrentSenseTriShuntHsMon(IfxEvadc_Adc_GroupConfig *adcGroupConfig)
 {
-	/*Queue0 is enabled, enable the request slot for the arbiter*/
+	/* Queue0 is enabled, enable the request slot for the arbiter */
 	adcGroupConfig->arbiter.requestSlotQueue0Enabled= TRUE;
 
 	/* Configure the Queue0 with required values */
 	adcGroupConfig->queueRequest[0].requestSlotPrio=
-			IfxEvadc_RequestSlotPriority_highest;
+		IfxEvadc_RequestSlotPriority_highest;
 	adcGroupConfig->queueRequest[0].requestSlotStartMode=
-			IfxEvadc_RequestSlotStartMode_cancelInjectRepeat;
+		IfxEvadc_RequestSlotStartMode_cancelInjectRepeat;
 	adcGroupConfig->queueRequest[0].triggerConfig.gatingMode=
-			IfxEvadc_GatingMode_always;             /* No gate signal is required */
+		IfxEvadc_GatingMode_always;             /* No gate signal is required */
 	adcGroupConfig->queueRequest[0].triggerConfig.triggerMode=
-			IfxEvadc_TriggerMode_uponFallingEdge;
+		IfxEvadc_TriggerMode_uponFallingEdge;
 	adcGroupConfig->queueRequest[0].triggerConfig.triggerSource=
-			IfxEvadc_TriggerSource_9;               /* GTM ADC trigger 1  */
+		IfxEvadc_TriggerSource_9;               /* GTM ADC trigger 1 */
 }
 
 /** /brief
@@ -348,5 +349,5 @@ IFX_INLINE void PmsmFoc_Evadc_initGroup3Queue0(IfxEvadc_Adc_GroupConfig *adcGrou
 {
 	PmsmFoc_Evadc_initGroupXQueue0CurrentSenseTriShuntHsMon(adcGroupConfig);
 }
-
+#endif /* End of (PHASE_CURRENT_RECONSTRUCTION == USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING) */
 #endif /* EVADC_INITCURSENSELSTRISHUNTHSMON_H_ */

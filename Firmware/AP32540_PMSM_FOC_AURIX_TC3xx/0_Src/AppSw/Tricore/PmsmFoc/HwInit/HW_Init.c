@@ -55,16 +55,21 @@
 /******************************************************************************/
 /*-------------------------Function Implementations---------------------------*/
 /******************************************************************************/
+
 void PmsmFoc_initHardware(MOTORCTRL_S* const motorCtrl)
 {
 	/* Initialize SPI interfaces */
 	PmsmFoc_Qspi_init();
-#if(TLF35584_DRIVER == ENABLED)
-	/* TLF35584 (Power and WDT ASIC) init */
-	PmsmFoc_Power_Init();        /* This requires connected SPI module Initialized before */
-#endif /* End of TLF35584_DRIVER */
 
+	PmsmFoc_Power_Init();        /* This requires connected SPI module Initialized before */
+	
 	PmsmFoc_Gatedriver_Init();
+
+	#if(POSITION_SENSOR_TYPE == ENCODER)
+		PmsmFoc_PositionAcquisition_init(&motorCtrl->positionSensor, PositionAcquisition_SensorType_Encoder);
+	#else
+		/* For other position sensor */
+	#endif
 
     /* Initialize GTM Driver */
 	PmsmFoc_Gtm_initGtm(&motorCtrl->inverter);
@@ -72,11 +77,6 @@ void PmsmFoc_initHardware(MOTORCTRL_S* const motorCtrl)
     /* Initialize EVADC Driver */
 	PmsmFoc_Evadc_initEvadc(&motorCtrl->inverter);
 
-	#if(POSITION_SENSOR_TYPE == ENCODER)
-		PmsmFoc_PositionAcquisition_init(&motorCtrl->positionSensor, PositionAcquisition_SensorType_Encoder);
-	#else
-		/* For other position sensor */
-	#endif
 	#if(PMSM_FOC_HARDWARE_KIT == KIT_A2G_TC387_MOTORCTRL)
 	Misc_LED_init();
 	#endif

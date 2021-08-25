@@ -35,11 +35,11 @@
  *
  */
 
-
-
 /******************************************************************************/
 /*----------------------------------Includes----------------------------------*/
 /******************************************************************************/
+#include "PmsmFoc_UserConfig.h"
+#if(ONE_EYEMODE == ENABLED)
 #include "OneEye_Init.h"
 #include "IfxAsclin_Asc.h"
 #include "Ifx_Shell.h"
@@ -362,12 +362,12 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 			{
 				if (run)
 				{
-					/* Go toSTATE_focClosedLoop orSTATE_PhaseCalibration */
+					/* Go to STATE_focClosedLoop orSTATE_PhaseCalibration */
 					PmsmFoc_Interface_startMotor(&g_motorCtrl);
 				}
 				else
 				{
-					/* Go toSTATE_motorStop */
+					/* Go to STATE_motorStop */
 					PmsmFoc_Interface_stopMotor(&g_motorCtrl);
 				}
 				//IfxStdIf_DPipe_print(io, "! ecu run %f"KEY_CR, velocityControl.ref);
@@ -382,7 +382,7 @@ boolean shellCmdSet(pchar args, void *data, IfxStdIf_DPipe *io)
 			{
 				if (cal)
 				{
-					/* Go toSTATE_PhaseCalibration */
+					/* Go to STATE_PhaseCalibration */
 					PmsmFoc_Interface_calMotor(&g_motorCtrl);
 				}
 				//IfxStdIf_DPipe_print(io, "! ecu run %f"KEY_CR, velocityControl.ref);
@@ -609,3 +609,4 @@ void OneEye_processDataStream(void)
 #endif
 
 }
+#endif /* End of ONE_EYEMODE*/
