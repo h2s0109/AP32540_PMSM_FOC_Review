@@ -103,6 +103,7 @@
 											* 2. USER_LOWSIDE_THREE_SHUNT_WITHOUT_HIGHSIDE_MONITORING
 											* 3. USER_LOWSIDE_THREE_SHUNT_WITH_HIGHSIDE_MONITORING
 											* 4. USER_HIGHSIDE_SINGLE_SHUNT (GTM Interrupt for control loop, 2x call back for EVADC, not implemented)
+											* 5. USER_LOWSIDE_TWO_SHUNT_MONITORING
 											*/
 #define BEMF_MEASUREMENT                    ENABLED
 #define DC_LINK_VOLTAGE_MEASUREMENT         ENABLED
